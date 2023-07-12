@@ -1,0 +1,65 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "java",
+            "name": "Launch ArrayListTest",
+            "request": "launch",
+            "mainClass": "com.commontool.ArrayListTest",
+            "projectName": "app"
+        },
+        {
+            "type": "java",
+            "name": "Launch ImageVaildCheck",
+            "request": "launch",
+            "mainClass": "com.commontool.ImageVaildCheck",
+            "projectName": "app"
+        },
+        {
+            "type": "java",
+            "name": "Launch Songs",
+            "request": "launch",
+            "mainClass": "com.commontool.Songs",
+            "projectName": "app"
+        },
+        {
+            "type": "java",
+            "name": "Launch mathCalu",
+            "request": "launch",
+            "mainClass": "com.commontool.mathCalu",
+            "projectName": "app"
+        },
+        {
+            "type": "java",
+            "name": "Launch objectUtils",
+            "request": "launch",
+            "mainClass": "com.commontool.objectUtils",
+            "projectName": "app"
+        },
+        {
+            "type": "java",
+            "name": "Launch CmdUtils",
+            "request": "launch",
+            "mainClass": "com.searchtool.CmdUtils",
+            "projectName": "app"
+        },
+        {
+            "type": "java",
+            "name": "Launch ParamResearcher",
+            "request": "launch",
+            "mainClass": "com.searchtool.ParamResearcher",
+            "projectName": "app"
+        }
+    ],
+    "compounds": []
+}

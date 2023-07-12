@@ -1,0 +1,191 @@
+package com.searchtool;
+
+import java.io.File;
+
+import static com.searchtool.CmdUtils.executive;
+
+public class FileUtils {
+    public static File searchDirectory(String filepath,String filename) throws Exception{
+        File path=new File((filepath.endsWith("\\")?filepath:filepath+"\\"));
+        File file=new File((path.getPath().endsWith("\\"))?path.getPath():(path.getPath()+"\\")+filename);
+    if(!file.exists())
+        file.mkdirs();
+    return file;
+}
+
+    public static void checkImageDir(String sourcePath,String targetPath){
+        File imageFileDir=new File(sourcePath);
+        if(imageFileDir.exists()){
+            File [] files=imageFileDir.listFiles();
+            for(File file:files){
+                String validnameString=file.getName().toLowerCase().trim().replaceAll("-", "").replaceAll(".jpg", ".png");
+                File mvfile=new File((targetPath.endsWith("\\")?targetPath:targetPath+"\\")+validnameString);
+                System.out.println((targetPath.endsWith("\\")?targetPath:targetPath+"\\")+validnameString);
+                file.renameTo(mvfile);
+            }
+        }
+    }
+
+    /**
+     * 批量重命名文件名
+     * @param sourcePath
+     * @param targetPath
+     * @param oldfilenameformatstr
+     * @param filenameformatstr
+     */
+    public static void renameGenerator(String sourcePath,String targetPath,String oldfilenameformatstr,String filenameformatstr){
+        File imageFileDir=new File(sourcePath);
+        if(imageFileDir.exists()){
+            File [] files=imageFileDir.listFiles();
+            String [] divideStrings=null;
+//查找符合条件的文件名分解字符元素
+//for(File filetest:files){
+//String [] divide_string_temp=filetest.getName().split(String.valueOf(0));
+//if(divide_string_temp.length==1){
+//divideStrings=divide_string_temp;
+//break;
+//}
+//}
+//for(String s:divideStrings)
+//System.out.println(s);
+            for(File file:files){
+                //file.getName().r
+                String target_name_string=file.getName().replace(oldfilenameformatstr,filenameformatstr);
+                File mvfile=new File((targetPath.endsWith("\\")?targetPath:targetPath+"\\")+target_name_string);
+                System.out.println((targetPath.endsWith("\\")?targetPath:targetPath+"\\")+target_name_string);
+                file.renameTo(mvfile);
+            }
+        }
+    }
+
+    /**
+     * 移动指定文件
+     */
+    public static void copyGenerator(String oldfilepath,String newfilepath){
+        File file_path=new File(oldfilepath);
+        File new_path=new File(newfilepath);
+    }
+
+    /**
+     * 打印文件相关信息，并检查文件是否存在
+     * @param file_path
+     * @throws Exception
+     */
+    public static boolean checkFile(String file_path) throws Exception{
+    File file=new File(file_path);
+        System.out.println("文件是否存在"+file_path+":"+file.exists());
+    System.out.println(file_path+"检查结果如下：");
+    if(file.exists()){
+        System.out.println("canExcute:" + file.canExecute());
+        System.out.println("canAbsolute:" + file.getAbsolutePath());
+        if (file.isFile()){
+            String command = "certutil -hashfile " + file_path + " MD5";
+            executive("cmd", command);
+            System.out.println("MD5:" + CmdUtils.getMsg());
+            return true;
+        }else{
+            return false;
+        }
+    }
+    return false;
+}
+    /**
+     * 打印文件夹相关信息，并检查文件夹是否存在
+     * @param file_dir
+     * @throws Exception
+     */
+public static boolean checkFileDir(String file_dir) {
+    File file = new File(file_dir);
+    System.out.println("文件夹是否存在" + file_dir + ":" + file.exists());
+    //若文件存在则返回true,若不存在则返回false
+    if (file.exists()) {
+        if (file.isDirectory()) {
+            System.out.println("canExecute:" + file.canExecute());
+            System.out.println("canAbsolute:" + file.getAbsolutePath());
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+
+
+
+    /**
+     * 修改文件MD5数值
+     * @param file_path
+     * @param original_file
+     * @param target_file
+     * @throws Exception
+     */
+    public static void changeMD5(String file_path,String original_file,String target_file) throws Exception{
+        String valid_file_path=file_path.endsWith("\\")?file_path:file_path+"\\";
+        String input_text="hello";
+        String additional_file_name=valid_file_path+"a.temp";
+        writeFormattedFile(input_text,"UTF-8",additional_file_name);
+        System.out.println("修改MD5值成功。");
+        String command="copy /b \""+valid_file_path+original_file+"\"+\""+additional_file_name+"\" "+valid_file_path+target_file;
+        System.out.println(command);
+        executive("cmd",command);
+        System.out.println("修改MD5值成功。");
+        deleteFile(additional_file_name);
+//
+}
+
+    /**
+     * 删除指定文件
+     * @param file_path
+     */
+    public static void deleteFile(String file_path) throws Exception{
+    File file=new File(file_path);
+    if(checkFile(file_path)){
+        file.delete();
+        System.out.println(file_path+"删除成功");
+    }
+}
+
+    /**
+     *删除指定文件夹目录
+     */
+    public static boolean deleteFileDir(String file_dir) throws  Exception{
+        File file=new File(file_dir);
+        String command="RMDIR /S /Q "+file_dir;
+        if(checkFileDir(file_dir)){
+            executive("cmd",command);
+            System.out.println(file_dir+"删除成功");
+            return true;
+        }else{
+            System.out.println(file_dir+"不存在");
+            return false;
+        }
+    }
+    /**
+     * 重命名文件
+     * @param file_path
+     * @param old_file_name
+     * @param new_file_name
+     */
+    public static void renameFile(String file_path,String old_file_name,String new_file_name){
+        File old_file=new File((file_path.endsWith("\\")?file_path:file_path+"\\")+old_file_name);
+        File new_file=new File((file_path.endsWith("\\")?file_path:file_path+"\\")+new_file_name);
+        if(old_file.exists()){
+            old_file.renameTo(new_file);
+            System.out.println("命名成功");
+        }else{
+            System.out.println("不存在此文件");
+        }
+    }
+
+    /**
+     *写入指定的内容并以指定的编码保存
+     * @param input_text
+     * @param format_type
+     * @param file_path
+     * @throws Exception
+     */
+    public static void writeFormattedFile(String input_text,String format_type,String file_path) throws Exception{
+        ByteUtils.bytesToFile(ByteUtils.getStringBytes(input_text,format_type),file_path);
+    }
+
+}
