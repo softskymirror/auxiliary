@@ -9,7 +9,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class JsonUtils {
-    public static JSONObject generateJson(HashMap<String,Object> maps,String list_key, ArrayList<HashMap<String, Object>> lists) {
+    public static JSONObject generateJson(ArrayList<HashMap<Integer,HashMap<String,Object>>> maps) {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonString = new JSONObject();
         for(int i=0;i<maps.size();i++){
@@ -17,7 +17,7 @@ public class JsonUtils {
             for (Iterator iterator =  map_infos.iterator(); iterator.hasNext(); ) {
                 Object str = iterator.next();
                 jsonString.put(str, maps.get(str));
-                //¸øjsonÊý¾Ý¼ÓÉÏkey
+                //ï¿½ï¿½jsonï¿½ï¿½ï¿½Ý¼ï¿½ï¿½ï¿½key
         }
     }
         for (int l = 0; l < lists.size(); l++) {
@@ -27,7 +27,7 @@ public class JsonUtils {
             for (Iterator iterator =  infos_str.iterator(); iterator.hasNext(); ) {
                 Object str = iterator.next();
                 jsonObject.put(str, infos.get(str));
-                //¸øjsonÊý¾Ý¼ÓÉÏkey
+                //ï¿½ï¿½jsonï¿½ï¿½ï¿½Ý¼ï¿½ï¿½ï¿½key
             }
             jsonArray.add(jsonObject.toString());
         }
@@ -36,7 +36,7 @@ public class JsonUtils {
     }
 
         /**
-     * ½âÎöJSONObject¶ÔÏó
+     * ï¿½ï¿½ï¿½ï¿½JSONObjectï¿½ï¿½ï¿½ï¿½
      * @param bytes
      * @return
      */
