@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Main-Class: 
+Class-Path: commons-collections-3.2.2.jar httpcore-4.4.9.jar commons-io-
+ 2.4.jar jnetpcap-1.5.r1457-1i.jar slf4j-api-2.1.0-alpha1.jar httpclient
+ -4.5.5.jar netty-buffer-5.0.0.Alpha2.jar commons-beanutils-1.9.4.jar co
+ mmons-collections-3.2.2.jar commons-beanutils-1.9.4.jar json-lib-2.4-jd
+ k15.jar bcprov-jdk15on-1.70.jar commons-lang-2.4.jar bcprov-jdk15on-1.7
+ 0.jar commons-lang-2.4.jar json-lib-2.4-jdk15.jar httpcore-4.4.9.jar ne
+ tty-4.0.0.Alpha8.jar netty-codec-4.2.7.Final.jar netty-codec-5.0.0.Alph
+ a2.jar org.apache.commons.codec-1.3.0-20081006.jar org.apache.commons.i
+ o-2.4.jar j2v8_linux_x86_64-4.5.0.jar netty-codec-5.0.0.Alpha2.jar j2v8
+ _linux_x86_64-4.5.0.jar netty-codec-4.2.7.Final.jar commons-collections
+ 4-4.4.jar netty-4.0.0.Alpha8.jar netty-all-4.1.42.Final.jar jsoup-1.15.
+ 3.jar commons-io-2.4.jar bcpkix-jdk15on-1.70.jar slf4j-api-2.1.0-alpha1
+ .jar netty-buffer-5.0.0.Alpha2.jar httpclient-4.5.5.jar org.apache.comm
+ ons.io-2.4.jar netty-all-4.1.42.Final.jar jnetpcap-1.5.r1457-1i.jar bcp
+ kix-jdk15on-1.70.jar commons-logging-1.2.jar jsoup-1.15.3.jar commons-c
+ ollections4-4.4.jar org.apache.commons.codec-1.3.0-20081006.jar commons
+ -logging-1.2.jar
+
