@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class ArrayListTest {
    static ArrayList<String> a=new ArrayList<>();
-static String []songname={"Fairytale","Gloria","Ã÷ÈÕ¤Î¾°É«"};
+static String []songname={"Fairytale","Gloria",""};
 static String [] singer={"kalafina"};
     public static ArrayList<SongList> getList(){
      ArrayList<SongList> songLists=new ArrayList<>();
