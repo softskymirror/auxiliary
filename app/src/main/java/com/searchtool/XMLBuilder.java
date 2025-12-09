@@ -34,17 +34,17 @@ public String [][]values;
     
         try {
 
-                Document doc = generateXml(root_element,node_element,attributename,infos);// Éú³ÉXMLÎÄ¼þ
-                outputXml(doc, file);// ½«ÎÄ¼þÊä³öµ½Ö¸¶¨µÄÂ·¾¶
+                Document doc = generateXml(root_element,node_element,attributename,infos);//
+                outputXml(doc, file);// ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("³öÏÖÒì³£");
+            System.err.println("ï¿½ï¿½ï¿½ï¿½ï¿½ì³£");
         }  
     }  
   
     /** 
-              * ½«XMLÎÄ¼þÊä³öµ½Ö¸¶¨µÄÂ·¾¶ 
+              * ï¿½ï¿½XMLï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ 
               * @param doc 
               * @param file
               * @throws Exception 
@@ -56,19 +56,19 @@ public String [][]values;
         Transformer transformer = tf.newTransformer();
         DOMSource source = new DOMSource(doc);
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");// ÉèÖÃÎÄµµµÄ»»ÐÐÓëËõ½ø
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");// ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         pw = new PrintWriter(new FileOutputStream(file));
         if (pw.checkError()) {
            pw = new PrintWriter(new FileOutputStream(file));
         }
         StreamResult result = new StreamResult(pw);
         transformer.transform(source, result);  
-        System.out.println("Éú³ÉXMLÎÄ¼þ³É¹¦!ÎÄ¼þÎ»ÖÃ:"+file.getPath());
+        System.out.println("ï¿½ï¿½ï¿½ï¿½XMLï¿½Ä¼ï¿½ï¿½É¹ï¿½!ï¿½Ä¼ï¿½Î»ï¿½ï¿½:"+file.getPath());
         pw.flush();
 
     }  
     /** 
-              * Éú³ÉXMLÎÄ¼þ 
+              * ï¿½ï¿½ï¿½ï¿½XMLï¿½Ä¼ï¿½ 
 
               * @return 
               */  
@@ -85,7 +85,7 @@ public String [][]values;
             doc.appendChild(docroot);
         } catch (Exception e) {  
             e.printStackTrace();  
-            return null;// Èç¹û³öÏÖÒì³££¬Ôò²»ÔÙÍùÏÂÖ´ÐÐ  
+            return null;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì³£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½  
         }
         if(infos.length!=0) {
             for (int l = 0; l < infos.length; l++) {

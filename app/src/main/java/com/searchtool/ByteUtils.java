@@ -27,12 +27,12 @@ public class ByteUtils {
   public static final String filepath="C:\\Program Files\\HtmlWatcher\\temp\\media\\resposeText.bin";
   static byte [] bytes=null;
   public static void setFrame(String[] args) {
-    JFrame jf = new JFrame("²âÊÔ´°¿Ú");
+    JFrame jf = new JFrame("");
     jf.setSize(300, 300);
     jf.setLocationRelativeTo(null);
     jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     JPanel jpanel=new JPanel(new BorderLayout());
-    generateJTree(0,0,250,650,"ÍøÂçÉèÖÃ",new String[]{"ÏÂÔØÉèÖÃ","Á¬½ÓÉèÖÃ"},new String[][]{},jpanel);
+    generateJTree(0,0,250,650,"",new String[]{"",""},new String[][]{},jpanel);
     jf.setContentPane(jpanel);
     jf.setVisible(true);
   }
@@ -56,25 +56,25 @@ public class ByteUtils {
     }*/
     JTree jtree=new JTree(rootStr);
     jtree.setShowsRootHandles(true);
-   // ÉèÖÃÊ÷½Úµã¿É±à¼­
+   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½É±à¼­
     jtree.setEditable(true);
     jtree.setBounds(location_x, location_y,width,height); 
-    // ÉèÖÃÊ÷ÏÔÊ¾¸ù½Úµã¾ä±ú
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½
     jtree.setShowsRootHandles(true);
-    // ÉèÖÃÊ÷½Úµã¿É±à¼­
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½É±à¼­
     jtree.setEditable(true);
-    // ÉèÖÃ½ÚµãÑ¡ÖĞ¼àÌıÆ÷
+    // ï¿½ï¿½ï¿½Ã½Úµï¿½Ñ¡ï¿½Ğ¼ï¿½ï¿½ï¿½ï¿½ï¿½
     jtree.addTreeSelectionListener(new TreeSelectionListener() {
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-      System.out.println("µ±Ç°±»Ñ¡ÖĞµÄ½Úµã: " + e.getPath());
+      System.out.println("ï¿½ï¿½Ç°ï¿½ï¿½Ñ¡ï¿½ĞµÄ½Úµï¿½: " + e.getPath());
     }
     });
-    // ´´½¨¹ö¶¯Ãæ°å£¬°ü¹üÊ÷£¨ÒòÎªÊ÷½ÚµãÕ¹¿ªºó¿ÉÄÜĞèÒªºÜ´óµÄ¿Õ¼äÀ´ÏÔÊ¾£¬ËùÒÔĞèÒªÓÃÒ»¸ö¹ö¶¯Ãæ°åÀ´°ü¹ü£©
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Úµï¿½Õ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ü´ï¿½Ä¿Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     JScrollPane scrollPane=new JScrollPane(jtree);
-    // Ìí¼Ó¹ö¶¯Ãæ°åµ½ÄÇÄÚÈİÃæ°å
+    // ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½ï¿½ï¿½åµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     jpanel.add(scrollPane, BorderLayout.CENTER);
-    // ÉèÖÃ´°¿ÚÄÚÈİÃæ°å²¢ÏÔÊ¾
+    // ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å²¢ï¿½ï¿½Ê¾
    
   }
 
@@ -157,7 +157,7 @@ public class ByteUtils {
   }
  
   /**
-   * ¼ÓÃÜ½âÃÜËã·¨ Ö´ĞĞÒ»´Î¼ÓÃÜ£¬Á½´Î½âÃÜ
+   * ï¿½ï¿½ï¿½Ü½ï¿½ï¿½ï¿½ï¿½ã·¨ Ö´ï¿½ï¿½Ò»ï¿½Î¼ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½Î½ï¿½ï¿½ï¿½
    */
   public static String convertMD5(String inStr){
  
@@ -170,7 +170,7 @@ public class ByteUtils {
  
   }
 /*
- ÊäÈë×Ö·û´®Í¨¹ıGZIPÑ¹Ëõ·µ»ØStringÀàĞÍ
+ ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Í¨ï¿½ï¿½GZIPÑ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Stringï¿½ï¿½ï¿½ï¿½
  */
 public static String toHexString(String s){
   String str="";
@@ -183,7 +183,7 @@ public static String toHexString(String s){
 }
 
 public static int byte2Int(byte[] res){
-  int targets = (res[0] & 0xff) | ((res[1] << 8) & 0xff00) // | ±íÊ¾°²Î»»ò 
+  int targets = (res[0] & 0xff) | ((res[1] << 8) & 0xff00) // | ï¿½ï¿½Ê¾ï¿½ï¿½Î»ï¿½ï¿½ 
   | ((res[2] << 24) >>> 8) | (res[3] << 24); 
   return targets;
 }
@@ -191,10 +191,10 @@ public static int byte2Int(byte[] res){
 public static byte[] int2byte(int res) {  
     byte[] targets = new byte[4];  
       
-    targets[0] = (byte) (res & 0xff);// ×îµÍÎ»   
-    targets[1] = (byte) ((res >> 8) & 0xff);// ´ÎµÍÎ»   
-    targets[2] = (byte) ((res >> 16) & 0xff);// ´Î¸ßÎ»   
-    targets[3] = (byte) (res >>> 24);// ×î¸ßÎ»,ÎŞ·ûºÅÓÒÒÆ¡£   
+    targets[0] = (byte) (res & 0xff);// ï¿½ï¿½ï¿½Î»   
+    targets[1] = (byte) ((res >> 8) & 0xff);// ï¿½Îµï¿½Î»   
+    targets[2] = (byte) ((res >> 16) & 0xff);// ï¿½Î¸ï¿½Î»   
+    targets[3] = (byte) (res >>> 24);// ï¿½ï¿½ï¿½Î»,ï¿½Ş·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¡ï¿½   
     return targets;   
     }
     
@@ -206,7 +206,7 @@ public static byte[] int2byte(int res) {
         }
         String hv;
         for (int i = 0; i < src.length; i++) {
-            // ÒÔÊ®Áù½øÖÆ£¨»ùÊı 16£©ÎŞ·ûºÅÕûÊıĞÎÊ½·µ»ØÒ»¸öÕûÊı²ÎÊıµÄ×Ö·û´®±íÊ¾ĞÎÊ½£¬²¢×ª»»Îª´óĞ´
+            // ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ 16ï¿½ï¿½ï¿½Ş·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½Ğ´
             hv = Integer.toHexString(src[i] & 0xFF).toUpperCase();
             if (hv.length() < 2) {
                 builder.append(0);
@@ -218,7 +218,7 @@ public static byte[] int2byte(int res) {
     }
 
     /**
-     * ½«Hex String×ª»»ÎªByteÊı×é
+     * ï¿½ï¿½Hex String×ªï¿½ï¿½ÎªByteï¿½ï¿½ï¿½ï¿½
      *
      * @param hexString the hex string
      * @return the byte [ ]
@@ -305,14 +305,14 @@ public static void printHexString(byte [] b){
         bos.close();
     } catch (final IOException ioe) {
       ioe.printStackTrace();
-      //log.error("Ñ¹Ëõ³ö´í£º", ioe);
+      //log.error("Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", ioe);
     }
     }
-    return new String(Base64.encodeBase64(bytes),"ISO-8859-1");//ÈôÖ±½Ó·µ»ØÖ±½ÓÎ´¾­Base64¼ÓÃÜµÄÎÄ±¾×Ö½Ú½«µ¼ÖÂÂÒÂë
+    return new String(Base64.encodeBase64(bytes),"ISO-8859-1");//ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½ï¿½Ö±ï¿½ï¿½Î´ï¿½ï¿½Base64ï¿½ï¿½ï¿½Üµï¿½ï¿½Ä±ï¿½ï¿½Ö½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   }
 
 /*
- ÊäÈë×Ö·û´®Í¨¹ıGZIPÑ¹Ëõ·µ»ØStringÀàĞÍ
+ ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Í¨ï¿½ï¿½GZIPÑ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Stringï¿½ï¿½ï¿½ï¿½
  */
   public String unGZip(String base64unZipInput) {
     byte[] bytes;
@@ -337,7 +337,7 @@ public static void printHexString(byte [] b){
     bos.close();
     } catch (Exception e){
     e.printStackTrace();
-    JOptionPane.showMessageDialog(null, "½âÑ¹³ö´í");
+    JOptionPane.showMessageDialog(null, "ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½");
     } finally {
     try {
       if (gzip != null)
@@ -457,7 +457,7 @@ public static String getHexColumns(int columnCount){
 /**  
 
 
-* Êı×é×ª¶ÔÏó  
+* ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½  
 
 
 * @param bytes  
@@ -482,7 +482,7 @@ return sb.toString();
  }
 
     /**
-     * ½«StringÀ×ĞÇ×Ö½Ú×ª»»ÎªbyteÊı×é
+     * ï¿½ï¿½Stringï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½×ªï¿½ï¿½Îªbyteï¿½ï¿½ï¿½ï¿½
      * @param hexString
      * @return
      * @throws Exception
@@ -512,7 +512,7 @@ public static byte[] byteMerger(byte[] bt1, byte[] bt2){
   }
 
     /**
-     * ÒÔÖ¸¶¨±àÂë½âÎöbyte
+     * ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½byte
      * @param bytes
      * @return
      * @throws Exception
@@ -523,7 +523,7 @@ public static byte[] byteMerger(byte[] bt1, byte[] bt2){
  }
 
     /**
-     * ÒÔÖ¸¶¨±àÂë½âÎöbyte
+     * ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½byte
      * @param text charset
      * @return
      * @throws Exception

@@ -29,7 +29,7 @@ return songLists;
     }
     public void HashMapTest(){
         String [] name={"java","kotlin","flutter"};
-        String [] type={"æ≤Ã¨”Ô—‘","æ≤Ã¨”Ô—‘","æ≤Ã¨”Ô—‘"};
+        String [] type={"","",""};
         String [] corp={"oracle","debian","ubuntu"};
         ArrayList<HashMap<String, String>> computer_lauguage = new ArrayList<HashMap<String, String>>();
         for(int i=0;i<3;i++){

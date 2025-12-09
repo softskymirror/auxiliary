@@ -1,8 +1,10 @@
 package com.searchtool;
 
+import com.system.CmdUtils;
+
 import java.io.File;
 
-import static com.searchtool.CmdUtils.executive;
+import static com.system.CmdUtils.executive;
 
 public class FileUtils {
     public static File searchDirectory(String filepath,String filename) throws Exception{
@@ -27,7 +29,7 @@ public class FileUtils {
     }
 
     /**
-     * ÅúÁ¿ÖØÃüÃûÎÄ¼þÃû
+     *
      * @param sourcePath
      * @param targetPath
      * @param oldfilenameformatstr
@@ -38,7 +40,7 @@ public class FileUtils {
         if(imageFileDir.exists()){
             File [] files=imageFileDir.listFiles();
             String [] divideStrings=null;
-//²éÕÒ·ûºÏÌõ¼þµÄÎÄ¼þÃû·Ö½â×Ö·ûÔªËØ
+//ï¿½ï¿½ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½Ö·ï¿½Ôªï¿½ï¿½
 //for(File filetest:files){
 //String [] divide_string_temp=filetest.getName().split(String.valueOf(0));
 //if(divide_string_temp.length==1){
@@ -59,7 +61,7 @@ public class FileUtils {
     }
 
     /**
-     * ÒÆ¶¯Ö¸¶¨ÎÄ¼þ
+     * ï¿½Æ¶ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½
      */
     public static void copyGenerator(String oldfilepath,String newfilepath){
         File file_path=new File(oldfilepath);
@@ -67,14 +69,14 @@ public class FileUtils {
     }
 
     /**
-     * ´òÓ¡ÎÄ¼þÏà¹ØÐÅÏ¢£¬²¢¼ì²éÎÄ¼þÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½Ó¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      * @param file_path
      * @throws Exception
      */
     public static boolean checkFile(String file_path) throws Exception{
     File file=new File(file_path);
-        System.out.println("ÎÄ¼þÊÇ·ñ´æÔÚ"+file_path+":"+file.exists());
-    System.out.println(file_path+"¼ì²é½á¹ûÈçÏÂ£º");
+        System.out.println("ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½"+file_path+":"+file.exists());
+    System.out.println(file_path+"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½");
     if(file.exists()){
         System.out.println("canExcute:" + file.canExecute());
         System.out.println("canAbsolute:" + file.getAbsolutePath());
@@ -90,14 +92,14 @@ public class FileUtils {
     return false;
 }
     /**
-     * ´òÓ¡ÎÄ¼þ¼ÐÏà¹ØÐÅÏ¢£¬²¢¼ì²éÎÄ¼þ¼ÐÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½Ó¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      * @param file_dir
      * @throws Exception
      */
 public static boolean checkFileDir(String file_dir) {
     File file = new File(file_dir);
-    System.out.println("ÎÄ¼þ¼ÐÊÇ·ñ´æÔÚ" + file_dir + ":" + file.exists());
-    //ÈôÎÄ¼þ´æÔÚÔò·µ»Øtrue,Èô²»´æÔÚÔò·µ»Øfalse
+    System.out.println("ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½" + file_dir + ":" + file.exists());
+    //ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½true,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½false
     if (file.exists()) {
         if (file.isDirectory()) {
             System.out.println("canExecute:" + file.canExecute());
@@ -113,7 +115,7 @@ public static boolean checkFileDir(String file_dir) {
 
 
     /**
-     * ÐÞ¸ÄÎÄ¼þMD5ÊýÖµ
+     * ï¿½Þ¸ï¿½ï¿½Ä¼ï¿½MD5ï¿½ï¿½Öµ
      * @param file_path
      * @param original_file
      * @param target_file
@@ -124,44 +126,44 @@ public static boolean checkFileDir(String file_dir) {
         String input_text="hello";
         String additional_file_name=valid_file_path+"a.temp";
         writeFormattedFile(input_text,"UTF-8",additional_file_name);
-        System.out.println("ÐÞ¸ÄMD5Öµ³É¹¦¡£");
+        System.out.println("ï¿½Þ¸ï¿½MD5Öµï¿½É¹ï¿½ï¿½ï¿½");
         String command="copy /b \""+valid_file_path+original_file+"\"+\""+additional_file_name+"\" "+valid_file_path+target_file;
         System.out.println(command);
         executive("cmd",command);
-        System.out.println("ÐÞ¸ÄMD5Öµ³É¹¦¡£");
+        System.out.println("ï¿½Þ¸ï¿½MD5Öµï¿½É¹ï¿½ï¿½ï¿½");
         deleteFile(additional_file_name);
 //
 }
 
     /**
-     * É¾³ýÖ¸¶¨ÎÄ¼þ
+     * É¾ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½
      * @param file_path
      */
     public static void deleteFile(String file_path) throws Exception{
     File file=new File(file_path);
     if(checkFile(file_path)){
         file.delete();
-        System.out.println(file_path+"É¾³ý³É¹¦");
+        System.out.println(file_path+"É¾ï¿½ï¿½ï¿½É¹ï¿½");
     }
 }
 
     /**
-     *É¾³ýÖ¸¶¨ÎÄ¼þ¼ÐÄ¿Â¼
+     *É¾ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ä¿Â¼
      */
     public static boolean deleteFileDir(String file_dir) throws  Exception{
         File file=new File(file_dir);
         String command="RMDIR /S /Q "+file_dir;
         if(checkFileDir(file_dir)){
             executive("cmd",command);
-            System.out.println(file_dir+"É¾³ý³É¹¦");
+            System.out.println(file_dir+"É¾ï¿½ï¿½ï¿½É¹ï¿½");
             return true;
         }else{
-            System.out.println(file_dir+"²»´æÔÚ");
+            System.out.println(file_dir+"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             return false;
         }
     }
     /**
-     * ÖØÃüÃûÎÄ¼þ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
      * @param file_path
      * @param old_file_name
      * @param new_file_name
@@ -171,14 +173,14 @@ public static boolean checkFileDir(String file_dir) {
         File new_file=new File((file_path.endsWith("\\")?file_path:file_path+"\\")+new_file_name);
         if(old_file.exists()){
             old_file.renameTo(new_file);
-            System.out.println("ÃüÃû³É¹¦");
+            System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½");
         }else{
-            System.out.println("²»´æÔÚ´ËÎÄ¼þ");
+            System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ä¼ï¿½");
         }
     }
 
     /**
-     *Ð´ÈëÖ¸¶¨µÄÄÚÈÝ²¢ÒÔÖ¸¶¨µÄ±àÂë±£´æ
+     *Ð´ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ë±£ï¿½ï¿½
      * @param input_text
      * @param format_type
      * @param file_path

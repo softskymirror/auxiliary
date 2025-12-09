@@ -35,33 +35,33 @@ public class ParamResearcher extends JFrame{
 
     String [] crypttypes={"Base64","MD5"};
     String [] gziptypes={"GZIP"};
-    String [] mixDirection={"¿ªÍ·","½áÎ²"};
+    String [] mixDirection={"",""};
     ViewAdapter va=new ViewAdapter();
     ByteUtils bU=new ByteUtils();
-    JLabel title=new JLabel();//×Ö½Ú½âÎöÆ÷
-    JLabel introduce=new JLabel();//Ñ¡Ôñ»ñÈ¡Êý¾ÝÔ´µÄÀàÐÍ£º
-    JLabel cryptInfos=new JLabel();//¼Ó½âÃÜÐÅÏ¢±íÊö
-    JLabel cryptTool=new JLabel();//¼ÓÃÜ½âÃÜÑ¡Ïî
-    JLabel zipTool=new JLabel();//½âÑ¹¼ÓÑ¹¹¤¾ßÑ¡Ïî
-    JLabel zipInfos=new JLabel();//¼Ó½âÑ¹ÐÅÏ¢±íÊö
-    JLabel editTool=new JLabel();//×Ö½ÚÐÞ¸ÄÑ¡Ïî
-    JLabel cutHexInfos=new JLabel();//½ØÈ¡×Ö½Ú±íÊö
-    JLabel inputHexInfos=new JLabel();//²åÈë×Ö½Ú±íÊö
-    JLabel mixHexInfos=new JLabel();//ºÏ³É×Ö½Ú±íÊö
-    JLabel copyright=new JLabel();//°æÈ¨±íÊö
-    JLabel fileTotalSize=new JLabel();//ÎÄ¼þ×Ü´óÐ¡
-    JLabel fileTypes=new JLabel();//ÎÄ¼þÀàÐÍ
+    JLabel title=new JLabel();//ï¿½Ö½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
+    JLabel introduce=new JLabel();//Ñ¡ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½
+    JLabel cryptInfos=new JLabel();//ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+    JLabel cryptTool=new JLabel();//ï¿½ï¿½ï¿½Ü½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
+    JLabel zipTool=new JLabel();//ï¿½ï¿½Ñ¹ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
+    JLabel zipInfos=new JLabel();//ï¿½Ó½ï¿½Ñ¹ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+    JLabel editTool=new JLabel();//ï¿½Ö½ï¿½ï¿½Þ¸ï¿½Ñ¡ï¿½ï¿½
+    JLabel cutHexInfos=new JLabel();//ï¿½ï¿½È¡ï¿½Ö½Ú±ï¿½ï¿½ï¿½
+    JLabel inputHexInfos=new JLabel();//ï¿½ï¿½ï¿½ï¿½ï¿½Ö½Ú±ï¿½ï¿½ï¿½
+    JLabel mixHexInfos=new JLabel();//ï¿½Ï³ï¿½ï¿½Ö½Ú±ï¿½ï¿½ï¿½
+    JLabel copyright=new JLabel();//ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½
+    JLabel fileTotalSize=new JLabel();//ï¿½Ä¼ï¿½ï¿½Ü´ï¿½Ð¡
+    JLabel fileTypes=new JLabel();//ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    JRadioButton jt1=new JRadioButton();//±¾µØÂ·¾¶
-    JRadioButton jt2=new JRadioButton();//ÍøÂçÂ·¾¶
-    JButton analysis=new JButton();//½âÎöÊý¾Ý°´Å¥
+    JRadioButton jt1=new JRadioButton();//ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+    JRadioButton jt2=new JRadioButton();//ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+    JButton analysis=new JButton();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½Å¥
     JFileChooser fileChooser=new JFileChooser();
-    JRadioButton Encrypt=new JRadioButton();//base64¼ÓÃÜ
-    JRadioButton Decrypt=new JRadioButton();//base64½âÃÜ
-    JRadioButton noCryptAction=new JRadioButton();//²»½øÐÐÈÎºÎ²Ù×÷
-    JRadioButton gzip=new JRadioButton();//GZIPÑ¹Ëõ
-    JRadioButton unGzip=new JRadioButton();//GZIP½âÑ¹
-    JRadioButton noGzipAction=new JRadioButton();//²»½øÐÐÈÎºÎ²Ù×÷
+    JRadioButton Encrypt=new JRadioButton();//base64ï¿½ï¿½ï¿½ï¿½
+    JRadioButton Decrypt=new JRadioButton();//base64ï¿½ï¿½ï¿½ï¿½
+    JRadioButton noCryptAction=new JRadioButton();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎºÎ²ï¿½ï¿½ï¿½
+    JRadioButton gzip=new JRadioButton();//GZIPÑ¹ï¿½ï¿½
+    JRadioButton unGzip=new JRadioButton();//GZIPï¿½ï¿½Ñ¹
+    JRadioButton noGzipAction=new JRadioButton();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎºÎ²ï¿½ï¿½ï¿½
     JRadioButton cutHex=new JRadioButton();
     JRadioButton inputHex=new JRadioButton();
     JRadioButton mixHex=new JRadioButton();
@@ -69,51 +69,51 @@ public class ParamResearcher extends JFrame{
     JComboBox <String> crypttyesbox = new JComboBox<String>(crypttypes);
     JComboBox <String> gziptypesbox = new JComboBox<String>(gziptypes);
     JComboBox <String> mixLocationsbox = new JComboBox<String>(mixDirection);
-    JButton run=new JButton();//Ö´ÐÐ×Ö½Ú²Ù×÷
-    JButton export=new JButton();//µ¼³öÎÄ¼þ²Ù×÷
-    JButton turnArround=new JButton();//ÉÏÒÆÎ»
-    JTextArea hexAddress=new JTextArea();//Ê®Áù½øÖÆÄÚ´æµØÖ·
-    JTextArea afterhexAddress=new JTextArea();//Ê®Áù½øÖÆÄÚ´æµØÖ·
-    JTextArea hexArea=new JTextArea();//Ê®Áù½øÖÆ
-    JTextArea strArea=new JTextArea();//UTF-8ÎÄ×Ö±àÂë
-    JTextArea afterhexArea=new JTextArea();//¾­´¦ÀíºóÊ®Áù½øÖÆ
-    JTextArea afterstrArea=new JTextArea();//¾­´¦ÀíºóµÄUTF-8ÎÄ×Ö±àÂë
-    JTextArea cryptpwd=new JTextArea();//¼ÓÃÜÃÜÔ¿
-    JTextArea cutStart=new JTextArea();//²Ã¼ôÆðÊ¼Êý
-    JTextArea cutLength=new JTextArea();//²Ã¼ô¸ß¶È
-    JTextArea inputStart=new JTextArea();//²åÈëÆðÊ¼Êý
-    JTextArea inputhexarea=new JTextArea();//²åÈë×Ö½ÚÇøÓò
-    JTextArea mixhexarea=new JTextArea();//»ìºÏ×Ö½ÚÇøÓò
-    ButtonGroup chooseGroup=new ButtonGroup();//µ¥°´Å¥×é
-    ButtonGroup cryptGroup=new ButtonGroup();//¼Ó½âÃÜµ¥Ñ¡Ïî
-    ButtonGroup codeGroup=new ButtonGroup();//¼Ó½âÑ¹µ¥Ñ¡Ïî
-    ButtonGroup editGroup=new ButtonGroup();//×Ö½ÚÐÞ¸ÄÑ¡Ïî
-    JPanel byteViewPanel=new JPanel();//byteÊÓÍ¼Ãæ°å
-    JPanel afterByteViewPanel=new JPanel();//¾­´¦ÀíºóbyteÊÓÍ¼Ãæ°å
+    JButton run=new JButton();//Ö´ï¿½ï¿½ï¿½Ö½Ú²ï¿½ï¿½ï¿½
+    JButton export=new JButton();//ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    JButton turnArround=new JButton();//ï¿½ï¿½ï¿½ï¿½Î»
+    JTextArea hexAddress=new JTextArea();//Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ö·
+    JTextArea afterhexAddress=new JTextArea();//Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½Ö·
+    JTextArea hexArea=new JTextArea();//Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    JTextArea strArea=new JTextArea();//UTF-8ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½
+    JTextArea afterhexArea=new JTextArea();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    JTextArea afterstrArea=new JTextArea();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UTF-8ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½
+    JTextArea cryptpwd=new JTextArea();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿
+    JTextArea cutStart=new JTextArea();//ï¿½Ã¼ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+    JTextArea cutLength=new JTextArea();//ï¿½Ã¼ï¿½ï¿½ß¶ï¿½
+    JTextArea inputStart=new JTextArea();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+    JTextArea inputhexarea=new JTextArea();//ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+    JTextArea mixhexarea=new JTextArea();//ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+    ButtonGroup chooseGroup=new ButtonGroup();//ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½
+    ButtonGroup cryptGroup=new ButtonGroup();//ï¿½Ó½ï¿½ï¿½Üµï¿½Ñ¡ï¿½ï¿½
+    ButtonGroup codeGroup=new ButtonGroup();//ï¿½Ó½ï¿½Ñ¹ï¿½ï¿½Ñ¡ï¿½ï¿½
+    ButtonGroup editGroup=new ButtonGroup();//ï¿½Ö½ï¿½ï¿½Þ¸ï¿½Ñ¡ï¿½ï¿½
+    JPanel byteViewPanel=new JPanel();//byteï¿½ï¿½Í¼ï¿½ï¿½ï¿½
+    JPanel afterByteViewPanel=new JPanel();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½byteï¿½ï¿½Í¼ï¿½ï¿½ï¿½
     JPanel layoutPanel=new JPanel();
-    JTextArea sourcepath=new JTextArea();//ÊäÈëÂ·¾¶µØÖ·
+    JTextArea sourcepath=new JTextArea();//ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½Ö·
     JScrollPane pathpanel=new JScrollPane(sourcepath);
     JLabel state=new JLabel(); 
     
     JScrollPane byteViewScrollPane=new JScrollPane(byteViewPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    //byteÊÓÍ¼Ãæ°å´¦ÀíÇ°
+    //byteï¿½ï¿½Í¼ï¿½ï¿½å´¦ï¿½ï¿½Ç°
     JScrollPane afterbyteViewScrollPane=new JScrollPane(afterByteViewPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     public ParamResearcher(){
-    va.generateJLabel(title, 450,20,150,25, "×Ö½Ú½âÎöÆ÷", 20,false);
-    va.generateJLabel(introduce, 20,80,250,20, "Ñ¡Ôñ»ñÈ¡Êý¾ÝÔ´µÄ·½Ê½", 15,false);
+    va.generateJLabel(title, 450,20,150,25, "ï¿½Ö½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½", 20,false);
+    va.generateJLabel(introduce, 20,80,250,20, "Ñ¡ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä·ï¿½Ê½", 15,false);
     va.generateJLabel(state, 20,780, 1920,50,"testing area",12,false);
-    va.generateJLabel(cryptTool, 680, 200, 150, 25, "¼Ó½âÃÜÑ¡Ïî", 15, false);
-    va.generateJLabel(zipTool, 680, 300, 150, 25, "½âÑ¹Ñ¡Ïî", 15, false);
-    va.generateJLabel(cryptInfos, 680,240, 300,20,"¼ÓÃÜÀàÐÍ                             ¼ÓÃÜÃÜÔ¿", 15, false);
-    va.generateJLabel(zipInfos, 680,340, 300,20,"Ñ¹ËõÀàÐÍ", 15, false);
-    va.generateJLabel(editTool, 680, 380, 450, 25, "×Ö½Ú±à¼­Ñ¡Ïî", 15, false);
-    va.generateJLabel(cutHexInfos, 780, 420, 450, 25, "ÆðÊ¼Êý                           ½ØÈ¡³¤¶È", 15, false);
-    va.generateJLabel(inputHexInfos, 780, 450, 450, 25, "ÆðÊ¼Êý                          ²åÈëÆ¬¶Î", 15, false);
-    va.generateJLabel(mixHexInfos, 780, 480, 450, 25, "ºÏ²¢Î»ÖÃ                                ºÏ²¢Æ¬¶Î", 15, false);
+    va.generateJLabel(cryptTool, 680, 200, 150, 25, "ï¿½Ó½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½", 15, false);
+    va.generateJLabel(zipTool, 680, 300, 150, 25, "ï¿½ï¿½Ñ¹Ñ¡ï¿½ï¿½", 15, false);
+    va.generateJLabel(cryptInfos, 680,240, 300,20,"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                             ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿", 15, false);
+    va.generateJLabel(zipInfos, 680,340, 300,20,"Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", 15, false);
+    va.generateJLabel(editTool, 680, 380, 450, 25, "ï¿½Ö½Ú±à¼­Ñ¡ï¿½ï¿½", 15, false);
+    va.generateJLabel(cutHexInfos, 780, 420, 450, 25, "ï¿½ï¿½Ê¼ï¿½ï¿½                           ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½", 15, false);
+    va.generateJLabel(inputHexInfos, 780, 450, 450, 25, "ï¿½ï¿½Ê¼ï¿½ï¿½                          ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½ï¿½", 15, false);
+    va.generateJLabel(mixHexInfos, 780, 480, 450, 25, "ï¿½Ï²ï¿½Î»ï¿½ï¿½                                ï¿½Ï²ï¿½Æ¬ï¿½ï¿½", 15, false);
     va.generateJLabel(copyright, 1100, 760, 550, 25,"Copyright ?2022 HuangRuiNan, All Rights Reserved.",12,false);
     va.generateJLabel(fileTotalSize,1100, 760, 550, 25, "filesize",12,false);
     va.generateJLabel(fileTypes,1100, 760, 550, 25, "fileTypes",12,false);
-    va.generateJRadioButton(jt1, 200, 80, 150, 25, "±¾µØÂ·¾¶", 15, true,new ActionListener(){
+    va.generateJRadioButton(jt1, 200, 80, 150, 25, "ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½", 15, true,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -121,7 +121,7 @@ public class ParamResearcher extends JFrame{
             onlineModel=false;
         }
     });
-    va.generateJRadioButton(jt2, 400, 80, 150, 25, "ÍøÂçÂ·¾¶", 15,false,new ActionListener(){
+    va.generateJRadioButton(jt2, 400, 80, 150, 25, "ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½", 15,false,new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -130,7 +130,7 @@ public class ParamResearcher extends JFrame{
             onlineModel=true;
         }    
     });
-    va.generateJRadioButton(Encrypt, 1100, 240, 100, 25, "¼ÓÃÜ", 15, false,new ActionListener(){
+    va.generateJRadioButton(Encrypt, 1100, 240, 100, 25, "ï¿½ï¿½ï¿½ï¿½", 15, false,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -142,7 +142,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }
     });
-    va.generateJRadioButton(Decrypt, 1200, 240, 100, 25, "½âÃÜ", 15,false,new ActionListener(){
+    va.generateJRadioButton(Decrypt, 1200, 240, 100, 25, "ï¿½ï¿½ï¿½ï¿½", 15,false,new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -155,7 +155,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(gzip, 950, 340, 100, 25, "Ñ¹Ëõ", 15,false,new ActionListener(){
+    va.generateJRadioButton(gzip, 950, 340, 100, 25, "Ñ¹ï¿½ï¿½", 15,false,new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -167,7 +167,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(unGzip, 1050, 340, 100, 25, "½âÑ¹", 15,false,new ActionListener(){
+    va.generateJRadioButton(unGzip, 1050, 340, 100, 25, "ï¿½ï¿½Ñ¹", 15,false,new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -179,7 +179,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(noCryptAction, 1300, 240, 200, 25, "ÎÞÐè¼Ó/½âÃÜ", 15,true,new ActionListener(){
+    va.generateJRadioButton(noCryptAction, 1300, 240, 200, 25, "ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½", 15,true,new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -192,7 +192,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(noGzipAction, 1150, 340, 200, 25, "ÎÞÐèÑ¹Ëõ/½âÑ¹", 15,true,new ActionListener(){
+    va.generateJRadioButton(noGzipAction, 1150, 340, 200, 25, "ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½/ï¿½ï¿½Ñ¹", 15,true,new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -204,7 +204,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(noEditAction, 680, 510, 200, 25, "ÎÞÐè×Ö½Ú±à¼­", 15,true,new ActionListener(){
+    va.generateJRadioButton(noEditAction, 680, 510, 200, 25, "ï¿½ï¿½ï¿½ï¿½ï¿½Ö½Ú±à¼­", 15,true,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -220,7 +220,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(cutHex, 680,420,100,25, "²Ã¼ô", 15,false,new ActionListener(){
+    va.generateJRadioButton(cutHex, 680,420,100,25, "ï¿½Ã¼ï¿½", 15,false,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -236,7 +236,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(inputHex, 680,450, 100, 25, "²åÈë",15, false,new ActionListener(){
+    va.generateJRadioButton(inputHex, 680,450, 100, 25, "ï¿½ï¿½ï¿½ï¿½",15, false,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -252,7 +252,7 @@ public class ParamResearcher extends JFrame{
             run.setEnabled(true);
         }    
     });
-    va.generateJRadioButton(mixHex, 680,480, 100, 25,"ºÏ²¢", 15,  false,new ActionListener(){
+    va.generateJRadioButton(mixHex, 680,480, 100, 25,"ï¿½Ï²ï¿½", 15,  false,new ActionListener(){
 
         @Override
         
@@ -271,7 +271,7 @@ public class ParamResearcher extends JFrame{
         }    
     });
    
-    va.generateJRadioButton(jt1, 200, 80, 150, 25, "±¾µØÂ·¾¶", 15, false, new ActionListener(){
+    va.generateJRadioButton(jt1, 200, 80, 150, 25, "ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½", 15, false, new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -280,7 +280,7 @@ public class ParamResearcher extends JFrame{
         }
         
     });
-    va.generateJRadioButton(jt2, 400, 80, 150, 25, "ÍøÂçÂ·¾¶", 15, false,new ActionListener(){
+    va.generateJRadioButton(jt2, 400, 80, 150, 25, "ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½", 15, false,new ActionListener(){
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -314,7 +314,7 @@ public class ParamResearcher extends JFrame{
         public void itemStateChanged(ItemEvent e) {
             // TODO Auto-generated method stub
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                System.out.println("Ñ¡ÖÐ: " + crypttyesbox.getSelectedIndex() + " = " + crypttyesbox.getSelectedItem());
+                System.out.println("Ñ¡ï¿½ï¿½: " + crypttyesbox.getSelectedIndex() + " = " + crypttyesbox.getSelectedItem());
             }
         
         }
@@ -325,7 +325,7 @@ public class ParamResearcher extends JFrame{
         public void itemStateChanged(ItemEvent e) {
             // TODO Auto-generated method stub
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                System.out.println("Ñ¡ÖÐ: " + crypttyesbox.getSelectedIndex() + " = " + crypttyesbox.getSelectedItem());
+                System.out.println("Ñ¡ï¿½ï¿½: " + crypttyesbox.getSelectedIndex() + " = " + crypttyesbox.getSelectedItem());
             }
         
         }
@@ -336,13 +336,13 @@ public class ParamResearcher extends JFrame{
     va.generateButtonGroup(editGroup, new JRadioButton[]{cutHex,inputHex,mixHex,noEditAction});
     va.generateJTextArea(sourcepath, 0, 0, 300, 25, "sourcepath", 12,true, true,null,null);
     va.generateJScrollpanes(pathpanel, 20, 120, 300, 25, "pathpanel");
-    va.generateJButton(analysis, 400, 120, 100, 25,"½âÎöÊý¾Ý", 12,true,new ActionListener(){
+    va.generateJButton(analysis, 400, 120, 100, 25,"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", 12,true,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
             String path=sourcepath.getText();
             if(path.equals("")){
-            JOptionPane.showMessageDialog(null, "ÎÄ¼þµØÖ·²»ÄÜÎª¿Õ");
+            JOptionPane.showMessageDialog(null, "ï¿½Ä¼ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½");
             }else{   
           
             System.out.println(path);          
@@ -355,17 +355,17 @@ public class ParamResearcher extends JFrame{
                 Dimension dim=new Dimension(byteViewPanel.getPreferredSize().width+byteViewScrollPane.getVerticalScrollBar().getSize().width,pref_height);
                 byteViewPanel.setPreferredSize(dim);
                 hexAddress.setText(bU.getHexColumns(totalcount));
-                state.setText("½âÎö³É¹¦,×ÜÎÄ¼þ´óÐ¡"+filesbytes.length+"byte");
+                state.setText("ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½,ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ð¡"+filesbytes.length+"byte");
 
             }catch(Exception ec){
-                JOptionPane.showMessageDialog(null, "Î´ÕÒµ½Ö¸¶¨ÎÄ¼þ");
+                JOptionPane.showMessageDialog(null, "Î´ï¿½Òµï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½");
                  ec.printStackTrace();
             }    
         }
       
         }
     });
-    va.generateJButton(run, 1240,570,120,50,"Ö´ÐÐ²Ù×÷",12,false,new ActionListener(){
+    va.generateJButton(run, 1240,570,120,50,"Ö´ï¿½Ð²ï¿½ï¿½ï¿½",12,false,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -373,23 +373,23 @@ public class ParamResearcher extends JFrame{
                 StartEdit();
             } catch (Exception e1) {
                 // TODO Auto-generated catch block
-                JOptionPane.showMessageDialog(null,"ÖÐÍ¾·¢Éú´íÎó");
+                JOptionPane.showMessageDialog(null,"ï¿½ï¿½Í¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 e1.printStackTrace();
             }
         }
     });
-    va.generateJButton(export, 1060,570,120,50,"µ¼³öÎÄ¼þ",12,true,new ActionListener(){
+    va.generateJButton(export, 1060,570,120,50,"ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½",12,true,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
           if(bU.bytes!=null)
             getOutputPath();
             else
-            JOptionPane.showMessageDialog(null,"½á¹ûÓòÎª¿Õ£¬ÎÞ·¨µ¼³öÎÄ¼þ");
+            JOptionPane.showMessageDialog(null,"ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Õ£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½");
         
         }
     });
-    va.generateJButton(turnArround, 600,400,50,150,"ÉÏ"+"\r"+"ÒÆ"+"\r"+"Î»",15,true,new ActionListener(){
+    va.generateJButton(turnArround, 600,400,50,150,"ï¿½ï¿½"+"\r"+"ï¿½ï¿½"+"\r"+"Î»",15,true,new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -506,7 +506,7 @@ public void moveToHexArea(){
     afterstrArea.setText("");
     afterByteViewPanel.setPreferredSize(new Dimension(0,0));
 }else{
-    JOptionPane.showMessageDialog(null, "½á¹ûÓòÎª¿Õ");
+    JOptionPane.showMessageDialog(null, "ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½");
 }
 }
 
@@ -514,13 +514,13 @@ public void moveToHexArea(){
 private boolean getOutputPath() {
     boolean pathFlg = true;
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    fileChooser.setDialogTitle("Ñ¡ÔñÎÄ¼þµ¼³öµÄÂ·¾¶");
+    fileChooser.setDialogTitle("Ñ¡ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½");
     int ret = fileChooser.showOpenDialog(null);
     if (ret == JFileChooser.APPROVE_OPTION) {
         String outFile = fileChooser.getSelectedFile().getAbsolutePath();
        bU.bytesToFile(bU.bytes, outFile);
 
-       // outFile¿ÉÑ¡ÔñµÄÂ·¾¶¡£ 
+       // outFileï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ 
     } else {
         pathFlg = false;
     }
@@ -530,7 +530,7 @@ private boolean getOutputPath() {
 public void StartEdit() throws Exception{
   byte [] bUBytes=bU.getHexBytes(hexArea.getText());
 if(Decrypt.isSelected()){
-    state.setText("ÕýÔÚ½âÃÜ×Ö½Ú....");
+    state.setText("ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½....");
     if(crypttyesbox.getSelectedIndex()==0){
  bUBytes=bU.base64Decoder(new String(bUBytes));
 }else if(crypttyesbox.getItemCount()==1){
@@ -538,40 +538,40 @@ if(Decrypt.isSelected()){
 }
 }
 if(Encrypt.isSelected()){
-    state.setText("ÕýÔÚ¼ÓÃÜ×Ö½Ú....");
+    state.setText("ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½Ö½ï¿½....");
     if(crypttyesbox.getSelectedIndex()==0){
     bUBytes=bU.base64Decoder(hexArea.getText().toString());
     }else if(crypttyesbox.getItemCount()==1){
 }
 }
 if(gzip.isSelected()){
-    state.setText("ÕýÔÚÑ¹Ëõ×Ö½Ú....");
+    state.setText("ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½Ö½ï¿½....");
 if(gziptypesbox.getSelectedIndex()==0){
     bUBytes=bU.gZip(new String(bUBytes,"UTF-8")).getBytes();
 }
 }
 if(unGzip.isSelected()){
-    state.setText("ÕýÔÚ½âÑ¹×Ö½Ú....");
+    state.setText("ï¿½ï¿½ï¿½Ú½ï¿½Ñ¹ï¿½Ö½ï¿½....");
     if(gziptypesbox.getSelectedIndex()==0){
         bUBytes=bU.unGZip(new String(bUBytes,"UTF-8")).getBytes();
     }
 }
 if(cutHex.isSelected()){
-    state.setText("ÕýÔÚ½ØÈ¡×Ö½Ú....");
+    state.setText("ï¿½ï¿½ï¿½Ú½ï¿½È¡ï¿½Ö½ï¿½....");
     bUBytes=bU.subByte(bUBytes,Integer.parseInt(cutStart.getText().toString()),Integer.parseInt(cutLength.getText().toString()));
    
 }
 
 if(inputHex.isSelected()){
-    state.setText("ÕýÔÚ²åÈë×Ö½Ú....");
+    state.setText("ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ö½ï¿½....");
     
 }
 
     if(mixHex.isSelected()){
-        state.setText("ÕýÔÚ»ìºÏ×Ö½Ú....");
-        if(mixLocationsbox.getSelectedItem().equals("¿ªÍ·")){
+        state.setText("ï¿½ï¿½ï¿½Ú»ï¿½ï¿½ï¿½Ö½ï¿½....");
+        if(mixLocationsbox.getSelectedItem().equals("ï¿½ï¿½Í·")){
             bUBytes=bU.byteMerger(mixhexarea.getText().toString().getBytes(),bU.getHexBytes(hexArea.getText().toString()));
-        }else if(mixLocationsbox.getSelectedItem().equals("½áÎ²")){
+        }else if(mixLocationsbox.getSelectedItem().equals("ï¿½ï¿½Î²")){
             bUBytes=bU.byteMerger(bU.getHexBytes(hexArea.getText().toString()),mixhexarea.getText().toString().getBytes());
         }
     }

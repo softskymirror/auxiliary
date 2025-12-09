@@ -24,19 +24,19 @@ public class MainUI extends JFrame{
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         root_tree=new JTreeDir().JTreeDir(this);
         setBounds(screenSize.width/12,screenSize.height/12,(int)(screenSize.width*(2D/3D)),(int)(screenSize.height*(2D/3D)));
-        v.generateJFrame(this,screenSize.width/12,screenSize.height/12,(int)(screenSize.width*(2D/3D)),(int)(screenSize.height*(2D/3D)),"¿ª·¢¸¨Öú¹¤¾ß°ü",new JComponent[]{root_tree=new JTreeDir().JTreeDir(this),(helper_jpanel=new JPanel[]{io_jpanel,net_jpanel,apk_jpanel=new APkJpanel(this)})[PAGE_ID]},EXIT_ON_CLOSE);	//ÉèÖÃ´°Ìå´óÐ¡
+        v.generateJFrame(this,screenSize.width/12,screenSize.height/12,(int)(screenSize.width*(2D/3D)),(int)(screenSize.height*(2D/3D)),"ß°",new JComponent[]{root_tree=new JTreeDir().JTreeDir(this),(helper_jpanel=new JPanel[]{io_jpanel,net_jpanel,apk_jpanel=new APkJpanel(this)})[PAGE_ID]},EXIT_ON_CLOSE);	//Ã´Ð¡
         getContentPane().setBounds(screenSize.width/12,screenSize.height/12,(int)(screenSize.width*(2D/3D)),(int)(screenSize.height*(2D/3D)));
         root_tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Èç¹ûÔÚÕâ¿ÃÊ÷ÉÏµã»÷ÁË2´Î,¼´Ë«»÷
+                // Ïµ2,Ë«
                 if (e.getSource() == root_tree && e.getClickCount() == 2) {
-                    // °´ÕÕÊó±êµã»÷µÄ×ø±êµã»ñÈ¡Â·¾¶
+                    // È¡Â·
                     TreePath selPath = root_tree.getPathForLocation(e.getX(), e.getY());
-                    if (selPath != null)// ½÷·À¿ÕÖ¸ÕëÒì³£!Ë«»÷¿Õ°×´¦ÊÇ»áÕâÑù
+                    if (selPath != null)// Ö¸ì³£!Ë«Õ°×´Ç»
                     {
-                        System.out.println(selPath);// Êä³öÂ·¾¶¿´Ò»ÏÂ
-                        // »ñÈ¡Õâ¸öÂ·¾¶ÉÏµÄ×îºóÒ»¸ö×é¼þ,Ò²¾ÍÊÇË«»÷µÄµØ·½
+                        System.out.println(selPath);// Â·Ò»
+                        // È¡Â·ÏµÒ»,Ò²Ë«ÄµØ·
                         DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
                         if(node.toString().equals("Apktool Helper")){
                             helper_jpanel[PAGE_ID].setVisible(false);
@@ -54,7 +54,7 @@ public class MainUI extends JFrame{
             }
         });
            setResizable(false);
-         setVisible(true);			//¿ÉÊÓ»¯´°Ìå
+         setVisible(true);			//Ó»
     }
 
 

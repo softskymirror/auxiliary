@@ -13,7 +13,7 @@ public class APkJpanel extends JPanel {
     JLabel source, dex4j, jdgui,output;
     JTextArea sourcepath, dex4jtool, jdguitool,outputpath;
     JButton findapksource, finddex4jtool, findjdguitoolsource,findoutputpath;
-    JButton decompilation;//½âÎöÊý¾Ý°´Å¥
+    JButton decompilation;//
     private int signal;
     String file_dir_path=null;
     JProgressBar jprogressbar=null;
@@ -21,7 +21,7 @@ public class APkJpanel extends JPanel {
     ViewAdapter v = new ViewAdapter();
     JFileChooser fc=new JFileChooser();
     /**
-     * ·â×°APKÒ³Ãæ²Ù×÷Ãæ°å
+     * ï¿½ï¿½×°APKÒ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param frame
      */
     public APkJpanel(JFrame frame) {
@@ -29,7 +29,7 @@ public class APkJpanel extends JPanel {
         dex4j_tool_source = new JPanel();
         jdgui_tool_source = new JPanel();
         output_path=new JPanel();
-        String[] jpanel_input_text = new String[]{"apk°üÂ·¾¶", "dex4j¹¤¾ß°²×°Â·¾¶", "jd-gui°²×°Â·¾¶","apkÍÑ¿Ç»º´æÊä³öÎÄ¼þ¼Ð"};
+        String[] jpanel_input_text = new String[]{"apkï¿½ï¿½Â·ï¿½ï¿½", "dex4jï¿½ï¿½ï¿½ß°ï¿½×°Â·ï¿½ï¿½", "jd-guiï¿½ï¿½×°Â·ï¿½ï¿½","apkï¿½Ñ¿Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½"};
         source= new JLabel();
         dex4j= new JLabel();
         jdgui= new JLabel();
@@ -42,20 +42,20 @@ public class APkJpanel extends JPanel {
         finddex4jtool = new JButton();
         findjdguitoolsource = new JButton();
         findoutputpath=new JButton();
-        decompilation= new JButton("·´±àÒë");
+        decompilation= new JButton("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         jprogressbar=new JProgressBar();
         JLabel[] jlabels = new JLabel[]{source, dex4j, jdgui,output};
         JTextArea[] jtextareas = new JTextArea[]{sourcepath, dex4jtool,jdguitool,outputpath};
         JButton[] jbuttons = new JButton[]{findapksource,finddex4jtool,findjdguitoolsource,findoutputpath};
         int i = 0;
         for(JLabel label:jlabels){
-            //×Ópanel²¼¾Ö×é¼þÎ»ÖÃ×ø±êÏà¶ÔÓÚ¸¸panel²¼¾Ö¶øÑÔ
+            //ï¿½ï¿½panelï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½panelï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½
             v.generateJLabel(label,frame.getWidth()/18,0, frame.getWidth()/8, frame.getHeight()/25, jpanel_input_text[i], 12, false);
             i++;
         }
         i=0;
         for(JTextArea jtextarea:jtextareas){
-            v.generateJTextArea(jtextarea,frame.getWidth()/4,0, frame.getWidth()/4, frame.getHeight()/25, "ÇëÊäÈë°²×°ÎÄ¼þ¼ÐÄ¿¾¶»òÕßÎÄ¼þÂ·¾¶", 12, false, true, null, null);
+            v.generateJTextArea(jtextarea,frame.getWidth()/4,0, frame.getWidth()/4, frame.getHeight()/25, "ï¿½ï¿½ï¿½ï¿½ï¿½ë°²×°ï¿½Ä¼ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½", 12, false, true, null, null);
             i++;
         }
          i=0;
@@ -73,18 +73,18 @@ public class APkJpanel extends JPanel {
         v.generateJPanel(dex4j_tool_source, frame.getWidth()/3, (frame.getHeight()/25)*3, frame.getWidth(), frame.getHeight()/15, "dex4j_tool_source", new JComponent[]{dex4j, dex4jtool, finddex4jtool}, null);
         v.generateJPanel(jdgui_tool_source, frame.getWidth()/3, (frame.getHeight()/25)*5, frame.getWidth(), frame.getHeight()/15, "jdgui_tool_source", new JComponent[]{jdgui, jdguitool, findjdguitoolsource}, null);
         v.generateJPanel(output_path, frame.getWidth()/3, (frame.getHeight()/25)*7,frame.getWidth(), frame.getHeight()/15, "output_path_source", new JComponent[]{output,outputpath, findoutputpath}, null);
-        v.generateJButton(decompilation, frame.getWidth() / 3, (frame.getHeight() / 25) * 9, frame.getWidth() / 3, frame.getHeight() / 15, "·´±àÒë", 12, true, new ActionListener() {
+        v.generateJButton(decompilation, frame.getWidth() / 3, (frame.getHeight() / 25) * 9, frame.getWidth() / 3, frame.getHeight() / 15, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", 12, true, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jprogressbar.setIndeterminate(true);
-                jprogressbar.setString("ÕýÔÚ·´±àÒëÖÐ.....");
+                jprogressbar.setString("ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.....");
             }
         });
-        v.generateJProgressBar(jprogressbar,(int)(frame.getWidth()*0.9D/3D),(frame.getHeight()/25)*11,(int)(frame.getWidth()*(2D/3D)), frame.getHeight()/15,"×¼±¸¾ÍÐ÷ÖÐ",true,false);
+        v.generateJProgressBar(jprogressbar,(int)(frame.getWidth()*0.9D/3D),(frame.getHeight()/25)*11,(int)(frame.getWidth()*(2D/3D)), frame.getHeight()/15,"×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",true,false);
         v.generateJPanel(this,this.getWidth()/5,0, frame.getWidth() , frame.getHeight(), "tool_source", new JComponent[]{apk_source, dex4j_tool_source, jdgui_tool_source,output_path, decompilation,jprogressbar}, null);
     }
     /**
-     * Ñ¡ÔñÎÄ¼þ
+     * Ñ¡ï¿½ï¿½ï¿½Ä¼ï¿½
      */
     public void chooseFile(JTextArea output_component) {
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

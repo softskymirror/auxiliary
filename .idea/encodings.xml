@@ -5,12 +5,12 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/commontool/JsonUtils.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/commontool/mathCalu.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/searchtool/ByteUtils.java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/searchtool/CmdUtils.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/searchtool/FileUtils.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/searchtool/ParamResearcher.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/searchtool/ParamUtils.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/searchtool/XMLBuilder.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/searchtool/main.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/system/CmdUtils.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/toolui/APkJpanel.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/toolui/JTreeDir.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/toolui/MainUI.java" charset="UTF-8" />

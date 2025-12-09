@@ -9,6 +9,7 @@
    1. 字符解析类
    2. 文件操作类
    3. 数据库操作类
+   4. Win命令行系统工具类
 2. 服务器准备使用python替代java
    1. 一开始选择Java的原因是因为ddmlib，既然去adb了，那就不想使用java了
    2. 编译方法很多，导致很多朋友不知道如何编译java
@@ -42,7 +43,7 @@ English Version: translate this
 
 # 如何使用
 
-AndroidControl是一个使用java语言编写的服务器，它是连接电脑和安卓设备的一个桥梁。
+JavaTool Auxiliary是一个使用java语言编写的工具包，用于打包成外部jar或者用于本地测试与项目研究。
 
 你可以选择自己编译运行，也可以使用编译好的版本。
 
@@ -71,6 +72,9 @@ AndroidControl是一个使用java语言编写的服务器，它是连接电脑�
 ```shell
 java -jar AndroidControl.jar 
 ```
+**Step3:**
+
+检查资源文件夹jar工具包是否完整，确认项目编译过程中不会报错；注意，请使用Application模式构建应用
 
 **Step3:**
 

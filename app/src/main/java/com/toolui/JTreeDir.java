@@ -12,25 +12,25 @@ public class JTreeDir extends JTree {
 public static int CURRENT_PAGE_ID=2;
 ViewAdapter v=new ViewAdapter();
     public JTree JTreeDir(JFrame jFrame){
-    // DefaultMutableTreeNodeÊÇÊ÷½á¹¹ÖĞÍ¨ÓÃµÄ½áµã
-    DefaultMutableTreeNode tool_helper_classify = getTreeNode("¹¤¾ß°ü¸¨Öú");
-    DefaultMutableTreeNode io_helper_root=getTreeNode("IO Helper");//Ò²¿ÉÒÔ´´½¨ÁËÔÙadd
-    DefaultMutableTreeNode net_help_root=getTreeNode("Net Helper");//Ò²¿ÉÒÔ´´½¨ÁËÔÙadd
-    DefaultMutableTreeNode apktool_help_root=getTreeNode("Apktool Helper");//Ò²¿ÉÒÔ´´½¨ÁËÔÙadd
+    // DefaultMutableTreeNode
+    DefaultMutableTreeNode tool_helper_classify = getTreeNode("");
+    DefaultMutableTreeNode io_helper_root=getTreeNode("IO Helper");//
+    DefaultMutableTreeNode net_help_root=getTreeNode("Net Helper");//
+    DefaultMutableTreeNode apktool_help_root=getTreeNode("Apktool Helper");//
     DefaultMutableTreeNode []tool_helper_tree_nodes=new DefaultMutableTreeNode[]{io_helper_root,net_help_root,apktool_help_root};
     for(DefaultMutableTreeNode node:tool_helper_tree_nodes)
     tool_helper_classify.add(node);
-    // ÓÃÊµÏÖÁËTreeModel½Ó¿ÚµÄDefaultTreeModelÀàÀ´Ö¸¶¨Ê÷µÄ¸ù½áµã
+    // ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½TreeModelï¿½Ó¿Úµï¿½DefaultTreeModelï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½
     DefaultTreeModel dtm = new DefaultTreeModel(tool_helper_classify);
-    // ÓÃÕâ¸ö¸ù½áµã¾Í¿ÉÒÔÈ¥½¨Á¢JTreeÊ÷ÁË
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½JTreeï¿½ï¿½ï¿½ï¿½
     JTree jt = new JTree(dtm);
-    // ÎªÕâ¿ÃÊ÷×¢²á¼àÌıÆ÷,ÓÃÄäÃûµÄÊÊÅäÆ÷¸²Ğ´Êó±êµã»÷·½·¨
+    // Îªï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     v.generateJTree(jt, 0,0,jFrame.getSize().width/4,jFrame.getSize().height,null,null);
     return jt;
     }
 
     public DefaultMutableTreeNode getTreeNode(String node){
         return new DefaultMutableTreeNode(node);
-        // ÓÃ½áµãÖ®¼äaddµÄ·½·¨À´ÊµÏÖÇ¶Ì×(½¨Á¢Ê÷½áµãµÄ¸¸×Ó¹ØÏµ)
+        // ï¿½Ã½ï¿½ï¿½Ö®ï¿½ï¿½addï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Ç¶ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Ó¹ï¿½Ïµ)
     }
 }

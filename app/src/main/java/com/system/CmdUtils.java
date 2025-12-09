@@ -1,52 +1,33 @@
 
-package com.searchtool;
+package com.system;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.sound.midi.MidiDeviceReceiver;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.MidiDevice.Info;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Mixer;
-import javax.sql.rowset.spi.SyncFactory;
-import javax.swing.JFrame;
-
-import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.security.Key;
 
 
 public class CmdUtils {
   static String inStr;
   static ArrayList <String> runList=new ArrayList<String>();
 public static void executive(String commandTool,String stmt) throws IOException, InterruptedException {
-        Runtime runtime = Runtime.getRuntime(); //»ñÈ¡RuntimeÊµÀý
-        //Ö´ÐÐÃüÁî
+        Runtime runtime = Runtime.getRuntime(); //
+        //Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         try {
           String []command={commandTool,"/c",stmt};
           Process process = runtime.exec(command);
-          // ±ê×¼ÊäÈëÁ÷£¨±ØÐëÐ´ÔÚ waitFor Ö®Ç°£©
+          // ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ waitFor Ö®Ç°ï¿½ï¿½
           inStr = consumeInputStream(process.getInputStream());
-          // ±ê×¼´íÎóÁ÷£¨±ØÐëÐ´ÔÚ waitFor Ö®Ç°£©
+          // ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ waitFor Ö®Ç°ï¿½ï¿½
           String errStr = consumeInputStream(process.getErrorStream());
           //new ProcessClearStream(process.getInputStream(), "INFO").start();
           //new ProcessClearStream(process.getErrorStream(), "ERROR").start();
           int proc = process.waitFor();
-          //InputStream errorStream = process.getErrorStream(); //ÈôÓÐ´íÎóÐÅÏ¢ÔòÊä³ö
+          //InputStream errorStream = process.getErrorStream(); //ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½
           if (proc == 0) {
-            System.out.println("Ö´ÐÐ³É¹¦"+"\r\n"+inStr);
+            System.out.println("Ö´"+"\r\n"+inStr);
           } else {
-            System.out.println("Ö´ÐÐÊ§°Ü" + errStr);
+            System.out.println("" + errStr);
           }
         } catch (IOException | InterruptedException e) {
          e.printStackTrace();
@@ -95,7 +76,7 @@ public static void executive(String commandTool,String stmt) throws IOException,
     }
 
     public static void convert(String [] args){
-        /*File files=new File("E:\\ÊÓÆµ\\");
+        /*File files=new File("E:\\ï¿½ï¿½Æµ\\");
         File []listfiles=files.listFiles();
         for(File file:listfiles){
         String videopath=file.getPath();*/

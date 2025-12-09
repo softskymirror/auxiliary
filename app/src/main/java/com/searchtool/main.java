@@ -1,15 +1,13 @@
 package com.searchtool;
 
-import java.lang.reflect.Parameter;
 import java.util.*;
 
 import com.commontool.*;
 
 import net.sf.json.JSONObject;
 
-import static com.searchtool.CmdUtils.executive;
-import static com.searchtool.CmdUtils.getMsg;
-import static com.searchtool.ParamUtils.testStreamString;
+import static com.system.CmdUtils.executive;
+import static com.system.CmdUtils.getMsg;
 
 public class main{
 ArrayList<String> enemy_list=new ArrayList<>();
@@ -23,7 +21,7 @@ public static String str_regexp="\\";
 //        }
 //        System.out.println(0+"mytime");
 //        try {
-//            FileUtils.writeFormattedFile("GitHub²Ö¿âµØÖ·:https://github.com/softskymirror/", "UTF-8", "D:\\DOC\\Ñ§Ï°×ÊÁÏ\\¸öÈË×ÊÁÏ\\¼ÆËã»ú´úÂë\\¿ª·¢ÔËÓª\\GitHub\\github×¨ÓÃ²Ö¿â.txt");
+//            FileUtils.writeFormattedFile("GitHub:https://github.com/softskymirror/", "UTF-8", "D:\\DOC\\Ñ§Ï°ï¿½ï¿½ï¿½ï¿½\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óª\\GitHub\\github×¨ï¿½Ã²Ö¿ï¿½.txt");
 //        }catch (Exception e){
 //            e.printStackTrace();
 //        }
@@ -80,7 +78,7 @@ public static String str_regexp="\\";
                 "     function autoWakeUp(){\n" +
                 "     var info = navigator.userAgent;\n" +
                 "         var isPhone = /mobile/i.test(info);\n" +
-                "         //Èç¹û°üº¬¡°Mobile¡±£¨ÊÇÊÖ»úÉè±¸£©Ôò·µ»Øtrue\n" +
+                "         //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Mobileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ò·µ»ï¿½true\n" +
                 "          if(!isPhone){\n" +
                 "              alert('pc')\n" +
                 "              window.open('tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=845321437')\n" +
@@ -93,15 +91,15 @@ public static String str_regexp="\\";
                 "    <title>Document</title>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                "<!-- app¶Ë -->\n" +
-                "<a href=\"javascript:void(0)\" onclick=\"autoWakeUp()\" >µã»÷ÁË½âÏêÇé</a>\n" +
+                "<!-- appï¿½ï¿½ -->\n" +
+                "<a href=\"javascript:void(0)\" onclick=\"autoWakeUp()\" >ï¿½ï¿½ï¿½ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½</a>\n" +
                 "&nbsp;&nbsp;&nbsp;&nbsp;\n" +
                 "</a>\n" +
                 "</body>\n" +
                 "</html>";
         try {
             FileUtils.writeFormattedFile(text, "UTF-8", "C:\\Users\\HPHRNSTUDY\\Desktop\\test.html");
-            System.out.println("ÎÄ¼þ´´½¨³É¹¦£¡");
+            System.out.println("ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -128,7 +126,7 @@ public static String str_regexp="\\";
 //        }
         String file_path="D:\\mp3\\For family\\Count.mp3";
 // try {
-//  FileUtils.writeFormattedFile("GitHub²Ö¿âµØÖ·:https://github.com/softskymirror/", "UTF-8", file_path);
+//  FileUtils.writeFormattedFile("GitHubï¿½Ö¿ï¿½ï¿½Ö·:https://github.com/softskymirror/", "UTF-8", file_path);
 // }catch (Exception e){
 //    e.printStackTrace();
 //  }
@@ -144,7 +142,7 @@ public static String str_regexp="\\";
 
 
     /**
-     * ÊÓÆµ×ª¸ñÊ½
+     * ï¿½ï¿½Æµ×ªï¿½ï¿½Ê½
      * @param videopath
      * @param audiopath
      * @param outputpath
@@ -161,7 +159,7 @@ public static String str_regexp="\\";
 
 
     /**
-     *´ÓÖ¸¶¨Ä¿Â¼²éÕÒÆä×ÓÄ¿Â¼»ñÈ¡Ö¸¶¨ÎÄ¼þµÄÍêÕû(¾ø¶Ô)Â·¾¶
+     *ï¿½ï¿½Ö¸ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½È¡Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)Â·ï¿½ï¿½
      * @return
      */
   public static String getSelectedFileFromDirectory(String dir_path,String file_name) throws Exception{
@@ -172,7 +170,7 @@ public static String str_regexp="\\";
   }
 
     /**
-     * »ñÈ¡Ö¸¶¨ÎÄ¼þ¼ÐµÄËùÓÐ×ÓÎÄ¼þ¼Ð
+     * ï¿½ï¿½È¡Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
      * @param file_dir
      * @return
      */
@@ -186,7 +184,7 @@ public static String str_regexp="\\";
       return lists;
   }
     /**
-     * ÅúÁ¿¸´ÖÆÖ¸¶¨ÎÄ¼þ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½
      * @param dir_path
      * @param files
      * @param output_path
@@ -197,31 +195,31 @@ public static String str_regexp="\\";
           String command_copy="copy "+  getSelectedFileFromDirectory(dir_path,file)+" "+output_path+"\\"+file;
 //        System.out.println(command_copy);
           executive("cmd", command_copy);
-          System.out.println(file+":"+"ÒÑ¸´ÖÆµ½"+ output_path);
+          System.out.println(file+":"+"ï¿½Ñ¸ï¿½ï¿½Æµï¿½"+ output_path);
       }
 }
 
     /**
-     * ×Ô¶¯Ö´ÐÐSQL Command½Å±¾
+     * ï¿½Ô¶ï¿½Ö´ï¿½ï¿½SQL Commandï¿½Å±ï¿½
      * @param file_path
      */
     public static void executeSQLCommand(String file_path) throws Exception{
         String command = " start mysql -u root -p >" + file_path;
         System.out.println(command);
         executive("cmd", command);
-        System.out.println("ÒÑÖ´ÐÐSQL½Å±¾");
+        System.out.println("ï¿½ï¿½Ö´ï¿½ï¿½SQLï¿½Å±ï¿½");
 }
 
     /**
-     * ÅúÁ¿¼ì²éÎÄ¼þÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      */
     public static void checkFiles(String file_path,List<String> lists) {
         for (String list:lists) {
             try {
                 if(FileUtils.checkFile((file_path.endsWith("\\") ? file_path : file_path + "\\") +list)){
-                    System.out.println("ÎÄ¼þ´æÔÚ");
+                    System.out.println("ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½");
                 }else{
-                    System.out.println("ÎÄ¼þ²»´æÔÚ");
+                    System.out.println("ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -235,20 +233,20 @@ public static String str_regexp="\\";
 //        }
 
     /**
-     * ¼ì²éÎÄ¼þ¼ÐÄ¿Â¼ÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ä¿Â¼ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      * @param file_dirs
      */
     public static void checkFileDirs(ArrayList<String> file_dirs){
        for(String file_dir:file_dirs){
            if(FileUtils.checkFileDir((file_dir.endsWith("\\") ? file_dir : file_dir + "\\"))) {
-               System.out.println(file_dir+"ÎÄ¼þ¼Ð´æÔÚ");
+               System.out.println(file_dir+"ï¿½Ä¼ï¿½ï¿½Ð´ï¿½ï¿½ï¿½");
            }else{
-               System.out.println(file_dir+"ÎÄ¼þ¼Ð²»´æÔÚ");
+               System.out.println(file_dir+"ï¿½Ä¼ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½");
            }
        }
 }
     /**
-     * ÅúÁ¿É¾³ýÎÄ¼þ
+     * ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä¼ï¿½
      */
     public static void deleteFiles(String file_path,List<String> lists) throws Exception{
         for(String list:lists) {
@@ -266,15 +264,15 @@ public static String str_regexp="\\";
     }
 
     /**
-     * ÅúÁ¿É¾³ýÎÄ¼þ¼Ð
+     * ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
      */
     public static void deleteFileDirs(ArrayList<String> file_path) throws Exception{
         for(String path:file_path) {
-            //½«ºó²¿·Ö"\\"×¢ÊÍÎªÕýÊ½Ä¿Â¼
+            //ï¿½ï¿½ï¿½ó²¿·ï¿½"\\"×¢ï¿½ï¿½Îªï¿½ï¿½Ê½Ä¿Â¼
             path=(path.endsWith("\\")?path.substring(0,path.length() -str_regexp.length()): path);
             if(FileUtils.checkFileDir(path)){
                 FileUtils.deleteFileDir(path);
-                System.out.println("É¾³ý"+path+"ÎÄ¼þ¼Ð³É¹¦");
+                System.out.println("É¾ï¿½ï¿½"+path+"ï¿½Ä¼ï¿½ï¿½Ð³É¹ï¿½");
             }
         }
     }
@@ -285,7 +283,7 @@ public static String str_regexp="\\";
 //        }
 
     /**
-     * ÅúÁ¿ÖØÃüÃûÎÄ¼þÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      */
     public static void renameFiles(String file_path,List<HashMap<String,String>>lists){
         for(HashMap<String,String> map:lists) {
@@ -303,18 +301,18 @@ public static String str_regexp="\\";
     }
 
     /**
-     * drawableÎÄ¼þ¼ÐÎÄ¼þÃûºÏ·¨»¯ÃüÃû
+     * drawableï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public void renameImgName() {
-    String sourcePath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ÍÖÔ² 1 ¿½±´-FMAssistant";
-    String targetPath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ÍÖÔ² 1 ¿½±´-FMAssistant";
+    String sourcePath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ï¿½ï¿½Ô² 1 ï¿½ï¿½ï¿½ï¿½-FMAssistant";
+    String targetPath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ï¿½ï¿½Ô² 1 ï¿½ï¿½ï¿½ï¿½-FMAssistant";
     //System.out.println(sourcePath.endsWith("\\")?sourcePath:sourcePath+"\\");
-    FileUtils.checkImageDir("ÍÖÔ² 1 ¿½±´-FMAssistant_", "loaddingstate");
+    FileUtils.checkImageDir("ï¿½ï¿½Ô² 1 ï¿½ï¿½ï¿½ï¿½-FMAssistant_", "loaddingstate");
 }
 
 
     /**
-     * ÅúÁ¿´ò¿ªÖ¸¶¨Ä¿Â¼µÄÎÄ¼þä¯ÀÀÆ÷
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param
      */
     public static void openFiles(List<String> lists){
@@ -339,34 +337,34 @@ public static String str_regexp="\\";
 
 
     /**
-     * JsonÓëHashMapÊý¾ÝÀàÐÍÏà»¥×ª»»
+     * Jsonï¿½ï¿½HashMapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à»¥×ªï¿½ï¿½
      */
 public void testHashMap(){
     new ParamResearcher();
         JsonUtils jsonUtils=new JsonUtils();
         ArrayList<HashMap<String,Object>> map_list=new ArrayList<>();
         HashMap<String,Object> info=new HashMap<>();
-        info.put("³ðºÞ·¢ÉúµØ","½ÒÑôÖ°Òµ¼¼ÊõÑ§Ôº");
-        info.put("±»µÃ×ïÈË","»ÆÈñéª");
+        info.put("ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½ï¿½Ö°Òµï¿½ï¿½ï¿½ï¿½Ñ§Ôº");
+        info.put("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½ï¿½ï¿½");
         for(int i=0;i<3;i++){
             HashMap <String,Object> map=new HashMap<>();
             switch(i){
        case 0:
-        map.put("name", "ÀîÓÀº£");
-        map.put("BeRevenged_reason","ÎÞÔµÎÞ¹Ê¼ûÈË¾Í×·");
-        map.put("Revenge_way","Ã¿ÈÕ·´×·¼Ó³ðÊÓ");
+        map.put("name", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        map.put("BeRevenged_reason","ï¿½ï¿½Ôµï¿½Þ¹Ê¼ï¿½ï¿½Ë¾ï¿½×·");
+        map.put("Revenge_way","Ã¿ï¿½Õ·ï¿½×·ï¿½Ó³ï¿½ï¿½ï¿½");
         map_list.add(map);
         break;
         case 1:
-        map.put("name", "Ö£²©Î°");
-        map.put("BeRevenged_reason","Ç¿ÖÆ·´¸´²âºËËá¡¢´ò¿¨¡¢½ÓÖÖÒßÃç¼°ÐÅÏ¢µÇ¼Ç£¬Ó°ÏìÕý³£Ñ§Ï°Éú»î");
-        map.put("Revenge_way","²»½É½»Ñ§·Ñ¡¢²»²âºËËá¡¢¶Ï¾øÁªÏµ¡¢·¢¾«Éñ²¡²¢Í¬¹éÓÚ¾¡");
+        map.put("name", "Ö£ï¿½ï¿½Î°");
+        map.put("BeRevenged_reason","Ç¿ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¡¢ï¿½ò¿¨¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç¼°ï¿½ï¿½Ï¢ï¿½Ç¼Ç£ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ§Ï°ï¿½ï¿½ï¿½ï¿½");
+        map.put("Revenge_way","ï¿½ï¿½ï¿½É½ï¿½Ñ§ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¡¢ï¿½Ï¾ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ²¡²ï¿½Í¬ï¿½ï¿½ï¿½Ú¾ï¿½");
         map_list.add(map);
         break;
         case 2:
-        map.put("name", "ÖÓÈÙ±ê");
-        map.put("BeRevenged_reason","ÐÎÊ½Ö÷ÒåµÄ×ß¹·£¬Îóµ¼ËûÈË");
-        map.put("Revenge_way","²»ÇáÒ×ÏàÐÅ£¬µ±ÃæÖ¸ÔðÆä¹ý´í¡¢ÎªÉÏ¼¶ÒªÇó¸ÉÈÅÑ§Ï°Éú»î");
+        map.put("name", "ï¿½ï¿½ï¿½Ù±ï¿½");
+        map.put("BeRevenged_reason","ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        map.put("Revenge_way","ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ï¼ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ñ§Ï°ï¿½ï¿½ï¿½ï¿½");
         map_list.add(map);
         break;
     }
