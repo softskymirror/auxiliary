@@ -3,6 +3,7 @@ package life;
 
 
 public class Person{
+
 public void calmBMI(){
 
 
