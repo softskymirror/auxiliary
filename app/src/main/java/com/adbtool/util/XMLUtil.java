@@ -32,26 +32,26 @@ public static final int Group_Xml=2;
 
 
     /**
-     *×Ô¶¨Òå·â×°XMLÎÄ¼þ
+     *Ô¶×°XMLÄ¼
      * @param file
      */
     public static void generateXml(File file,int XML_Type,String root_element, XMLRange range) {
         try {
             Document doc=null;
             switch (XML_Type) {
-                case Device_Xml: doc = generateDevicesXml(root_element, range);// Éú³ÉXMLÎÄ¼þ
-                case Group_Xml: doc = generateGroupXml(root_element, range);// Éú³ÉXMLÎÄ¼þ
-                outputXml(doc, file);//½«ÎÄ¼þÊä³öµ½Ö¸¶¨µÄÂ·¾¶
+                case Device_Xml: doc = generateDevicesXml(root_element, range);// XMLÄ¼
+                case Group_Xml: doc = generateGroupXml(root_element, range);// XMLÄ¼
+                outputXml(doc, file);//Ä¼Ö¸Â·
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("³öÏÖÒì³£");
+            System.err.println("ì³£");
         }
     }
 
 
     /**
-     *½«XMLÊý¾Ý×ª»¯ÎªArrayList<DeviceInfo>¶ÔÏó
+     *XML×ªÎªArrayList<DeviceInfo>
      */
     public static ArrayList<DeviceInfo> executeDeviceInfoXML(File file,String root_element){
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -62,7 +62,7 @@ public static final int Group_Xml=2;
             NodeList node = document.getElementsByTagName(root_element);
             for(int i = 0; i < node.getLength(); i++){
                 String sn=null;int width=0;int height=0;String quanlity = null;
-                System.out.println("--------µÚ" + (i+1) + "¸öÉè±¸----------");
+                System.out.println("--------" + (i+1) + "è±¸----------");
                 Element ele = (Element)node.item(i);
                 DeviceInfo info;
                 NodeList childNodes= ele.getChildNodes();
@@ -89,7 +89,7 @@ public static final int Group_Xml=2;
     }
 
     /**
-     *½«XMLÊý¾Ý×ª»¯ÎªArrayList<APPInfo>¶ÔÏó
+     *XML×ªÎªArrayList<APPInfo>
      */
     public static ArrayList<DeviceInfo> executeAPPInfoXML(File file,String root_element){
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -100,7 +100,7 @@ public static final int Group_Xml=2;
             NodeList node = document.getElementsByTagName(root_element);
             for(int i = 0; i < node.getLength(); i++){
                 String sn=null;int width=0;int height=0;String quanlity = null;
-                System.out.println("--------µÚ" + (i+1) + "±¾Êé----------");
+                System.out.println("--------" + (i+1) + "----------");
                 Element ele = (Element)node.item(i);
                 DeviceInfo info;
                 NodeList childNodes= ele.getChildNodes();
@@ -127,7 +127,7 @@ public static final int Group_Xml=2;
     }
 
     /**
-              * ½«XMLÎÄ¼þÊä³öµ½Ö¸¶¨µÄÂ·¾¶
+              * XMLÄ¼Ö¸Â·
               * @param doc
               * @param file
               * @throws Exception
@@ -139,20 +139,20 @@ public static final int Group_Xml=2;
         Transformer transformer = tf.newTransformer();
         DOMSource source = new DOMSource(doc);
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");// ÉèÖÃÎÄµµµÄ»»ÐÐÓëËõ½ø
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");// ÄµÄ»
         pw = new PrintWriter(new FileOutputStream(file));
         if (pw.checkError()) {
            pw = new PrintWriter(new FileOutputStream(file));
         }
         StreamResult result = new StreamResult(pw);
         transformer.transform(source, result);
-        System.out.println("Éú³ÉXMLÎÄ¼þ³É¹¦!ÎÄ¼þÎ»ÖÃ:"+file.getPath());
+        System.out.println("XMLÄ¼É¹!Ä¼Î»:"+file.getPath());
         pw.flush();
 
     }
 
       /**
-        * Éú³ÉDevices XMLÎÄ¼þ
+        * Devices XMLÄ¼
         * @return
         */
     public static Document generateDevicesXml(String root_element,XMLRange range) {
@@ -168,7 +168,7 @@ public static final int Group_Xml=2;
             doc.appendChild(docroot);
             for (int i = 0; i <= range.getNodesArraySize(); i++) {
                 for (int j = 0; j <= range.getNodesSize(i); j++) {
-                    //°´¼¶±ð¹¹½¨½Úµã
+                    //ð¹¹½Úµ
                     if (i == 0)
                         docroot.appendChild(lowLevelNode = doc.createElement(range.getNode(i, j)));
                     else if (i == range.getNodesArraySize()) {
@@ -193,7 +193,7 @@ public static final int Group_Xml=2;
                     }
                 }
                 highLevelNode = lowLevelNode;
-                //Îª½Úµã·Ö±ðÉèÖÃÊôÐÔÄÚÈÝ
+                //ÎªÚµÖ±
                 for (int z = 0; z <= range.getAttributesArraySize(); z++) {
                     for (int v = 0; v <= range.getAttributesSize(z); v++) {
                         highLevelNode.setAttribute(range.getAttribute(z, v), range.getValue(z, v));
@@ -207,7 +207,7 @@ public static final int Group_Xml=2;
     }
 
     /**
-     * Éú³ÉDevices XMLÎÄ¼þ
+     * Devices XMLÄ¼
      * @return
      */
     public static Document generateGroupXml(String root_element,XMLRange range) {
@@ -223,7 +223,7 @@ public static final int Group_Xml=2;
             doc.appendChild(docroot);
             for (int i = 0; i <= range.getNodesArraySize(); i++) {
                 for (int j = 0; j <= range.getNodesSize(i); j++) {
-                    //°´¼¶±ð¹¹½¨½Úµã
+                    //ð¹¹½Úµ
                     if (i == 0)
                         docroot.appendChild(lowLevelNode = doc.createElement(range.getNode(i, j)));
                     else if (i == range.getNodesArraySize()) {
@@ -248,7 +248,7 @@ public static final int Group_Xml=2;
                     }
                 }
                 highLevelNode = lowLevelNode;
-                //Îª½Úµã·Ö±ðÉèÖÃÊôÐÔÄÚÈÝ
+                //ÎªÚµÖ±
                 for (int z = 0; z <= range.getAttributesArraySize(); z++) {
                     for (int v = 0; v <= range.getAttributesSize(z); v++) {
                         highLevelNode.setAttribute(range.getAttribute(z, v), range.getValue(z, v));

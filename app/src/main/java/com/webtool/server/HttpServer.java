@@ -56,7 +56,7 @@ public class HttpServer {
     }
     
     public void onRequest(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
-        String uri = request.uri();
+        String uri = request.getUri();
         if (uri.indexOf("?") != -1) {
             uri = uri.substring(0, uri.indexOf("?"));
         }
@@ -87,7 +87,7 @@ public class HttpServer {
     }
 
     public void doFileRequest(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
-        String location = request.uri().substring(1);
+        String location = request.getUri().substring(1);
         if (location.indexOf("?") != -1) {
             location = location.substring(0, location.indexOf("?"));
         }
@@ -105,55 +105,55 @@ public class HttpServer {
         try{
             RandomAccessFile raf = new RandomAccessFile(localFile, "r");
             ChunkedFile chunkedFile = new ChunkedFile(raf, 0, localFile.length(), 8192);
-            long fileSize = chunkedFile.length();
+            long fileSize = chunkedFile.getCurrentOffset();
 
-            response.headers().add(CONTENT_LENGTH, localFile.length());
-            
+            response.addHeader(CONTENT_LENGTH, localFile.length());
+
             MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
-            response.headers().add(CONTENT_TYPE, mimetypesFileTypeMap.getContentType(localFile.getPath()));
+            response.addHeader(CONTENT_TYPE, mimetypesFileTypeMap.getContentType(localFile.getPath()));
 
 
             writeResponse(ctx, request, response, chunkedFile);
-                    
+
         }catch (IOException e) {
             writeErrorHttpResponse(ctx, request, response, HttpResponseStatus.INTERNAL_SERVER_ERROR);
             return;
         }
     }
-    
+
     public HttpResponse doDefaultResponse(ChannelHandlerContext ctx,  HttpRequest request, byte[] data, String contentType) {
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        response.headers().add("Content-Type", contentType);
+        response.addHeader("Content-Type", contentType);
         response.content().writeBytes(data);
-        response.headers().add("Content-Length", data.length);
+        response.addHeader("Content-Length", data.length);
         return response;
     }
-    
+
     @HttpRouter(uri="/devices")
     public void devices(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
         String json = AdbUtils.devices2JSON();
-        response.headers().set(CONTENT_TYPE, "text/plain");
+        response.setHeader(CONTENT_TYPE, "text/plain");
         writeHttpResponseWithString(ctx, request, response, json);
     }
 
     @HttpRouter(uri="/shot")
     public void shot(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
-        String uri = request.uri();
+        String uri = request.getUri();
         String[] args = uri.split("/");
         if (args.length < 1 || args[1].length() == 0) {
             writeErrorHttpResponse(ctx, request, response, HttpResponseStatus.NOT_FOUND);
             return;
         }
-        
+
         String serialNumber = args[2];
         long startTime=System.currentTimeMillis();
         Minicap cap = new Minicap(serialNumber);
         byte[] data = cap.takeScreenShot();
         long endTime=System.currentTimeMillis();
         logger.info("ScreenShot used：" + (endTime - startTime) + "ms");
-        response.headers().set(CONTENT_TYPE, "image/jpeg");
+        response.setHeader(CONTENT_TYPE, "image/jpeg");
         HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(data));
-        response.headers().set(CONTENT_LENGTH, content.content().readableBytes());
+        response.setHeader(CONTENT_LENGTH, content.content().readableBytes());
         writeResponse(ctx, request, response, content);
     }
 
@@ -164,29 +164,29 @@ public class HttpServer {
      */
     public void writeHttpResponseWithString(ChannelHandlerContext ctx,  HttpRequest request, HttpResponse response, String dataString) {
         HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(dataString.getBytes()));
-        response.headers().set(CONTENT_LENGTH, content.content().readableBytes());
+        response.setHeader(CONTENT_LENGTH, content.content().readableBytes());
         ctx.write(response);
         ctx.write(content);
-        ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+        ctx.write(LastHttpContent.EMPTY_LAST_CONTENT);
     }
-    
+
     public void writeErrorHttpResponse(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response, HttpResponseStatus status) {
         response.setStatus(status);
-        response.headers().set(CONTENT_LENGTH, 0);
+        response.setHeader(CONTENT_LENGTH, 0);
         writeResponse(ctx, request, response);
     }
-    
+
     public void writeResponse(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response, Object... contents) {
 
         if (HttpUtil.isKeepAlive(request)) {
-            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+            response.setHeader(String.valueOf(HttpHeaderNames.CONNECTION), HttpHeaderValues.KEEP_ALIVE);
         }
 
         ctx.write(response);
         for (Object content : contents) {
             ctx.write(content);
         }
-        ChannelFuture future = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+        ChannelFuture future = ctx.write(LastHttpContent.EMPTY_LAST_CONTENT);
 
         if (!HttpUtil.isKeepAlive(request)) {
             future.addListener(ChannelFutureListener.CLOSE);

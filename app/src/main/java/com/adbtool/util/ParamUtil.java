@@ -4,26 +4,26 @@ import java.io.*;
 
 public class ParamUtil {
     /**
-     * Ê®Áù½øÖÆ×ªÎªÊ®½øÖÆ(int)
+     *
      */
     public static int getHexInt(String hex){
-        //ÅÐ¶Ïhexµ¥×Ö½Ú·û³¤¶È²»ÄÜÐ¡ÓÚ1
+        //ï¿½Ð¶ï¿½hexï¿½ï¿½ï¿½Ö½Ú·ï¿½ï¿½ï¿½ï¿½È²ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½1
         String new_hex=hex.length()<2?0+hex:hex;
-        //×ª»»ÎªÊ®Áù½øÖÆ¸ñÊ½
+        //×ªï¿½ï¿½ÎªÊ®ï¿½ï¿½ï¿½ï¿½ï¿½Æ¸ï¿½Ê½
         String s="0x"+new_hex;
         if(s.length()<4){
             s = 0 + s;
             System.out.println(s);
         }
-        //ÅÐ¶Ï×Ö·û´®ÊÇ·ñÎªÅ¼Êý»òÊÇÎªÆæÊý
+        //ï¿½Ð¶ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ÎªÅ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
 //        if(s.length()%2==0)
-//            System.out.println("×Ö·û´®ÎªÅ¼Êý");
+//            System.out.println("ï¿½Ö·ï¿½ï¿½ï¿½ÎªÅ¼ï¿½ï¿½");
 //        else {
-//            System.out.println("×Ö·û´®ÎªÆæÊý");
+//            System.out.println("ï¿½Ö·ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½");
 //            s="0x"+s;
 //        }
 //        if (s.length() < 4) {
-//            System.out.println("×Ö·û´®³¤¶ÈÐ¡ÓÚ4");
+//            System.out.println("ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½4");
 //            s = "0x" + s;
 //        }
         int i=Integer.decode(s);
@@ -31,7 +31,7 @@ public class ParamUtil {
     }
 
     /**
-     * Ê®½øÖÆ£¨int)×ªÎªÊ®Áù½øÖÆ
+     * Ê®ï¿½ï¿½ï¿½Æ£ï¿½int)×ªÎªÊ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public static String getIntHex(int integar){
       return Integer.toHexString(integar);
@@ -39,34 +39,34 @@ public class ParamUtil {
 
 
     /**
-     * »ñÈ¡×Ö½ÚÁ÷»»ÐÐºóµÄ×Ö·û´®
+     * ï¿½ï¿½È¡ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
      */
     public static void testStreamString() throws Exception{
         int n=0;
         String m=null;
-        BufferedReader reader =new BufferedReader(new InputStreamReader(System.in)) ;	// ½«×Ö½ÚÁ÷±äÎª×Ö·ûÁ÷// ÉùÃ÷¶ÔÏó
+        BufferedReader reader =new BufferedReader(new InputStreamReader(System.in)) ;	// ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ö·ï¿½ï¿½ï¿½// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         BufferedWriter writer=new BufferedWriter(new OutputStreamWriter(System.out));
-        System.out.print("ÇëÊäÈëÄÚÈÝ£º") ;
+        System.out.print("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½") ;
 //      Scanner scanner=new Scanner(in);
-        String str =null;	// ½ÓÊÕÊäÈëÄÚÈÝ
+        String str =null;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         int a = 65;
         char b = '2';
         String c = "this is a good time for me to invent,Don't you think it?";
 //        writer.write(a);
 //        writer.write("\n");
-//        writer.write(a + "\n");  // Ê¹ÓÃ + ºÅÆ´½Ó¸ö×Ö·û´® Ê¹²ÎÊýÕûÌåÎªÒ»¸ö×Ö·û´®
-//        writer.write(Integer.toString(a)); // Êä³öaµÄ×Ö·û´®ÐÎÊ½
+//        writer.write(a + "\n");  // Ê¹ï¿½ï¿½ + ï¿½ï¿½Æ´ï¿½Ó¸ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÒ»ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
+//        writer.write(Integer.toString(a)); // ï¿½ï¿½ï¿½aï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ê½
 //        writer.write("\n");
         writer.write(c);
         writer.write("\n");
         try{
-//            n = reader.read() ;	// ¶ÁÈ¡Ò»ÐÐÊý¾Ý
-            m = reader.readLine() ;	// ¶ÁÈ¡Ò»ÐÐÊý¾Ý
+//            n = reader.read() ;	// ï¿½ï¿½È¡Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            m = reader.readLine() ;	// ï¿½ï¿½È¡Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         }catch(IOException e){
-            e.printStackTrace() ;	// Êä³öÐÅÏ¢
+            e.printStackTrace() ;	// ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
         }
-//        System.out.println("ÊäÈëµÄÄÚÈÝÎª£º" +n) ;
-        System.out.println("ÊäÈëµÄÄÚÈÝÎª£º" +m) ;
+//        System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½" +n) ;
+        System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½" +m) ;
         writer.flush();
     }
 }

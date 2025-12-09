@@ -47,7 +47,7 @@ public class FileUtil {
     }
 
     /**
-     * ÅúÁ¿ÖØÃüÃûÎÄ¼þÃû
+     *
      * @param sourcePath
      * @param targetPath
      * @param oldfilenameformatstr
@@ -58,7 +58,7 @@ public class FileUtil {
         if(imageFileDir.exists()){
             File [] files=imageFileDir.listFiles();
             String [] divideStrings=null;
-//²éÕÒ·ûºÏÌõ¼þµÄÎÄ¼þÃû·Ö½â×Ö·ûÔªËØ
+//ï¿½ï¿½ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½Ö·ï¿½Ôªï¿½ï¿½
 //for(File filetest:files){
 //String [] divide_string_temp=filetest.getName().split(String.valueOf(0));
 //if(divide_string_temp.length==1){
@@ -79,7 +79,7 @@ public class FileUtil {
     }
 
     /**
-     * ÒÆ¶¯Ö¸¶¨ÎÄ¼þ
+     * ï¿½Æ¶ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½
      */
     public static void copyGenerator(String oldfilepath,String newfilepath){
         File file_path=new File(oldfilepath);
@@ -87,7 +87,7 @@ public class FileUtil {
     }
 
     /**
-     * ´òÓ¡ÎÄ¼þÏà¹ØÐÅÏ¢£¬²¢¼ì²éÎÄ¼þÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½Ó¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      * @param file
      * @throws Exception
      */
@@ -103,7 +103,7 @@ public class FileUtil {
 }
 
     /**
-     * ¼à²ìÎÄ¼þÊÇ·ñ¿É¶ÁÐ´
+     * ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½É¶ï¿½Ð´
      * @param file
      * @return
      */
@@ -118,7 +118,7 @@ public class FileUtil {
 }
 
     /**
-     * »ñÈ¡ÎÄ¼þMD5Öµ
+     * ï¿½ï¿½È¡ï¿½Ä¼ï¿½MD5Öµ
      * @param file
      * @throws Exception
      */
@@ -132,7 +132,7 @@ public class FileUtil {
 }
 
     /**
-     * »ñÈ¡ÎÄ¼þMD5Öµ
+     * ï¿½ï¿½È¡ï¿½Ä¼ï¿½MD5Öµ
      * @param file
      * @throws Exception
      */
@@ -144,7 +144,7 @@ public class FileUtil {
     }
 
     /**
-     * »ñÈ¡ÎÄ¼þ×îºóÐÞ¸ÄÊ±¼ä
+     * ï¿½ï¿½È¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½Ê±ï¿½ï¿½
      * @param file
      * @return
      */
@@ -152,13 +152,13 @@ public class FileUtil {
         if(file!=null) return file.lastModified(); else return -1;
     }
     /**
-     * ´òÓ¡ÎÄ¼þ¼ÐÏà¹ØÐÅÏ¢£¬²¢¼ì²éÎÄ¼þ¼ÐÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½Ó¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      * @param file
      * @throws Exception
      */
 public static File checkFileDir(File file) {
-    System.out.println("ÎÄ¼þ¼ÐÊÇ·ñ´æÔÚ" + file + ":" + file.exists());
-    //ÈôÎÄ¼þ´æÔÚÔò·µ»Øtrue,Èô²»´æÔÚÔò·µ»Øfalse
+    System.out.println("ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½" + file + ":" + file.exists());
+    //ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½true,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½false
     if (file.exists()) {
         if (file.isDirectory()) {
             return file;
@@ -170,7 +170,7 @@ public static File checkFileDir(File file) {
 }
 
     /**
-     *´ÓÖ¸¶¨Ä¿Â¼²éÕÒÆä×ÓÄ¿Â¼»ñÈ¡Ö¸¶¨ÎÄ¼þµÄÍêÕû(¾ø¶Ô)Â·¾¶
+     *ï¿½ï¿½Ö¸ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½È¡Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½)Â·ï¿½ï¿½
      * @return
      */
     public static List<File> getSelectedFileFromDirectory(String gen_dir_path,String file_name) throws Exception{
@@ -187,7 +187,7 @@ public static File checkFileDir(File file) {
 
 
     /**
-     * ÐÞ¸ÄÎÄ¼þMD5ÊýÖµ
+     * ï¿½Þ¸ï¿½ï¿½Ä¼ï¿½MD5ï¿½ï¿½Öµ
      * @param file_path
      * @param original_file
      * @param target_file
@@ -198,28 +198,28 @@ public static File checkFileDir(File file) {
         String input_text="hello";
         String additional_file_name=valid_file_path+"a.temp";
         writeFormattedFile(input_text.getBytes(),"UTF-8",additional_file_name);
-        System.out.println("ÐÞ¸ÄMD5Öµ³É¹¦¡£");
+        System.out.println("ï¿½Þ¸ï¿½MD5Öµï¿½É¹ï¿½ï¿½ï¿½");
         String command="copy /b \""+valid_file_path+original_file+"\"+\""+additional_file_name+"\" "+valid_file_path+target_file;
         System.out.println(command);
         Cmd.executive(command);
-        System.out.println("ÐÞ¸ÄMD5Öµ³É¹¦¡£");
+        System.out.println("ï¿½Þ¸ï¿½MD5Öµï¿½É¹ï¿½ï¿½ï¿½");
         deleteFile(new File(additional_file_name));
 //
 }
 
     /**
-     * É¾³ýÖ¸¶¨ÎÄ¼þ
+     * É¾ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½
      * @param file
      */
     public static void deleteFile(File file) throws Exception{
     if(file!=null){
         file.delete();
-        System.out.println(file.getName()+"É¾³ý³É¹¦");
+        System.out.println(file.getName()+"É¾ï¿½ï¿½ï¿½É¹ï¿½");
     }
 }
 
     /**
-     *É¾³ýÖ¸¶¨ÎÄ¼þ¼ÐÄ¿Â¼
+     *É¾ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ä¿Â¼
      */
     public static boolean deleteFileDir(File file) throws  Exception{
         String command="RMDIR /S /Q "+file.getPath();
@@ -233,7 +233,7 @@ public static File checkFileDir(File file) {
 
 
     /**
-     *Ð´ÈëÖ¸¶¨µÄÄÚÈÝ²¢ÒÔÖ¸¶¨µÄ±àÂë±£´æ
+     *Ð´ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ë±£ï¿½ï¿½
      * @param input_text
      * @param format_type
      * @param file_path
@@ -254,7 +254,7 @@ public static File checkFileDir(File file) {
 //        }
 //        System.out.println(0+"mytime");
 //        try {
-//            FileUtils.writeFormattedFile("GitHub²Ö¿âµØÖ·:https://github.com/softskymirror/", "UTF-8", "D:\\DOC\\Ñ§Ï°×ÊÁÏ\\¸öÈË×ÊÁÏ\\¼ÆËã»ú´úÂë\\¿ª·¢ÔËÓª\\GitHub\\github×¨ÓÃ²Ö¿â.txt");
+//            FileUtils.writeFormattedFile("GitHubï¿½Ö¿ï¿½ï¿½Ö·:https://github.com/softskymirror/", "UTF-8", "D:\\DOC\\Ñ§Ï°ï¿½ï¿½ï¿½ï¿½\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óª\\GitHub\\github×¨ï¿½Ã²Ö¿ï¿½.txt");
 //        }catch (Exception e){
 //            e.printStackTrace();
 //        }
@@ -326,7 +326,7 @@ public static File checkFileDir(File file) {
 //        }
         String file_path="D:\\mp3\\For family\\Count.mp3";
 // try {
-//  FileUtils.writeFormattedFile("GitHub²Ö¿âµØÖ·:https://github.com/softskymirror/", "UTF-8", file_path);
+//  FileUtils.writeFormattedFile("GitHubï¿½Ö¿ï¿½ï¿½Ö·:https://github.com/softskymirror/", "UTF-8", file_path);
 // }catch (Exception e){
 //    e.printStackTrace();
 //  }
@@ -342,7 +342,7 @@ public static File checkFileDir(File file) {
 
 
     /**
-     * ÊÓÆµ×ª¸ñÊ½
+     * ï¿½ï¿½Æµ×ªï¿½ï¿½Ê½
      * @param videopath
      * @param audiopath
      * @param outputpath
@@ -362,7 +362,7 @@ public static File checkFileDir(File file) {
 
 
     /**
-     * »ñÈ¡Ö¸¶¨ÎÄ¼þ¼ÐµÄËùÓÐ×ÓÎÄ¼þ¼Ð
+     * ï¿½ï¿½È¡Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
      * @param file_dir
      * @return
      */
@@ -376,7 +376,7 @@ public static File checkFileDir(File file) {
         return lists;
     }
     /**
-     * ÅúÁ¿¸´ÖÆÖ¸¶¨ÎÄ¼þ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ä¼ï¿½
      * @param output_path
      * @throws Exception
      */
@@ -386,25 +386,25 @@ public static File checkFileDir(File file) {
             String command_copy="copy "+file.getPath()+" "+output_path+"\\"+file.getPath();
 //        System.out.println(command_copy);
             Cmd.executive( command_copy);
-            System.out.println(file+":"+"ÒÑ¸´ÖÆµ½"+ output_path);
+            System.out.println(file+":"+"ï¿½Ñ¸ï¿½ï¿½Æµï¿½"+ output_path);
         }
     }
 
     /**
-     * ×Ô¶¯Ö´ÐÐSQL Command½Å±¾
+     * ï¿½Ô¶ï¿½Ö´ï¿½ï¿½SQL Commandï¿½Å±ï¿½
      * @param file_path
      */
     public static void executeSQLCommand(String file_path) throws Exception{
         String command = " start mysql -u root -p >" + file_path;
         System.out.println(command);
         Cmd.executive( command);
-        System.out.println("ÒÑÖ´ÐÐSQL½Å±¾");
+        System.out.println("ï¿½ï¿½Ö´ï¿½ï¿½SQLï¿½Å±ï¿½");
     }
 
 
 
     /**
-     * ÅúÁ¿¼ì²éÎÄ¼þÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      */
     public static boolean checkFiles(String file_path,List<String> lists) throws Exception{
         for (String list : lists) {
@@ -420,21 +420,21 @@ public static File checkFileDir(File file) {
 //        }
 
     /**
-     * ¼ì²éÎÄ¼þ¼ÐÄ¿Â¼ÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ä¿Â¼ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      * @param file_dirs
      */
     public static void checkFileDirs(ArrayList<String> file_dirs){
         for(String file_dir:file_dirs){
             File dir=checkFileDir(new File(file_dir.endsWith("\\") ?file_dir : file_dir + "\\"));
             if(dir!=null) {
-                System.out.println(file_dir+"ÎÄ¼þ¼Ð´æÔÚ");
+                System.out.println(file_dir+"ï¿½Ä¼ï¿½ï¿½Ð´ï¿½ï¿½ï¿½");
             }else{
-                System.out.println(file_dir+"ÎÄ¼þ¼Ð²»´æÔÚ");
+                System.out.println(file_dir+"ï¿½Ä¼ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½");
             }
         }
     }
     /**
-     * ÅúÁ¿É¾³ýÎÄ¼þ
+     * ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä¼ï¿½
      */
     public static void deleteFiles(List<File> file_lists) throws Exception{
         for(File file:file_lists) {
@@ -448,11 +448,11 @@ public static File checkFileDir(File file) {
     }
 
     /**
-     * ÅúÁ¿É¾³ýÎÄ¼þ¼Ð
+     * ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
      */
     public static void deleteFileDirs(ArrayList<File> files) throws Exception{
         for(File file:files) {
-            //½«ºó²¿·Ö"\\"×¢ÊÍÎªÕýÊ½Ä¿Â¼
+            //ï¿½ï¿½ï¿½ó²¿·ï¿½"\\"×¢ï¿½ï¿½Îªï¿½ï¿½Ê½Ä¿Â¼
 //            path=(path.endsWith("\\")?path.substring(0,path.length() -str_regexp.length()): path);
 //                FileUtils.deleteFileDir(path);
             }
@@ -463,7 +463,7 @@ public static File checkFileDir(File file) {
 //            e.printStackTrace();
 //        }
     /**
-     * ÖØÃüÃûÎÄ¼þ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
      * @param old_file
      * @param new_file_name
      */
@@ -477,7 +477,7 @@ public static File checkFileDir(File file) {
         }
     }
     /**
-     * ÅúÁ¿ÖØÃüÃûÎÄ¼þÊÇ·ñ´æÔÚ
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
      */
     public static void renameFiles(List<File> old_files,List<String>new_files_name){
         for(int i=0;i<old_files.size();i++) {
@@ -495,18 +495,18 @@ public static File checkFileDir(File file) {
     }
 
     /**
-     * drawableÎÄ¼þ¼ÐÎÄ¼þÃûºÏ·¨»¯ÃüÃû
+     * drawableï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     public void renameImgName() {
-        String sourcePath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ÍÖÔ² 1 ¿½±´-FMAssistant";
-        String targetPath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ÍÖÔ² 1 ¿½±´-FMAssistant";
+        String sourcePath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ï¿½ï¿½Ô² 1 ï¿½ï¿½ï¿½ï¿½-FMAssistant";
+        String targetPath = "C:\\Users\\HPHRNSTUDY\\AndroidStudioProjects\\FamilyManager\\app\\src\\main\\res\\drawable\\loading\\ï¿½ï¿½Ô² 1 ï¿½ï¿½ï¿½ï¿½-FMAssistant";
         //System.out.println(sourcePath.endsWith("\\")?sourcePath:sourcePath+"\\");
-        FileUtil.checkImageDir("ÍÖÔ² 1 ¿½±´-FMAssistant_", "loaddingstate");
+        FileUtil.checkImageDir("ï¿½ï¿½Ô² 1 ï¿½ï¿½ï¿½ï¿½-FMAssistant_", "loaddingstate");
     }
 
 
     /**
-     * ÅúÁ¿´ò¿ªÖ¸¶¨Ä¿Â¼µÄÎÄ¼þä¯ÀÀÆ÷
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param
      */
     public static void openFiles(List<File> files){
@@ -532,33 +532,33 @@ public static File checkFileDir(File file) {
 
 
     /**
-     * JsonÓëHashMapÊý¾ÝÀàÐÍÏà»¥×ª»»
+     * Jsonï¿½ï¿½HashMapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à»¥×ªï¿½ï¿½
      */
     public void testHashMap(){
         JsonUtil jsonUtil =new JsonUtil();
         ArrayList<HashMap<String,Object>> map_list=new ArrayList<>();
         HashMap<String,Object> info=new HashMap<>();
-        info.put("³ðºÞ·¢ÉúµØ","½ÒÑôÖ°Òµ¼¼ÊõÑ§Ôº");
-        info.put("±»µÃ×ïÈË","»ÆÈñéª");
+        info.put("ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½ï¿½Ö°Òµï¿½ï¿½ï¿½ï¿½Ñ§Ôº");
+        info.put("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½","ï¿½ï¿½ï¿½ï¿½ï¿½");
         for(int i=0;i<3;i++){
             HashMap <String,Object> map=new HashMap<>();
             switch(i){
                 case 0:
-                    map.put("name", "ÀîÓÀº£");
-                    map.put("BeRevenged_reason","ÎÞÔµÎÞ¹Ê¼ûÈË¾Í×·");
-                    map.put("Revenge_way","Ã¿ÈÕ·´×·¼Ó³ðÊÓ");
+                    map.put("name", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+                    map.put("BeRevenged_reason","ï¿½ï¿½Ôµï¿½Þ¹Ê¼ï¿½ï¿½Ë¾ï¿½×·");
+                    map.put("Revenge_way","Ã¿ï¿½Õ·ï¿½×·ï¿½Ó³ï¿½ï¿½ï¿½");
                     map_list.add(map);
                     break;
                 case 1:
-                    map.put("name", "Ö£²©Î°");
-                    map.put("BeRevenged_reason","Ç¿ÖÆ·´¸´²âºËËá¡¢´ò¿¨¡¢½ÓÖÖÒßÃç¼°ÐÅÏ¢µÇ¼Ç£¬Ó°ÏìÕý³£Ñ§Ï°Éú»î");
-                    map.put("Revenge_way","²»½É½»Ñ§·Ñ¡¢²»²âºËËá¡¢¶Ï¾øÁªÏµ¡¢·¢¾«Éñ²¡²¢Í¬¹éÓÚ¾¡");
+                    map.put("name", "Ö£ï¿½ï¿½Î°");
+                    map.put("BeRevenged_reason","Ç¿ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¡¢ï¿½ò¿¨¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç¼°ï¿½ï¿½Ï¢ï¿½Ç¼Ç£ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ§Ï°ï¿½ï¿½ï¿½ï¿½");
+                    map.put("Revenge_way","ï¿½ï¿½ï¿½É½ï¿½Ñ§ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¡¢ï¿½Ï¾ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ²¡²ï¿½Í¬ï¿½ï¿½ï¿½Ú¾ï¿½");
                     map_list.add(map);
                     break;
                 case 2:
-                    map.put("name", "ÖÓÈÙ±ê");
-                    map.put("BeRevenged_reason","ÐÎÊ½Ö÷ÒåµÄ×ß¹·£¬Îóµ¼ËûÈË");
-                    map.put("Revenge_way","²»ÇáÒ×ÏàÐÅ£¬µ±ÃæÖ¸ÔðÆä¹ý´í¡¢ÎªÉÏ¼¶ÒªÇó¸ÉÈÅÑ§Ï°Éú»î");
+                    map.put("name", "ï¿½ï¿½ï¿½Ù±ï¿½");
+                    map.put("BeRevenged_reason","ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+                    map.put("Revenge_way","ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ï¼ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ñ§Ï°ï¿½ï¿½ï¿½ï¿½");
                     map_list.add(map);
                     break;
             }
