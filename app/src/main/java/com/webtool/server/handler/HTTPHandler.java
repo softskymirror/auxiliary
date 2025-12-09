@@ -27,6 +27,7 @@
 package com.webtool.server.handler;
 
 import com.webtool.server.HttpServer;
+import io.netty.buffer.ChannelBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
@@ -47,8 +48,8 @@ public class HTTPHandler extends SimpleChannelInboundHandler<Object> {
         HttpRequest request = (HttpRequest) msg;
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
         boolean isKeepAlive = HttpUtil.isKeepAlive(request);
-        response.headers().add("Access-Control-Allow-Origin", "*");
-        response.headers().add("Server", "Yeetor");
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Server", "Yeetor");
         
         server.onRequest(ctx, request, response);
         
@@ -63,6 +64,21 @@ public class HTTPHandler extends SimpleChannelInboundHandler<Object> {
 //            ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
 //        }
 //        ctx.writeAndFlush(response);
+    }
+
+    @Override
+    public void inboundBufferUpdated(ChannelHandlerContext channelHandlerContext) throws Exception {
+
+    }
+
+    @Override
+    public ChannelBuf newInboundBuffer(ChannelHandlerContext channelHandlerContext) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void freeInboundBuffer(ChannelHandlerContext channelHandlerContext, ChannelBuf channelBuf) throws Exception {
+
     }
 }
  

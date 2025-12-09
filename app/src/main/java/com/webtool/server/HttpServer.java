@@ -26,9 +26,9 @@
 
 package com.webtool.server;
 
-import com.yeetor.minicap.Minicap;
-import com.yeetor.util.AdbUtils;
-import com.yeetor.util.Constant;
+import com.adbtool.minicap.Minicap;
+import com.adbtool.util.AdbUtils;
+import com.adbtool.util.Constant;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
