@@ -27,7 +27,7 @@
 package com.adbtool.adb;
 
 import com.android.ddmlib.IDevice;
-import com.google.common.base.Strings;
+import com.google.common.base.Objects;
 import com.adbtool.util.Cmd;
 import com.adbtool.util.Constant;
 import com.adbtool.util.FileUtil;
@@ -208,7 +208,7 @@ public class AdbDevice {
     
     public String getProperty(String name) {
         String s = findPropertyCahe(name);
-        if (Strings.isNullOrEmpty(s)) {
+        if (!Objects.deepToString(s).isEmpty()) {
             s = iDevice.getProperty(name);
         }
         return s;
