@@ -27,12 +27,12 @@
 package com.adbtool.minicap;
 
 import com.android.ddmlib.*;
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.adb.AdbForward;
-import com.yeetor.adb.AdbServer;
-import com.yeetor.util.Constant;
-import com.yeetor.util.Util;
-import org.apache.commons.lang3.StringUtils;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.adb.AdbForward;
+import com.adbtool.adb.AdbServer;
+import com.adbtool.util.Constant;
+import com.adbtool.util.Util;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import sun.misc.BASE64Decoder;
 
@@ -48,7 +48,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static com.yeetor.adb.AdbDevice.SCREEN_SIZE;
+import static com.adbtool.adb.AdbDevice.SCREEN_SIZE;
 
 /**
  * Created by harry on 2017/4/17.
