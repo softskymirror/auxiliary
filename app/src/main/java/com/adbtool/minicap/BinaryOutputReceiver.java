@@ -27,7 +27,7 @@
 package com.adbtool.minicap;
 
 import com.android.ddmlib.IShellOutputReceiver;
-import com.yeetor.util.Util;
+import com.adbtool.util.Util;
 
 import java.util.Arrays;
 
