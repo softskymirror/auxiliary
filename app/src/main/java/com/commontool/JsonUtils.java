@@ -24,15 +24,15 @@ public class JsonUtils {
                     Set<String> info = map.keySet();
                     switch (key) {
                         case OBJECT_DATA:
-                            for (Iterator<String> _info = info.iterator(); iterator.hasNext(); ) {
-                                Object inf = info.iterator();
+                            for (Iterator<String> _info = info.iterator(); _info.hasNext(); ) {
+                                Object inf = _info.next();
                                 jsonString.put(inf, map.get(inf));
                             }
                             break;
                         case CHA_SET_DATA:
                             JSONObject jsonObject = new JSONObject();
                             Object cha_key = new Object();
-                            for (Iterator<String> _info = info.iterator(); iterator.hasNext(); ) {
+                            for (Iterator<String> _info = info.iterator(); _info.hasNext(); ) {
                                 String set_cha = _info.next();
                                 if (set_cha.equals("key")) cha_key = map.get(set_cha);
                                 else jsonObject.put(set_cha, map.get(set_cha));
