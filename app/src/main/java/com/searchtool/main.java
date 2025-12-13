@@ -370,13 +370,13 @@ public void testHashMap(){
     }
     }
 
-    JSONObject jsonObject=JsonUtils.generateJson(info,"enemy",map_list);
-    HashMap <String,Object> map=JsonUtils.parseJSONOject(jsonObject.toString().getBytes());
-    Set<String> key=map.keySet();
-    for(Iterator iterator =key.iterator(); iterator.hasNext();) {
-        String k=(String)iterator.next();
-       System.out.println(k+":"+map.get(k));
-   }
+//    JSONObject jsonObject=JsonUtils.generateJson(info,"enemy",map_list);
+//    HashMap <String,Object> map=JsonUtils.parseJSONOject(jsonObject.toString().getBytes());
+//    Set<String> key=map.keySet();
+//    for(Iterator iterator =key.iterator(); iterator.hasNext();) {
+//        String k=(String)iterator.next();
+//       System.out.println(k+":"+map.get(k));
+//   }
      ArrayListTest m=new ArrayListTest();
      m.HashMapTestIterator();
        /*  String path="D:\\xml\\";

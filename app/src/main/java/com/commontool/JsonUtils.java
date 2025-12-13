@@ -9,30 +9,46 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class JsonUtils {
-    public static JSONObject generateJson(ArrayList<HashMap<Integer,HashMap<String,Object>>> maps) {
-        JSONArray jsonArray = new JSONArray();
+    public final static int OBJECT_DATA=1;
+    public final static int CHA_SET_DATA=2;
+    public final static int ARR_DATA=3;
+    public  static JSONObject generateJson(ArrayList<HashMap<Integer,HashMap<String,Object>>> maps) {
+//      JSONArray jsonArray = new JSONArray();
         JSONObject jsonString = new JSONObject();
-        for(int i=0;i<maps.size();i++){
-            Set<String> map_infos = maps.keySet();
-            for (Iterator iterator =  map_infos.iterator(); iterator.hasNext(); ) {
-                Object str = iterator.next();
-                jsonString.put(str, maps.get(str));
-                //��json���ݼ���key
-        }
-    }
-        for (int l = 0; l < lists.size(); l++) {
-            HashMap<String, Object> infos = lists.get(l);
-            Set<String> infos_str = infos.keySet();
-            JSONObject jsonObject=new JSONObject();
-            for (Iterator iterator =  infos_str.iterator(); iterator.hasNext(); ) {
-                Object str = iterator.next();
-                jsonObject.put(str, infos.get(str));
-                //��json���ݼ���key
+        for (int i = 0; i < maps.size(); i++){
+            HashMap<Integer, HashMap<String, Object>> map_infos = maps.get(i);
+                Set<Integer> infos = map_infos.keySet();
+                for (Iterator<Integer> iterator = infos.iterator(); iterator.hasNext(); ) {
+                    int key = iterator.next();
+                    HashMap<String, Object> map = map_infos.get(key);
+                    Set<String> info = map.keySet();
+                    switch (key) {
+                        case OBJECT_DATA:
+                            for (Iterator<String> _info = info.iterator(); iterator.hasNext(); ) {
+                                Object inf = info.iterator();
+                                jsonString.put(inf, map.get(inf));
+                            }
+                            break;
+                        case CHA_SET_DATA:
+                            JSONObject jsonObject = new JSONObject();
+                            Object cha_key = new Object();
+                            for (Iterator<String> _info = info.iterator(); iterator.hasNext(); ) {
+                                String set_cha = _info.next();
+                                if (set_cha.equals("key")) cha_key = map.get(set_cha);
+                                else jsonObject.put(set_cha, map.get(set_cha));
+                            }
+                            jsonString.put(key, jsonObject.toString());
+                            break;
+                        case ARR_DATA:
+
+                            break;
+
+                    }
+
             }
-            jsonArray.add(jsonObject.toString());
+
         }
-        jsonString.put(list_key, jsonArray.toString());
-        return  jsonString;
+        return jsonString;
     }
 
         /**

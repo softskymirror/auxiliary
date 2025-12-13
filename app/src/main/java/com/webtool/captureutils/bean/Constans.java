@@ -25,6 +25,6 @@ public class Constans {
     /**
      * channel�е�clientReuqest
      */
-    public final static AttributeKey<ClientRequest> CLIENTREQUEST_ATTRIBUTE_KEY = new AttributeKey("clien;tRequest");
+    public final static AttributeKey<ClientRequest> CLIENTREQUEST_ATTRIBUTE_KEY = AttributeKey.newInstance("clien;tRequest");
 
 }

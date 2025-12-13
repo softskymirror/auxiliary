@@ -24,7 +24,7 @@ public class ProxyRequestUtil {
      */
     public static ClientRequest getClientReuqest(HttpRequest httpRequest) {
 
-        String host = httpRequest.getHeader("host");
+        String host = httpRequest.headers().get("host");
         //��host�л�ȡ���˿�
         String[] hostStrArr = host.split(":");
         int port = 80;
