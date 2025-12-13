@@ -28,7 +28,7 @@ package com.adbtool.adb;
 
 import com.android.ddmlib.*;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.geometry.concurrent.SettableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import org.apache.log4j.Logger;
 
 import javax.usb.*;

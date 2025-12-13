@@ -26,7 +26,7 @@
 
 package com.adbtool.minicap;
 
-import com.android.ddmlib.*;
+import com.android.ddmlib.IDevice;
 import com.adbtool.adb.AdbDevice;
 import com.adbtool.adb.AdbForward;
 import com.adbtool.adb.AdbServer;
@@ -34,7 +34,7 @@ import com.adbtool.util.Constant;
 import com.adbtool.util.Util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import sun.misc.BASE64Decoder;
+//import sun.misc.BASE64Decoder;
 
 import java.io.DataInputStream;
 import java.io.File;
