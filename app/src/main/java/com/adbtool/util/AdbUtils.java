@@ -26,11 +26,11 @@
 
 package com.adbtool.util;
 
-import com.alibaba.fastjson.JSON;
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.adb.AdbServer;
-import com.yeetor.androidcontrol.APPInfo;
-import com.yeetor.androidcontrol.DeviceInfo;
+import  JSON;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.adb.AdbServer;
+import com.adbtool.androidcontrol.APPInfo;
+import com.adbtool.androidcontrol.DeviceInfo;
 
 import java.util.ArrayList;
 import java.util.List;

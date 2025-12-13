@@ -28,11 +28,11 @@ package com.adbtool.minitouch;
 
 import com.android.ddmlib.IDevice;
 import com.android.ddmlib.IShellOutputReceiver;
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.adb.AdbForward;
-import com.yeetor.adb.AdbServer;
-import com.yeetor.util.Constant;
-import com.yeetor.util.Util;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.adb.AdbForward;
+import com.adbtool.adb.AdbServer;
+import com.adbtool.util.Constant;
+import com.adbtool.util.Util;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;

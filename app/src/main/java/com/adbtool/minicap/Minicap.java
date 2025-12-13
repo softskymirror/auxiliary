@@ -32,9 +32,11 @@ import com.adbtool.adb.AdbForward;
 import com.adbtool.adb.AdbServer;
 import com.adbtool.util.Constant;
 import com.adbtool.util.Util;
+import com.android.ddmlib.IShellOutputReceiver;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 //import sun.misc.BASE64Decoder;
+import java.util.Base64;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -240,14 +242,13 @@ public class Minicap extends ScreencapBase {
             } else {
                 break;
             }
-
-            try {
-                bytes = new BASE64Decoder().decodeBuffer(dataStr);
-            } catch (IOException e) {
-                logger.warn("base64 decode error!");
-                e.printStackTrace();
-                break;
-            }
+//            try {
+                bytes = Base64.getDecoder().decode(dataStr);
+//            } catch (IOException e) {
+//                logger.warn("base64 decode error!");
+//                e.printStackTrace();
+//                break;
+//            }
             if (bytes[0] != -1 && bytes[1] != -40) {
                 logger.warn("not a jpg file!");
                 break;
