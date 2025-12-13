@@ -2,7 +2,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2017 朱辉 https://blog.adbtool.com
+ * Copyright (c) 2017 朱辉 https://blog.yeetor.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,27 @@
  *
  */
 
-package com.webtool.server;
+package com.adbtool.server;
 
-import com.adbtool.adb.AdbDevice;
-import com.adbtool.minicap.ScreencapBase;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-public class ScreencapService extends HashMap<AdbDevice, ScreencapBase> {
+public class ServicesPool {
     
-    public List<ScreencapBase> filterWithDevice(AdbDevice device) {
-        List<ScreencapBase> lst = new LinkedList<>();
-        Iterator iter = entrySet().iterator();
-        
-        while (iter.hasNext()) {
-            Entry entry = (Entry) iter.next();
+    private static ServicesPool instance = null;
 
-            AdbDevice key = (AdbDevice) entry.getKey();
-            if (key.equals(device)) {
-                lst.add((ScreencapBase) entry.getValue());
-            }
+    ScreencapService screencapService = null;
+    
+    public static ServicesPool getInstance() {
+        if (instance == null) {
+            instance = new ServicesPool();
         }
-        return lst;
+        return instance;
     }
     
-    
-    
+    private ServicesPool() {
+        screencapService = new ScreencapService();
+    }
+
+
+    public ScreencapService getScreencapService() {
+        return screencapService;
+    }
 }

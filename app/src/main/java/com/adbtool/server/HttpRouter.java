@@ -2,7 +2,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2017 朱辉 https://blog.adbtool.com
+ * Copyright (c) 2017 朱辉 https://blog.yeetor.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,16 @@
  *
  */
 
-package com.webtool.server;
+package com.adbtool.server;
 
-import com.adbtool.adb.AdbDevice;
-import com.adbtool.minicap.ScreencapBase;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-public class ScreencapService extends HashMap<AdbDevice, ScreencapBase> {
-    
-    public List<ScreencapBase> filterWithDevice(AdbDevice device) {
-        List<ScreencapBase> lst = new LinkedList<>();
-        Iterator iter = entrySet().iterator();
-        
-        while (iter.hasNext()) {
-            Entry entry = (Entry) iter.next();
-
-            AdbDevice key = (AdbDevice) entry.getKey();
-            if (key.equals(device)) {
-                lst.add((ScreencapBase) entry.getValue());
-            }
-        }
-        return lst;
-    }
-    
-    
-    
+@Retention(RetentionPolicy.RUNTIME)
+public @interface HttpRouter {
+    /**
+     * 路由的路径
+     * @return
+     */
+    String uri() default "/";
 }

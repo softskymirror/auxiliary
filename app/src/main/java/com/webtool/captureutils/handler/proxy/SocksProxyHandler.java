@@ -4,7 +4,7 @@ package com.webtool.captureutils.handler.proxy;
 import com.webtool.captureutils.bean.ClientRequest;
 import com.webtool.captureutils.handler.response.SocksResponseHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ChannelBuf;
+//import io.netty.buffer.ChannelBuf;
 import io.netty.channel.*;
 import io.netty.util.Attribute;
 import org.slf4j.Logger;
@@ -69,18 +69,4 @@ public class SocksProxyHandler extends ChannelInboundHandlerAdapter implements I
 
     }
 
-    @Override
-    public void inboundBufferUpdated(ChannelHandlerContext channelHandlerContext) throws Exception {
-
-    }
-
-    @Override
-    public ChannelBuf newInboundBuffer(ChannelHandlerContext channelHandlerContext) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void freeInboundBuffer(ChannelHandlerContext channelHandlerContext, ChannelBuf channelBuf) throws Exception {
-
-    }
 }

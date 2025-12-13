@@ -26,8 +26,8 @@
 
 package com.adbtool.util;
 
-import com.yeetor.androidcontrol.DeviceInfo;
-import com.yeetor.androidcontrol.GroupInfo;
+import com.adbtool.androidcontrol.DeviceInfo;
+import com.adbtool.androidcontrol.GroupInfo;
 
 import java.util.ArrayList;
 import java.util.List;

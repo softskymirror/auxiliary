@@ -2,7 +2,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2017 朱辉 https://blog.yeetor.com
+ * Copyright (c) 2017 朱辉 https://blog.adbtool.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,18 +28,18 @@ package com.webtool.server;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.adb.AdbServer;
-import com.yeetor.adb.IAdbServerListener;
-import com.yeetor.minicap.Banner;
-import com.yeetor.minicap.Minicap;
-import com.yeetor.minicap.MinicapListener;
-import com.yeetor.minitouch.Minitouch;
-import com.yeetor.minitouch.MinitouchListener;
-import com.yeetor.protocol.BinaryProtocol;
-import com.yeetor.protocol.TextProtocol;
-import com.yeetor.server.handler.IWebsocketEvent;
-import com.yeetor.util.AdbUtils;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.adb.AdbServer;
+import com.adbtool.adb.IAdbServerListener;
+import com.adbtool.minicap.Banner;
+import com.adbtool.minicap.Minicap;
+import com.adbtool.minicap.MinicapListener;
+import com.adbtool.minitouch.Minitouch;
+import com.adbtool.minitouch.MinitouchListener;
+import com.adbtool.protocol.BinaryProtocol;
+import com.adbtool.protocol.TextProtocol;
+import com.adbtool.server.handler.IWebsocketEvent;
+import com.adbtool.util.AdbUtils;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

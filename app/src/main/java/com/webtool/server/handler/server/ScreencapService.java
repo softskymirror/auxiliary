@@ -26,8 +26,8 @@
 
 package com.webtool.server.handler.server;
 
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.minicap.ScreencapBase;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.minicap.ScreencapBase;
 
 import java.util.HashMap;
 import java.util.Iterator;

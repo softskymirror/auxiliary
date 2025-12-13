@@ -2,7 +2,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2017 朱辉 https://blog.adbtool.com
+ * Copyright (c) 2017 朱辉 https://blog.yeetor.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,33 +24,21 @@
  *
  */
 
-package com.webtool.server;
+package com.adbtool.server.handler;
 
-import com.adbtool.adb.AdbDevice;
-import com.adbtool.minicap.ScreencapBase;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-public class ScreencapService extends HashMap<AdbDevice, ScreencapBase> {
-    
-    public List<ScreencapBase> filterWithDevice(AdbDevice device) {
-        List<ScreencapBase> lst = new LinkedList<>();
-        Iterator iter = entrySet().iterator();
-        
-        while (iter.hasNext()) {
-            Entry entry = (Entry) iter.next();
-
-            AdbDevice key = (AdbDevice) entry.getKey();
-            if (key.equals(device)) {
-                lst.add((ScreencapBase) entry.getValue());
-            }
-        }
-        return lst;
+public class DiscardHandler extends ChannelInboundHandlerAdapter {
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ((ByteBuf) msg).release();
     }
-    
-    
-    
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        super.exceptionCaught(ctx, cause);
+        ctx.close();
+    }
 }

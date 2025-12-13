@@ -1,7 +1,7 @@
 package com.adbtool.util;
 
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.androidcontrol.DeviceInfo;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.androidcontrol.DeviceInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

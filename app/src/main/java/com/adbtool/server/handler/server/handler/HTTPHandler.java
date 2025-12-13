@@ -24,10 +24,9 @@
  *
  */
 
-package com.webtool.server.handler;
+package com.adbtool.server.handler.server.handler;
 
-import com.webtool.server.HttpServer;
-//import io.netty.buffer.ChannelBuf;
+import com.adbtool.server.handler.server.HttpServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
@@ -65,7 +64,5 @@ public class HTTPHandler extends SimpleChannelInboundHandler<Object> {
 //        }
 //        ctx.writeAndFlush(response);
     }
-
-
 }
  

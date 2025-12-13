@@ -6,7 +6,7 @@ import com.webtool.captureutils.handler.response.HttpProxyResponseHandler;
 import com.webtool.captureutils.utils.ProxyRequestUtil;
 import com.captureutils.handler.proxy.IProxyHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ChannelBuf;
+//import io.netty.buffer.ChannelBuf;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.util.Attribute;
@@ -39,7 +39,7 @@ public class HttpProxyHandler extends ChannelInboundHandlerAdapter implements IP
                 clientRequestAttribute.setIfAbsent(clientRequest);
             }
             //?????connect???????????????????????
-            if (sendSuccessResponseIfConnectMethod(ctx, httpRequest.getMethod().getName())) {
+            if (sendSuccessResponseIfConnectMethod(ctx, httpRequest.getMethod().name())) {
                 logger.debug("[HttpProxyHandler][channelRead]sendSuccessResponseConnect");
                 ctx.channel().pipeline().remove("httpRequestDecoder");
                 ctx.channel().pipeline().remove("httpResponseEncoder");
@@ -119,20 +119,7 @@ public class HttpProxyHandler extends ChannelInboundHandlerAdapter implements IP
 
     }
 
-    @Override
-    public void inboundBufferUpdated(ChannelHandlerContext channelHandlerContext) throws Exception {
 
-    }
-
-    @Override
-    public ChannelBuf newInboundBuffer(ChannelHandlerContext channelHandlerContext) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void freeInboundBuffer(ChannelHandlerContext channelHandlerContext, ChannelBuf channelBuf) throws Exception {
-
-    }
 
 
 }

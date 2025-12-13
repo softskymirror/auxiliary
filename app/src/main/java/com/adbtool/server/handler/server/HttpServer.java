@@ -24,7 +24,7 @@
  *
  */
 
-package com.webtool.server.handler.server;
+package com.adbtool.server.handler.server;
 
 import com.adbtool.minicap.Minicap;
 import com.adbtool.util.AdbUtils;

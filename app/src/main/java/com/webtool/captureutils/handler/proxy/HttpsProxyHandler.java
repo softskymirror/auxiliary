@@ -9,7 +9,7 @@ import com.captureutils.utils.HttpsSupport;
 import com.captureutils.handler.proxy.IProxyHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ChannelBuf;
+//import io.netty.buffer.ChannelBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -123,18 +123,5 @@ public class HttpsProxyHandler extends ChannelInboundHandlerAdapter implements I
         }
     }
 
-    @Override
-    public void inboundBufferUpdated(ChannelHandlerContext channelHandlerContext) throws Exception {
 
-    }
-
-    @Override
-    public ChannelBuf newInboundBuffer(ChannelHandlerContext channelHandlerContext) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void freeInboundBuffer(ChannelHandlerContext channelHandlerContext, ChannelBuf channelBuf) throws Exception {
-
-    }
 }

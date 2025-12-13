@@ -2,7 +2,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2017 朱辉 https://blog.adbtool.com
+ * Copyright (c) 2017 朱辉 https://blog.yeetor.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
  *
  */
 
-package com.webtool.server.handler.server;
+package com.adbtool.server.handler.server;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

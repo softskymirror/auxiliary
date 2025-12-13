@@ -1,6 +1,6 @@
 package com.webtool.captureutils.handler.response;
 
-import io.netty.buffer.ChannelBuf;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -28,18 +28,5 @@ public class SocksResponseHandler extends ChannelInboundHandlerAdapter {
         ctx.channel().write(msg);
     }
 
-    @Override
-    public void inboundBufferUpdated(ChannelHandlerContext channelHandlerContext) throws Exception {
 
-    }
-
-    @Override
-    public ChannelBuf newInboundBuffer(ChannelHandlerContext channelHandlerContext) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void freeInboundBuffer(ChannelHandlerContext channelHandlerContext, ChannelBuf channelBuf) throws Exception {
-
-    }
 }
