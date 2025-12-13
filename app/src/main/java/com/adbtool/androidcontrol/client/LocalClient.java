@@ -27,16 +27,16 @@
 package com.adbtool.androidcontrol.client;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.adb.AdbServer;
-import com.yeetor.androidcontrol.Command;
-import com.yeetor.androidcontrol.Protocol;
-import com.yeetor.minicap.Banner;
-import com.yeetor.minicap.Minicap;
-import com.yeetor.minicap.MinicapListener;
-import com.yeetor.minitouch.Minitouch;
-import com.yeetor.minitouch.MinitouchListener;
-import com.yeetor.util.Constant;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.adb.AdbServer;
+import com.adbtool.androidcontrol.Command;
+import com.adbtool.androidcontrol.Protocol;
+import com.adbtool.minicap.Banner;
+import com.adbtool.minicap.Minicap;
+import com.adbtool.minicap.MinicapListener;
+import com.adbtool.minitouch.Minitouch;
+import com.adbtool.minitouch.MinitouchListener;
+import com.adbtool.util.Constant;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;

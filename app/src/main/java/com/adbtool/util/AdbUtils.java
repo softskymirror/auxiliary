@@ -26,7 +26,7 @@
 
 package com.adbtool.util;
 
-import  JSON;
+import  com.alibaba.fastjson.JSON;
 import com.adbtool.adb.AdbDevice;
 import com.adbtool.adb.AdbServer;
 import com.adbtool.androidcontrol.APPInfo;

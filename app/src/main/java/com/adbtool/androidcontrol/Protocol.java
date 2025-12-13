@@ -26,9 +26,9 @@
 
 package com.adbtool.androidcontrol;
 
-import com.yeetor.androidcontrol.client.LocalClient;
-import com.yeetor.minicap.Minicap;
-import com.yeetor.minitouch.Minitouch;
+import com.adbtool.androidcontrol.client.LocalClient;
+import com.adbtool.minicap.Minicap;
+import com.adbtool.minitouch.Minitouch;
 import io.netty.channel.ChannelHandlerContext;
 
 /**

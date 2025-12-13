@@ -27,7 +27,7 @@
 package com.adbtool.androidcontrol;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.yeetor.adb.AdbDevice;
+import com.adbtool.adb.AdbDevice;
 
 /**
  * 获取每一台设备指定APP的安装信息

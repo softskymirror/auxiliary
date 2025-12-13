@@ -28,7 +28,7 @@ package com.adbtool.androidcontrol;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.base.Strings;
-import com.yeetor.adb.AdbDevice;
+import com.adbtool.adb.AdbDevice;
 
 /**
  * Created by harry on 2017/4/21.
