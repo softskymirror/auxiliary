@@ -27,9 +27,9 @@
 package com.adbtool.androidcontrol.server;
 
 import com.alibaba.fastjson.JSON;
-import com.yeetor.adb.AdbDevice;
-import com.yeetor.adb.AdbServer;
-import com.yeetor.androidcontrol.DeviceInfo;
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.adb.AdbServer;
+import com.adbtool.androidcontrol.DeviceInfo;
 
 import java.util.ArrayList;
 

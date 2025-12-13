@@ -26,7 +26,7 @@
 
 package com.adbtool.androidcontrol;
 
-import com.yeetor.adb.AdbDevice;
+import com.adbtool.adb.AdbDevice;
 
 public class GroupInfo {
     private String name,version,p_name;
