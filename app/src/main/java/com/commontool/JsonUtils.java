@@ -25,9 +25,10 @@ public class JsonUtils {
     /**
      *The basic logic of this function is to process all the encapsulated data in the HashMap according to the data structure type.
      *The corresponding structure of the data is as follows：
-     * OBJECT_DATA：{《str_name》:<string|integer|boolean|}
-     * CHA_SET_DATA：{}
-     *  @param maps
+     * OBJECT_DATA {<str_name>:(Object)<string|integer|boolean>}
+     * CHA_SET_DATA  <str_root>:{<str_name>:(Object)<string|integer|boolean>,<str_name>:(Object)<string|integer|boolean>,......}
+     * ARR_DATA <str_root>:[(Object), (Object), (Object)]
+     * @param maps
      * @return
      */
     public  static JSONObject generateJson(ArrayList<HashMap<Integer,HashMap<String,Object>>> maps) {
@@ -36,6 +37,7 @@ public class JsonUtils {
         for (int i = 0; i < maps.size(); i++){
             HashMap<Integer, HashMap<String, Object>> map_infos = maps.get(i);
                 Set<Integer> infos = map_infos.keySet();
+                //Iterate over all the HashMap key parameters to determine the parameter types
                 for (Iterator<Integer> iterator = infos.iterator(); iterator.hasNext(); ) {
                     int key = iterator.next();
                     HashMap<String, Object> map = map_infos.get(key);
@@ -55,7 +57,7 @@ public class JsonUtils {
                                 if (set_cha.equals("key")) cha_key = map.get(set_cha);
                                 else jsonObject.put(set_cha, map.get(set_cha));
                             }
-                            jsonString.put(key, jsonObject.toString());
+                            jsonString.put(cha_key, jsonObject.toString());
                             break;
                         case ARR_DATA:
 
