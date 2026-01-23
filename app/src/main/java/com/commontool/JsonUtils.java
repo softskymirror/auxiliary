@@ -1,4 +1,7 @@
+
+
 package com.commontool;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,10 +11,25 @@ import java.util.Iterator;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+/**
+ * General JSON Data Encapsulation Class
+ */
 public class JsonUtils {
+   //Object常量判断数据
     public final static int OBJECT_DATA=1;
+    //Object常量判断数据
     public final static int CHA_SET_DATA=2;
+    //
     public final static int ARR_DATA=3;
+
+    /**
+     *The basic logic of this function is to process all the encapsulated data in the HashMap according to the data structure type.
+     *The corresponding structure of the data is as follows：
+     * OBJECT_DATA：{《str_name》:<string|integer|boolean|}
+     * CHA_SET_DATA：{}
+     *  @param maps
+     * @return
+     */
     public  static JSONObject generateJson(ArrayList<HashMap<Integer,HashMap<String,Object>>> maps) {
 //      JSONArray jsonArray = new JSONArray();
         JSONObject jsonString = new JSONObject();
