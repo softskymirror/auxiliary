@@ -35,12 +35,12 @@ public class TableInfo {
         return table_name;
     }
     public int getFieldsLength(){
-
+     return fields.size();
     }
 
     public FliedInfo getFlied(int index){
         FliedInfo info=new FliedInfo();
-        if(fields.size()!=0) info=fields.get(index);
+        if(getFieldsLength()!=0) info=fields.get(index);
         return info;
     }
 }
