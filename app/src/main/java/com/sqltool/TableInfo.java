@@ -9,7 +9,7 @@ public class TableInfo {
 
     private String table_name;
 
-    private ArrayList<FliedInfo> fields=new ArrayList<>();
+    private ArrayList<FiledInfo> fields=new ArrayList<>();
 
     private String character_set_type;
 
@@ -19,7 +19,7 @@ public class TableInfo {
      this.table_name=name;
     }
 
-    public void setFields(ArrayList<FliedInfo> fields){
+    public void setFields(ArrayList<FiledInfo> fields){
      this.fields=fields;
     }
 
@@ -38,8 +38,8 @@ public class TableInfo {
      return fields.size();
     }
 
-    public FliedInfo getFlied(int index){
-        FliedInfo info=new FliedInfo();
+    public FiledInfo getFlied(int index){
+        FiledInfo info=new FiledInfo();
         if(getFieldsLength()!=0) info=fields.get(index);
         return info;
     }
