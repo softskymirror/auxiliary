@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ *
+ * @author softskymirror
+ */
 public class Person{
 
 public static double calculateBMI(double height, double weight){
@@ -51,7 +55,28 @@ public static double calculateBMI(double height, double weight){
     }
 
     // 测试用例
-    public static void main(String[] args) {
+
+
+
+public void getPersonInfos(){
+
+}
+
+public void getPersonJson(){
+    ArrayList<HashMap<Integer, HashMap<String,Object>>> maps=new ArrayList<>();
+    HashMap<String,Object> per_properties=new HashMap<>();
+    per_properties.put("name","黄锐楠");
+    per_properties.put("age",25);
+    per_properties.put("height",168.9);
+    per_properties.put("we",168.9);
+    HashMap<Integer,HashMap<String,Object>> map=new HashMap<>();
+    map.put(JsonUtils.OBJECT_DATA,per_properties);
+    maps.add(map);
+    System.out.println(JsonUtils.generateJson(maps));
+
+}
+
+    public static void testDemo(String[] args) {
         try {
             // 正常情况测试
             System.out.println("测试1（正常）:");
@@ -79,23 +104,4 @@ public static double calculateBMI(double height, double weight){
             System.out.println("错误: " + e.getMessage());
         }
     }
-
-
-public void getPersonInfos(){
-
-}
-
-public void getPersonJson(){
-    ArrayList<HashMap<Integer, HashMap<String,Object>>> maps=new ArrayList<>();
-    HashMap<String,Object> per_properties=new HashMap<>();
-    per_properties.put("name","黄锐楠");
-    per_properties.put("age",25);
-    per_properties.put("height",168.9);
-    per_properties.put("we",168.9);
-    HashMap<Integer,HashMap<String,Object>> map=new HashMap<>();
-    map.put(JsonUtils.OBJECT_DATA,per_properties);
-    maps.add(map);
-    System.out.println(JsonUtils.generateJson(maps));
-
-}
 }
