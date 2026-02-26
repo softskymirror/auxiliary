@@ -14,7 +14,7 @@ public class MySQLUtils {
         private String url;
         private String username;
         private String password;
-        private Connection connection;
+        private  Connection connection;
         private boolean autoCommit = true;
 
         // 默认连接参数
@@ -254,7 +254,33 @@ public class MySQLUtils {
                 return false;
             }
         }
+    /**
+     * 使用 TableInfo 对象创建表
+     * @param tableInfo 封装好的表信息
+     * @return 是否成功
+     */
+    public  boolean createTable(TableInfo tableInfo) {
+        String sql = tableInfo.toCreateTableSQL();
+        try {
+            connect();
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(sql);
+                System.out.println("表创建成功: " + tableInfo.getTableName());
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("创建表失败: " + e.getMessage());
+            System.err.println("SQL: " + sql);
+            return false;
+        }
+    }
 
+    // 原有的基于 Map 的方法保持不变，方便过渡
+//    public boolean createTable(String tableName, Map<String, String> columns,
+//                               String primaryKey, String engine) {
+//        // ... 原有代码不变
+//        return false;
+//    }
         /**
          * 创建表
          * @param tableName 表名
@@ -799,7 +825,7 @@ public class MySQLUtils {
         /**
          * 测试用例和示例
          */
-        public static void main(String[] args) {
+        public static void testDemo() {
             // 示例1: 创建数据库和表
             System.out.println("=== 示例1: 创建数据库和表 ===");
 
@@ -819,15 +845,44 @@ public class MySQLUtils {
             dbUtil.useDatabase("test_db");
 
             // 创建表结构定义
-            Map<String, String> columns = new LinkedHashMap<>();
-            columns.put("id", "INT PRIMARY KEY AUTO_INCREMENT");
-            columns.put("name", "VARCHAR(50) NOT NULL");
-            columns.put("age", "INT");
-            columns.put("email", "VARCHAR(100)");
-            columns.put("created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+            FieldInfo idField = new FieldInfo();
+            idField.setColumnName("id");
+            idField.setDataType(FieldInfo.TYPE_INT);
+            idField.setLength(11);
+            idField.setUnsigned(true);
+            idField.setNotNull(true);
+            idField.setAutoIncrement(true);
+
+            FieldInfo nameField = new FieldInfo();
+            nameField.setColumnName("name");
+            nameField.setDataType(FieldInfo.TYPE_VARCHAR);
+            nameField.setLength(50);
+            nameField.setNotNull(true);
+
+            FieldInfo priceField = new FieldInfo();
+            priceField.setColumnName("price");
+            priceField.setDataType(FieldInfo.TYPE_DECIMAL);
+            priceField.setPrecision(10);
+            priceField.setScale(2);
+            priceField.setDefaultValue("0.00");
+
+// 2. 构建表信息
+            TableInfo productTable = new TableInfo();
+            productTable.setTableName("products");
+            productTable.setEngine("InnoDB");
+            productTable.setCharacterSet("utf8mb4");
+            productTable.setCollate("utf8mb4_general_ci");
+            productTable.setPrimaryKeys(Arrays.asList("id")); // 单列主键
+            productTable.getFields().add(idField);
+            productTable.getFields().add(nameField);
+            productTable.getFields().add(priceField);
+
+// 3. 创建表
+
+            dbUtil.createTable(productTable);
 
             // 创建用户表
-            dbUtil.createTable("users", columns, "id", "InnoDB");
+//            dbUtil.createTable("users", columns, "id", "InnoDB");
 
             // 示例2: 插入数据
             System.out.println("\n=== 示例2: 插入数据 ===");

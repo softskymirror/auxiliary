@@ -2,7 +2,7 @@
 package life;
 
 
-import com.commontool.JsonUtils;
+import com.commontool.JSONUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,9 +70,9 @@ public void getPersonJson(){
     per_properties.put("height",168.9);
     per_properties.put("we",168.9);
     HashMap<Integer,HashMap<String,Object>> map=new HashMap<>();
-    map.put(JsonUtils.OBJECT_DATA,per_properties);
+    map.put(JSONUtils.OBJECT_DATA,per_properties);
     maps.add(map);
-    System.out.println(JsonUtils.generateJson(maps));
+    System.out.println(JSONUtils.generateJson(maps));
 
 }
 

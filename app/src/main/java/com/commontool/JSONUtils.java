@@ -1,5 +1,3 @@
-
-
 package com.commontool;
 
 
@@ -7,12 +5,18 @@ import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.util.*;
 
 /**
- * General JSON Data Encapsulation Class
- */
-public class JsonUtils {
+
+ *      *The basic logic of this function is to process all the encapsulated data in the HashMap according to the data structure type.
+ *      *The corresponding structure of the data is as follows：
+ *      * OBJECT_DATA {<str_name>:(Object)<string|integer|boolean>}
+ *      * CHA_SET_DATA  <str_root>:{<str_name>:(Object)<string|integer|boolean>,<str_name>:(Object)<string|integer|boolean>,......}
+ *      * ARR_DATA <str_root>:[(Object), (Object), (Object)]
+ *      * @param maps
+ *      * @return
+ *      */
+public class JSONUtils {
    //Object常量判断数据
     public final static int OBJECT_DATA=1;
     //Object常量判断数据
@@ -20,15 +24,6 @@ public class JsonUtils {
     //
     public final static int ARR_DATA=3;
 
-    /**
-     *The basic logic of this function is to process all the encapsulated data in the HashMap according to the data structure type.
-     *The corresponding structure of the data is as follows：
-     * OBJECT_DATA {<str_name>:(Object)<string|integer|boolean>}
-     * CHA_SET_DATA  <str_root>:{<str_name>:(Object)<string|integer|boolean>,<str_name>:(Object)<string|integer|boolean>,......}
-     * ARR_DATA <str_root>:[(Object), (Object), (Object)]
-     * @param maps
-     * @return
-     */
     /**
      * 将复杂数据结构转换为 JSONObject
      * @param maps 数据列表，每个元素为一个 HashMap，其键为数据类型，值为该类型的数据内容
@@ -168,7 +163,7 @@ public class JsonUtils {
             return jsonArray;
         }
     }
-}
+
 
 //    public  static JSONObject generateJson(ArrayList<HashMap<Integer,HashMap<String,Object>>> maps) {
 ////      JSONArray jsonArray = new JSONArray();
@@ -210,20 +205,49 @@ public class JsonUtils {
 //        return jsonString;
 //    }
 
-        /**
-     * ����JSONObject����
-     * @param bytes
-     * @return
-     */
-    public static HashMap<String,Object> parseJSONOject(byte[] bytes){
-        String json = new String(bytes);
-        HashMap<String, Object> list = new HashMap<>();
-        JSONObject respJson = JSONObject.fromObject(json);
-        Set<String> strs = respJson.keySet();
-        for(Iterator iterator = strs.iterator(); iterator.hasNext();) {
-            String str = (String) iterator.next();
-            list.put(str, respJson.getString(str));
-        }
-        return list;
+
+
+//    public static HashMap<String,Object> parseJSONOject(byte[] bytes){
+//        String json = new String(bytes);
+//        HashMap<String, Object> list = new HashMap<>();
+//        JSONObject respJson = JSONObject.fromJson(json, JSONObject.class);
+//        Set<String> strs = respJson.keySet();
+//        for(Iterator iterator = strs.iterator(); iterator.hasNext();) {
+//            String str = (String) iterator.next();
+//            list.put(str, respJson.getString(str));
+//        }
+//        return list;
+//    }
+
+    public static void testDemo(){
+        ArrayList<HashMap<Integer, HashMap<String, Object>>> input = new ArrayList<>();
+
+// 添加一个普通对象
+        HashMap<Integer, HashMap<String, Object>> objBlock = new HashMap<>();
+        HashMap<String, Object> objData = new HashMap<>();
+        objData.put("name", "Alice");
+        objData.put("age", 30);
+        objBlock.put(OBJECT_DATA, objData);
+        input.add(objBlock);
+
+// 添加一个特性集
+        HashMap<Integer, HashMap<String, Object>> chaBlock = new HashMap<>();
+        HashMap<String, Object> chaData = new HashMap<>();
+        chaData.put("key", "address");
+        chaData.put("city", "New York");
+        chaData.put("zip", 10001);
+        chaBlock.put(CHA_SET_DATA, chaData);
+        input.add(chaBlock);
+
+// 添加一个数组
+        HashMap<Integer, HashMap<String, Object>> arrBlock = new HashMap<>();
+        HashMap<String, Object> arrData = new HashMap<>();
+        arrData.put("key", "scores");
+        arrData.put("items", Arrays.asList(95, 87, 92));
+        arrBlock.put(ARR_DATA, arrData);
+        input.add(arrBlock);
+        JSONObject json = JSONUtils.generateJson(input);
+        System.out.println(json.toString(2));
     }
-}
+ }
+

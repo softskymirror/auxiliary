@@ -5,15 +5,18 @@ import life.Person;
 
 
 import static life.Person.calculateBMI;
+
+import static com.sqltool.MySQLUtils.testDemo;
 import static life.PersonProperties.getBMICategory;
 
 public class MainEntry {
     public static void main(String [] args){
 //        Person person=new Person();
 //        person.getPersonJson();
-        double bmi1 = calculateBMI(1.80, 66);
-        System.out.printf("BMI: %.2f (%s)%n",
-                bmi1, getBMICategory(bmi1));
+//        double bmi1 = testDemo();
+//        System.out.printf("BMI: %.2f (%s)%n",
+//                bmi1, getBMICategory(bmi1));
+        testDemo();
 
     }
 }
