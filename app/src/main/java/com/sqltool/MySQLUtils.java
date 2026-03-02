@@ -2,6 +2,7 @@ package com.sqltool;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * MySQL数据库操作工具类
@@ -78,10 +79,11 @@ public class MySQLUtils {
          */
         static {
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
+                Class.forName("com.mysql.jdbc.Driver");
                 System.out.println("MySQL驱动加载成功");
             } catch (ClassNotFoundException e) {
                 System.err.println("MySQL驱动加载失败: " + e.getMessage());
+
                 throw new RuntimeException("无法加载MySQL驱动，请检查驱动jar包", e);
             }
         }
@@ -404,6 +406,28 @@ public class MySQLUtils {
             }
         }
 
+    /**
+     * 插入单条数据（使用 TableInfo 提供表名和字段验证）
+     * @param tableInfo 表信息对象（用于获取表名和字段列表）
+     * @param data 数据映射（列名 -> 值），必须与 tableInfo 中定义的字段匹配
+     * @return 插入的行数
+     */
+    public int insert(TableInfo tableInfo,Map<String, Object> data) {
+        // 可选：验证 data 中的键是否都在 tableInfo 的字段中
+        if (tableInfo != null && data != null) {
+            Set<String> fieldNames = tableInfo.getFields().stream()
+                    .map(FieldInfo::getColumnName)
+                    .collect(Collectors.toSet());
+            for (String key : data.keySet()) {
+                if (!fieldNames.contains(key)) {
+                    System.err.println("警告：列名 '" + key + "' 不在表 '" + tableInfo.getTableName() + "' 的字段定义中");
+                    // 可以根据需要抛出异常或继续执行
+                }
+            }
+        }
+        // 调用原有的 insert 方法
+        return insert(tableInfo.getTableName(), data);
+    }
         /**
          * 批量插入数据
          * @param tableName 表名
@@ -830,7 +854,7 @@ public class MySQLUtils {
             System.out.println("=== 示例1: 创建数据库和表 ===");
 
             // 连接到MySQL服务器（不指定数据库）
-            MySQLUtils dbUtil = new MySQLUtils("localhost", 3306, "mysql", "root", "password");
+            MySQLUtils dbUtil = new MySQLUtils("localhost", 3306, "mysql", "root", "684428");
 
             // 测试连接
             if (!dbUtil.testConnection()) {
@@ -860,26 +884,27 @@ public class MySQLUtils {
             nameField.setNotNull(true);
 
             FieldInfo priceField = new FieldInfo();
-            priceField.setColumnName("price");
+            priceField.setColumnName("telephone");
             priceField.setDataType(FieldInfo.TYPE_DECIMAL);
             priceField.setPrecision(10);
             priceField.setScale(2);
             priceField.setDefaultValue("0.00");
 
 // 2. 构建表信息
-            TableInfo productTable = new TableInfo();
-            productTable.setTableName("products");
-            productTable.setEngine("InnoDB");
-            productTable.setCharacterSet("utf8mb4");
-            productTable.setCollate("utf8mb4_general_ci");
-            productTable.setPrimaryKeys(Arrays.asList("id")); // 单列主键
-            productTable.getFields().add(idField);
-            productTable.getFields().add(nameField);
-            productTable.getFields().add(priceField);
+            TableInfo relationshipTable = new TableInfo();
+            relationshipTable.setTableName("products");
+            relationshipTable.setEngine("InnoDB");
+            relationshipTable.setCharacterSet("utf8mb4");
+            relationshipTable.setCollate("utf8mb4_general_ci");
+            relationshipTable.setPrimaryKeys(Arrays.asList("id")); // 单列主键
+            relationshipTable.getFields().add(idField);
+            relationshipTable.getFields().add(nameField);
+            relationshipTable.getFields().add(priceField);
+
 
 // 3. 创建表
 
-            dbUtil.createTable(productTable);
+            dbUtil.createTable(relationshipTable);
 
             // 创建用户表
 //            dbUtil.createTable("users", columns, "id", "InnoDB");
@@ -888,12 +913,15 @@ public class MySQLUtils {
             System.out.println("\n=== 示例2: 插入数据 ===");
 
             // 插入单条数据
-            Map<String, Object> user1 = new HashMap<>();
-            user1.put("name", "张三");
-            user1.put("age", 25);
-            user1.put("email", "zhangsan@example.com");
-            dbUtil.insert("users", user1);
-
+//            Map<String, Object> user1 = new HashMap<>();
+//            user1.put("name", "张三");
+//            user1.put("age", 25);
+//            user1.put("email", "zhangsan@example.com");
+//            dbUtil.insert("users", user1);
+            Map<String, Object> data = new HashMap<>();
+            data.put("name", "张三");
+            data.put("age", 25);
+            int rows = insert(userTable, data); // 自动使用表名，并可验证字段
             // 插入多条数据
             Map<String, Object> user2 = new HashMap<>();
             user2.put("name", "李四");

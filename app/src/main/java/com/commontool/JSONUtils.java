@@ -25,9 +25,9 @@ public class JSONUtils {
     public final static int ARR_DATA=3;
 
     /**
-     * 将复杂数据结构转换为 JSONObject
-     * @param maps 数据列表，每个元素为一个 HashMap，其键为数据类型，值为该类型的数据内容
-     * @return 生成的 JSONObject
+     * Convert complex data structures to JSONObject
+     * @param maps Data list, each element is a HashMap, where the key represents the data type and the value is the data content of that type.
+     * @return The generated JSONObject
      */
     public static JSONObject generateJson(ArrayList<HashMap<Integer, HashMap<String, Object>>> maps) {
         JSONObject result = new JSONObject();

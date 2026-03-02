@@ -66,6 +66,46 @@ public class FieldInfo {
         isPrimaryKey = primaryKey;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public int getDataType() {
+        return dataType;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public Integer getPrecision() {
+        return precision;
+    }
+
+    public Integer getScale() {
+        return scale;
+    }
+
+    public boolean isUnsigned() {
+        return isUnsigned;
+    }
+
+    public boolean isNotNull() {
+        return isNotNull;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public boolean isAutoIncrement() {
+        return isAutoIncrement;
+    }
+
+    public boolean isPrimaryKey() {
+        return isPrimaryKey;
+    }
+
     /**
          * 生成该列的 SQL 定义片段，例如：`id` INT(11) NOT NULL AUTO_INCREMENT
          */
