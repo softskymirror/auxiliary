@@ -3,10 +3,102 @@ package com.searchtool;
 import com.system.CmdUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import static com.system.CmdUtils.executive;
 
 public class FileUtils {
+    private static final String DEFAULT_CHARSET = "UTF-8";
+
+    // 私有构造器，防止实例化
+    private FileUtils() {}
+
+    /* ==================== 目录/文件创建 ==================== */
+
+    /**
+     * 确保目录存在，如果不存在则创建（包括父目录）
+     *
+     * @param dirPath 目录路径
+     * @return 目录的 File 对象
+     * @throws IOException 如果创建失败
+     */
+    public static File ensureDirectoryExists(String dirPath) throws IOException {
+        Path path = Paths.get(dirPath);
+        if (Files.notExists(path)) {
+            Files.createDirectories(path);
+        } else if (!Files.isDirectory(path)) {
+            throw new IOException("路径已存在但不是目录: " + dirPath);
+        }
+        return path.toFile();
+    }
+
+    /**
+     * 在指定目录下创建文件（如果文件不存在）
+     *
+     * @param dirPath  目录路径
+     * @param fileName 文件名
+     * @return 文件的 File 对象
+     * @throws IOException 如果创建失败
+     */
+    public static File createFileIfNotExists(String dirPath, String fileName) throws IOException {
+        Path dir = Paths.get(dirPath);
+        if (Files.notExists(dir)) {
+            Files.createDirectories(dir);
+        }
+        Path filePath = dir.resolve(fileName);
+        if (Files.notExists(filePath)) {
+            Files.createFile(filePath);
+        }
+        return filePath.toFile();
+    }
+
+    /* ==================== 文件重命名/移动 ==================== */
+
+    /**
+     * 重命名或移动文件（原子操作，如果支持）
+     *
+     * @param sourcePath 源文件路径
+     * @param targetPath 目标文件路径
+     * @return 是否成功
+     * @throws IOException 如果移动失败
+     */
+    public static boolean moveFile(String sourcePath, String targetPath) throws IOException {
+        Path source = Paths.get(sourcePath);
+        Path target = Paths.get(targetPath);
+        // 确保目标父目录存在
+        if (target.getParent() != null && Files.notExists(target.getParent())) {
+            Files.createDirectories(target.getParent());
+        }
+        Files.move(source, target, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        return true;
+    }
+
+
+    /**
+     * 重命名文件（同一目录下）
+     * @param dirPath   目录路径
+     * @param oldName   旧文件名
+     * @param newName   新文件名
+     * @return 是否成功
+     * @throws IOException 如果重命名失败
+     */
+    public static boolean renameFile(String dirPath, String oldName, String newName) throws IOException {
+        Path dir = Paths.get(dirPath);
+        Path oldFile = dir.resolve(oldName);
+        Path newFile = dir.resolve(newName);
+        if (Files.notExists(oldFile)) {
+            throw new IOException("源文件不存在: " + oldFile);
+        }
+        Files.move(oldFile, newFile, StandardCopyOption.REPLACE_EXISTING);
+        return true;
+    }
+
+
+
     public static File searchDirectory(String filepath,String filename) throws Exception{
         File path=new File((filepath.endsWith("\\")?filepath:filepath+"\\"));
         File file=new File((path.getPath().endsWith("\\"))?path.getPath():(path.getPath()+"\\")+filename);
@@ -162,22 +254,7 @@ public static boolean checkFileDir(String file_dir) {
             return false;
         }
     }
-    /**
-     * �������ļ�
-     * @param file_path
-     * @param old_file_name
-     * @param new_file_name
-     */
-    public static void renameFile(String file_path,String old_file_name,String new_file_name){
-        File old_file=new File((file_path.endsWith("\\")?file_path:file_path+"\\")+old_file_name);
-        File new_file=new File((file_path.endsWith("\\")?file_path:file_path+"\\")+new_file_name);
-        if(old_file.exists()){
-            old_file.renameTo(new_file);
-            System.out.println("�����ɹ�");
-        }else{
-            System.out.println("�����ڴ��ļ�");
-        }
-    }
+
 
     /**
      *д��ָ�������ݲ���ָ���ı��뱣��
