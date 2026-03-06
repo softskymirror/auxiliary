@@ -1,5 +1,6 @@
 package com.system;
 
+import com.commontool.JSONUtils;
 import com.commontool.XMLParser;
 import com.sqltool.FieldInfo;
 import com.sqltool.TableInfo;
@@ -10,12 +11,11 @@ import org.w3c.dom.Document;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Paths;
+import java.util.*;
 
 import static com.commontool.JSONUtils.CHA_SET_DATA;
+import static com.searchtool.FileUtils.savePropertiesToFile;
 
 public class ConfigUtils {
     /**
@@ -62,6 +62,19 @@ public class ConfigUtils {
         data.put("driver", dbConfig.optString("driver"));
         // 可根据需要添加更多字段
         return data;
+    }
+
+    public static void convertJsonToProperties(String jsonFilePath, String propFilePath) throws Exception {
+        // 1. 读取 JSON 文件内容
+        String content = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
+        JSONObject json = new JSONObject(content);
+
+        // 2. 转换为 Properties
+        Properties props = JSONUtils.jsonToProperties(json);
+
+        // 3. 保存为 properties 文件
+        savePropertiesToFile(props, propFilePath);
+        System.out.println("转换成功！生成文件：" + propFilePath);
     }
 
     /**

@@ -1,6 +1,9 @@
 package com.commontool;
 
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import org.json.JSONArray;
@@ -91,6 +94,8 @@ public class JSONUtils {
         result.put(key, subObject);
     }
 
+
+
     /** 处理数组数据：提取 key 和 items，items 应为 List 或数组，转换为 JSONArray */
     private static void handleArrData(JSONObject result, HashMap<String, Object> dataMap) {
         Object keyObj = dataMap.get("key");
@@ -101,6 +106,22 @@ public class JSONUtils {
 
         JSONArray jsonArray = convertToJsonArray(items);
         result.put(key, jsonArray);
+    }
+
+    /**
+     * 将 JSONObject 转换为 Properties 对象
+     * @param jsonObject 包含数据库配置的 JSON 对象
+     * @return Properties 对象，可直接用于存储或操作
+     */
+    public static Properties jsonToProperties(JSONObject jsonObject) {
+        Properties props = new Properties();
+        // 遍历 JSON 的所有键，放入 Properties
+        for (String key : jsonObject.keySet()) {
+            Object value = jsonObject.get(key);
+            // Properties 只接受字符串值，将非字符串转换为字符串
+            props.setProperty(key, value == null ? "" : value.toString());
+        }
+        return props;
     }
 
     /** 递归将任意对象转换为 JSON 兼容类型（Map -> JSONObject，Collection/数组 -> JSONArray） */
@@ -248,6 +269,14 @@ public class JSONUtils {
         input.add(arrBlock);
         JSONObject json = JSONUtils.generateJson(input);
         System.out.println(json.toString(2));
+    }
+
+    public void writeJsonToFile(JSONObject json, String filePath) throws Exception {
+        // 将 JSON 转换为带缩进的字符串（美化输出）
+        String jsonString = json.toString(4); // 缩进 4 个空格
+        // 写入文件（覆盖模式）
+        Files.write(Paths.get(filePath), jsonString.getBytes("UTF-8"),
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
  }
 

@@ -4,6 +4,7 @@ import com.system.CmdUtils;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -391,6 +392,19 @@ public class FileUtils {
             }
         });
         return result;
+    }
+
+    /**
+     * 将 Properties 对象保存到文件（UTF-8 编码）
+     * @param props Properties 对象
+     * @param filePath 输出文件路径
+     * @throws IOException 如果写入失败
+     */
+    public static void savePropertiesToFile(Properties props, String filePath) throws IOException {
+        try (FileOutputStream out = new FileOutputStream(filePath)) {
+            // 第二个参数为注释，可填 null 或描述信息
+            props.store(out, "Database Configuration");
+        }
     }
 
     /**
