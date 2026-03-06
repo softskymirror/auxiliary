@@ -20,22 +20,45 @@ public class PersonProperties {
     private final static double height_limit = 0.5;
     private final static double height_loss = 2.5;
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+    public void setHeight(float height) {
+        this.height = height;
     }
 
     public void setWeight(float weight) {
         this.weight = weight;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
+    public void setAge(int age) {
+        this.age = age;
     }
 
+    public void setBMI(float BMI) {
+        this.BMI = BMI;
+    }
+
+    public void setHometown(String hometown) {
+        this.hometown = hometown;
+    }
+
+    public void setCareer(String career) {
+        this.career = career;
+    }
+
+    public void setBody_health(String body_health) {
+        this.body_health = body_health;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOnline_name(String online_name) {
+        this.online_name = online_name;
+    }
+
+    public void setSexual_orientation(String sexual_orientation) {
+        this.sexual_orientation = sexual_orientation;
+    }
 
     /**
      * 计算BMI指数

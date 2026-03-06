@@ -4,10 +4,8 @@ import com.toolui.MainUI;
 import life.Person;
 
 
-import static life.Person.calculateBMI;
-
-import static com.sqltool.MySQLUtils.testDemo;
-import static life.PersonProperties.getBMICategory;
+//import static com.sqltool.MySQLUtils.testDemo;
+import static life.Person.testDemo;
 
 public class MainEntry {
     public static void main(String [] args){

@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 public class MySQLUtils {
 
         // 数据库连接信息
-        private String url;
-        private String username;
-        private String password;
-        private  Connection connection;
-        private boolean autoCommit = true;
+        private static String url;
+        private static String username;
+        private static String password;
+        private static Connection connection;
+        private static boolean autoCommit = true;
 
         // 默认连接参数
         private static final String DEFAULT_HOST = "localhost";
@@ -92,7 +92,7 @@ public class MySQLUtils {
          * 建立数据库连接
          * @return 连接是否成功
          */
-        public boolean connect() {
+        public static boolean connect() {
             try {
                 if (connection == null || connection.isClosed()) {
                     connection = DriverManager.getConnection(url, username, password);
@@ -364,7 +364,7 @@ public class MySQLUtils {
          * @param data 数据映射（列名 -> 值）
          * @return 插入的行数
          */
-        public int insert(String tableName, Map<String, Object> data) {
+        public static int insert(String tableName, Map<String, Object> data) {
             if (data == null || data.isEmpty()) {
                 System.err.println("插入数据为空");
                 return 0;
@@ -428,6 +428,8 @@ public class MySQLUtils {
         // 调用原有的 insert 方法
         return insert(tableInfo.getTableName(), data);
     }
+
+
         /**
          * 批量插入数据
          * @param tableName 表名
@@ -921,7 +923,7 @@ public class MySQLUtils {
             Map<String, Object> data = new HashMap<>();
             data.put("name", "张三");
             data.put("age", 25);
-            int rows = insert(userTable, data); // 自动使用表名，并可验证字段
+            int rows = insert("products", data); // 自动使用表名，并可验证字段
             // 插入多条数据
             Map<String, Object> user2 = new HashMap<>();
             user2.put("name", "李四");
