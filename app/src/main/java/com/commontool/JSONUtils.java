@@ -1,13 +1,19 @@
 package com.commontool;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+import com.sqltool.TableInfo;
+import com.sqltool.XMLForSqlConvertor;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
 
 /**
 
@@ -26,6 +32,27 @@ public class JSONUtils {
     public final static int CHA_SET_DATA=2;
     //
     public final static int ARR_DATA=3;
+
+    /**
+     * 从指定路径的文件读取 JSON 内容，并解析为 JSONObject
+     * @param filePath 文件路径
+     * @return JSONObject 对象
+     * @throws Exception 文件读取或 JSON 解析失败时抛出
+     */
+    public static JSONObject readJsonFromFile(Path path) throws Exception {
+        // 读取文件内容为字符串（UTF-8 编码）
+        String content = new String(Files.readAllBytes(path), "UTF-8");
+        // 解析为 JSONObject
+        return new JSONObject(content);
+    }
+
+    public void writeJsonToFile(JSONObject json, Path path) throws Exception {
+        // 将 JSON 转换为带缩进的字符串（美化输出）
+        String jsonString = json.toString(4); // 缩进 4 个空格
+        // 写入文件（覆盖模式）
+        Files.write(path, jsonString.getBytes("UTF-8"),
+                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+    }
 
     /**
      * Convert complex data structures to JSONObject
@@ -108,21 +135,7 @@ public class JSONUtils {
         result.put(key, jsonArray);
     }
 
-    /**
-     * 将 JSONObject 转换为 Properties 对象
-     * @param jsonObject 包含数据库配置的 JSON 对象
-     * @return Properties 对象，可直接用于存储或操作
-     */
-    public static Properties jsonToProperties(JSONObject jsonObject) {
-        Properties props = new Properties();
-        // 遍历 JSON 的所有键，放入 Properties
-        for (String key : jsonObject.keySet()) {
-            Object value = jsonObject.get(key);
-            // Properties 只接受字符串值，将非字符串转换为字符串
-            props.setProperty(key, value == null ? "" : value.toString());
-        }
-        return props;
-    }
+
 
     /** 递归将任意对象转换为 JSON 兼容类型（Map -> JSONObject，Collection/数组 -> JSONArray） */
     private static Object convertToJsonCompatible(Object obj) {
@@ -271,12 +284,6 @@ public class JSONUtils {
         System.out.println(json.toString(2));
     }
 
-    public void writeJsonToFile(JSONObject json, String filePath) throws Exception {
-        // 将 JSON 转换为带缩进的字符串（美化输出）
-        String jsonString = json.toString(4); // 缩进 4 个空格
-        // 写入文件（覆盖模式）
-        Files.write(Paths.get(filePath), jsonString.getBytes("UTF-8"),
-                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-    }
+
  }
 

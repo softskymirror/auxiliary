@@ -1,5 +1,6 @@
 package com;
 
+import com.system.ConfigUtils;
 import com.toolui.MainUI;
 import life.Person;
 
@@ -15,6 +16,10 @@ public class MainEntry {
 //        System.out.printf("BMI: %.2f (%s)%n",
 //                bmi1, getBMICategory(bmi1));
         testDemo();
+    }
 
+    public void startService(){
+        ConfigUtils configUtils=new ConfigUtils();
+        System.out.println(configUtils.globalData.get("pomFilepath"));
     }
 }

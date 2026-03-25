@@ -1,4 +1,5 @@
 {
-  "jsonfile": "./config/databases.json",
-  "propFilePath": "./dbprop/db.properties"
+  "jsonFile": "./config/databases.json",
+  "propFilePath": "./dbprop/db.properties",
+  "pomFilepath": "./config/pom.xml"
 }

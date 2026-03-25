@@ -2,52 +2,108 @@ package com.system;
 
 import com.commontool.JSONUtils;
 import com.commontool.XMLParser;
+import com.searchtool.FileUtils;
 import com.sqltool.FieldInfo;
 import com.sqltool.TableInfo;
+import com.sqltool.XMLForSqlConvertor;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static com.commontool.JSONUtils.CHA_SET_DATA;
-import static com.searchtool.FileUtils.savePropertiesToFile;
+
 
 public class ConfigUtils {
+public static String defaultConfigPath="./config";
+public static String defaultglobalPath="global.json";
+public static String defaultdbPath="databases.json";
+public static String defaultpomPath="pom.xml";
+public Map<String, Object> loginData;
+public Map<String, Object> globalData;
+
     /**
-     * 从 XML 文件加载并解析表结构信息。
-     * @param xmlFilePath XML 文件路径
-     * @return TableInfo 列表
-     * @throws Exception 如果文件不存在或解析失败
+     *First, verify the file, then parse and extract the configuration file information,and encapsulate it as a Map object.
+     *
+     *
      */
-    public static List<TableInfo> loadTableInfoFromXml(String xmlFilePath) throws Exception {
-        File file = new File(xmlFilePath);
-        if (!file.exists()) {
-            throw new IOException("XML 文件不存在: " + xmlFilePath);
+    public ConfigUtils() {
+    Path globalpath = FileUtils.getConfigFilePath(defaultConfigPath, defaultglobalPath);
+    Path dbpath = FileUtils.getConfigFilePath(defaultConfigPath, defaultdbPath);
+    try {
+        if (validateJsonFile(globalpath)) globalData = extractGlobalData(JSONUtils.readJsonFromFile(globalpath));
+        if (validateJsonFile(dbpath)) loginData = extractLoginData(JSONUtils.readJsonFromFile(dbpath));
+    }catch(Exception e){
+        e.printStackTrace();
         }
-        Document doc = XMLParser.loadFromFile(xmlFilePath); // 假设 XMLParser 提供该方法
-        return XMLParser.xmlParseToTables(doc);            // 假设 XMLParser 提供该方法
     }
 
 
-    /**
-     * 从 JSON 文件加载并解析为 JSONObject。
-     * @param jsonFilePath JSON 文件路径
-     * @return JSONObject 对象
-     * @throws Exception 如果文件不存在或解析失败
-     */
-    public static JSONObject loadJsonFromFile(String jsonFilePath) throws Exception {
-        File file = new File(jsonFilePath);
-        if (!file.exists()) {
-            throw new IOException("JSON 文件不存在: " + jsonFilePath);
+
+        /**
+         * 校验 JSON 配置文件是否正常
+         * @param path 文件路径
+         * @return true 表示文件存在、非空、内容为合法 JSON；false 表示有问题
+         */
+        public static boolean validateJsonFile(Path path) {
+            // 1. 存在性检查
+            if (!Files.exists(path) || Files.isDirectory(path)) {
+                return false;
+            }
+            // 2. 非空检查
+            try {
+                if (Files.size(path) == 0) {
+                    return false;
+                }
+            } catch (IOException e) {
+                return false;
+            }
+            // 3. 格式检查
+            try {
+                String content = new String(Files.readAllBytes(path), "UTF-8");
+                new JSONObject(content); // 解析失败会抛异常
+                return true;
+            } catch (IOException | JSONException e) {
+                return false;
+            }
         }
-        String content = new String(Files.readAllBytes(file.toPath()));
-        return new JSONObject(content);
-    }
+
+        /**
+         * 校验 Properties 配置文件是否正常
+         * @param path 文件路径
+         * @return true 表示文件存在、非空、内容为合法 Properties 格式；false 表示有问题
+         */
+        public static boolean validatePropertiesFile(Path path) {
+            // 1. 存在性检查
+            if (!Files.exists(path) || Files.isDirectory(path)) {
+                return false;
+            }
+            // 2. 非空检查
+            try {
+                if (Files.size(path) == 0) {
+                    return false;
+                }
+            } catch (IOException e) {
+                return false;
+            }
+            // 3. 格式检查
+            try (FileInputStream fis = new FileInputStream(path.toFile())) {
+                Properties props = new Properties();
+                props.load(fis);
+                // 可选：检查是否包含必要键（如 url），此处仅判断加载成功
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
 
     /**
      * 从数据库配置 JSONObject 中提取登录信息（url, username, password, driver 等）。
@@ -64,66 +120,105 @@ public class ConfigUtils {
         return data;
     }
 
+    public static Map<String, Object> extractLoginDataFromProperties(Properties props) {
+        Map<String, Object> data = new HashMap<>();
+        // 使用 getProperty(key) 如果 key 不存在则返回 null，此处用 "" 代替
+        data.put("url", props.getProperty("url", ""));
+        data.put("username", props.getProperty("username", ""));
+        data.put("password", props.getProperty("password", ""));
+        data.put("driver", props.getProperty("driver", ""));
+        // 可根据需要添加更多字段
+        return data;
+    }
+
+    /**
+     * 从数据库配置 JSONObject 中提取登录信息（url, username, password, driver 等）。
+     * @param dbConfig 包含数据库配置的 JSONObject
+     * @return 登录信息映射
+     */
+    public static Map<String, Object> extractGlobalData(JSONObject dbConfig) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("jsonFile", dbConfig.optString("jsonFile"));
+        data.put("propFilePath", dbConfig.optString("propFilePath"));
+        data.put("pomFilepath", dbConfig.optString("pomFilepath"));
+        // 可根据需要添加更多字段
+        return data;
+    }
+
+    public static Map<String, Object> extractGlobalDataFromProperties(Properties props) {
+        Map<String, Object> data = new HashMap<>();
+        // 使用 getProperty(key) 如果 key 不存在则返回 null，此处用 "" 代替
+        data.put("jsonFile", props.getProperty("jsonFile", ""));
+        data.put("propFilePath", props.getProperty("propFilePath", ""));
+        data.put("pomFilepath", props.getProperty("pomFilepath", ""));
+        // 可根据需要添加更多字段
+        return data;
+    }
+
+    /**
+     * 将 JSONObject 转换为 Properties 对象
+     * @param jsonObject 包含数据库配置的 JSON 对象
+     * @return Properties 对象，可直接用于存储或操作
+     */
+    public static Properties jsonToProperties(JSONObject jsonObject) {
+        Properties props = new Properties();
+        // 遍历 JSON 的所有键，放入 Properties
+        for (String key : jsonObject.keySet()) {
+            Object value = jsonObject.get(key);
+            // Properties 只接受字符串值，将非字符串转换为字符串
+            props.setProperty(key, value == null ? "" : value.toString());
+        }
+        return props;
+    }
+
+
+
+    /**
+     * 将 Properties 对象保存到文件（UTF-8 编码）
+     * @param props Properties 对象
+     * @param filePath 输出文件路径
+     * @throws IOException 如果写入失败
+     */
+    public static void savePropertiesToFile(Properties props, String filePath) throws IOException {
+        try (FileOutputStream out = new FileOutputStream(filePath)) {
+            // 第二个参数为注释，可填 null 或描述信息
+            props.store(out, "Database Configuration");
+        }
+    }
+    /**
+     * 从指定路径的文件加载 Properties 配置
+     * @param filePath 配置文件路径
+     * @return Properties 对象
+     * @throws IOException 文件不存在或读取失败时抛出
+     */
+    public static Properties loadPropertiesFromFile(String filePath) throws IOException {
+        Properties props = new Properties();
+        try (FileInputStream in = new FileInputStream(filePath)) {
+            props.load(in);
+        }
+        return props;
+    }
+
+    /**
+     * Enable the conversion between JSON objects and properties objects
+     * @param jsonFilePath
+     * @param propFilePath
+     * @throws Exception
+     */
     public static void convertJsonToProperties(String jsonFilePath, String propFilePath) throws Exception {
-        // 1. 读取 JSON 文件内容
-        String content = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
-        JSONObject json = new JSONObject(content);
+        // 1. Read the content of the JSON file
+
+        JSONObject json = new JSONObject(JSONUtils.readJsonFromFile(jsonFilePath));
 
         // 2. 转换为 Properties
-        Properties props = JSONUtils.jsonToProperties(json);
+        Properties props = jsonToProperties(json);
 
         // 3. 保存为 properties 文件
         savePropertiesToFile(props, propFilePath);
         System.out.println("转换成功！生成文件：" + propFilePath);
     }
 
-    /**
-     * 将 TableInfo 列表转换为 generateJson 所需的 maps 结构。
-     * 使用 CHA_SET_DATA 类型包装，key="tables"，items 为表信息列表。
-     * @param tables 表信息列表
-     * @return 符合 generateJson 要求的 maps 结构
-     */
-    public static ArrayList<HashMap<Integer, HashMap<String, Object>>> buildMapsFromTableInfo(List<TableInfo> tables) {
-        // 将表结构转换为列表，每个表为一个 Map
-        List<Map<String, Object>> tablesList = new ArrayList<>();
-        for (TableInfo table : tables) {
-            Map<String, Object> tableMap = new HashMap<>();
-            tableMap.put("tableName", table.getTableName());
-            tableMap.put("characterSet", table.getCharacterSet());
-            tableMap.put("collate", table.getCollate());
-            tableMap.put("engine", table.getEngine());
-            tableMap.put("primaryKeys", table.getPrimaryKeys()); // 假设返回 List<String>
 
-            // 构建字段列表
-            List<Map<String, Object>> fieldsList = new ArrayList<>();
-            for (FieldInfo field : table.getFields()) {
-                Map<String, Object> fieldMap = new HashMap<>();
-                fieldMap.put("columnName", field.getColumnName());
-                fieldMap.put("dataType", field.getDataType());
-                fieldMap.put("length", field.getLength());
-                fieldMap.put("precision", field.getPrecision());
-                fieldMap.put("scale", field.getScale());
-                fieldMap.put("unsigned", field.isUnsigned());
-                fieldMap.put("notNull", field.isNotNull());
-                fieldMap.put("defaultValue", field.getDefaultValue());
-                fieldMap.put("autoIncrement", field.isAutoIncrement());
-                fieldsList.add(fieldMap);
-            }
-            tableMap.put("fields", fieldsList);
-            tablesList.add(tableMap);
-        }
-
-        // 创建 maps 外层 ArrayList
-        ArrayList<HashMap<Integer, HashMap<String, Object>>> maps = new ArrayList<>();
-        HashMap<Integer, HashMap<String, Object>> mapInfo = new HashMap<>();
-        HashMap<String, Object> dataMap = new HashMap<>();
-        dataMap.put("key", "tables");
-        dataMap.put("items", tablesList);
-        mapInfo.put(CHA_SET_DATA, dataMap);
-        maps.add(mapInfo);
-
-        return maps;
-    }
 
 
 

@@ -7,6 +7,8 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.commontool.XMLParser;
@@ -15,7 +17,12 @@ import static com.commontool.XMLParser.loadFromFile;
 import static com.commontool.XMLParser.saveToFile;
 
 public class XMLForSqlConvertor {
-
+    /**
+     * 从 XML 文件加载并解析表结构信息。
+     * @param filePath XML 文件路径
+     * @return TableInfo 列表
+     * @throws Exception 如果文件不存在或解析失败
+     */
     public static List<TableInfo> parseXMLToTables(String filePath) {
         try {
             return xmlParseToTables(loadFromFile(filePath));
