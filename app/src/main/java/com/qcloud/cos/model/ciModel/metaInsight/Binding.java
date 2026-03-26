@@ -1,6 +1,6 @@
 package com.qcloud.cos.model.ciModel.metaInsight;
 
-import com.fasterxml.jackson.databind.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Binding {
 
