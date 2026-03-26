@@ -6,10 +6,14 @@ import com.commontool.JSONUtils;
 import com.sqltool.FieldInfo;
 import com.sqltool.MySQLUtils;
 import com.sqltool.TableInfo;
+import com.system.DatabaseManager;
 
 import java.util.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static life.PersonProperties.calculateBMI;
+import static life.PersonProperties.getBMICategory;
 
 /**
  *
@@ -17,9 +21,16 @@ import java.math.RoundingMode;
  */
 public class Person{
 
-
+    private final MySQLUtils dbUtil;
     // 测试用例
 
+    public Person(MySQLUtils dbUtil) {
+        this.dbUtil = dbUtil;
+    }
+
+    public MySQLUtils getDbUtil() {
+        return dbUtil;
+    }
 
 
 public void getPersonInfos(){
@@ -28,7 +39,8 @@ public void getPersonInfos(){
 
 
 public void insertData(){
-    // 创建用户表
+
+      // 创建用户表
 //            dbUtil.createTable("users", columns, "id", "InnoDB");
 
     // 示例2: 插入数据
