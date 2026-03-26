@@ -27,12 +27,12 @@ public class ByteUtils {
   public static final String filepath="C:\\Program Files\\HtmlWatcher\\temp\\media\\resposeText.bin";
   static byte [] bytes=null;
   public static void setFrame(String[] args) {
-    JFrame jf = new JFrame("²âÊÔ´°¿Ú");
+    JFrame jf = new JFrame("Ô´");
     jf.setSize(300, 300);
     jf.setLocationRelativeTo(null);
     jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     JPanel jpanel=new JPanel(new BorderLayout());
-    generateJTree(0,0,250,650,"ÍøÂçÉèÖÃ",new String[]{"ÏÂÔØÉèÖÃ","Á¬½ÓÉèÖÃ"},new String[][]{},jpanel);
+    generateJTree(0,0,250,650,"",new String[]{"",""},new String[][]{},jpanel);
     jf.setContentPane(jpanel);
     jf.setVisible(true);
   }
@@ -56,25 +56,25 @@ public class ByteUtils {
     }*/
     JTree jtree=new JTree(rootStr);
     jtree.setShowsRootHandles(true);
-   // ÉèÖÃÊ÷½Úµã¿É±à¼­
+   // ÚµÉ±à¼­
     jtree.setEditable(true);
     jtree.setBounds(location_x, location_y,width,height); 
-    // ÉèÖÃÊ÷ÏÔÊ¾¸ù½Úµã¾ä±ú
+    // Ê¾Úµ
     jtree.setShowsRootHandles(true);
-    // ÉèÖÃÊ÷½Úµã¿É±à¼­
+    // ÚµÉ±à¼­
     jtree.setEditable(true);
-    // ÉèÖÃ½ÚµãÑ¡ÖĞ¼àÌıÆ÷
+    // Ã½ÚµÑ¡Ğ¼
     jtree.addTreeSelectionListener(new TreeSelectionListener() {
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-      System.out.println("µ±Ç°±»Ñ¡ÖĞµÄ½Úµã: " + e.getPath());
+      System.out.println("Ç°Ñ¡ĞµÄ½Úµ: " + e.getPath());
     }
     });
-    // ´´½¨¹ö¶¯Ãæ°å£¬°ü¹üÊ÷£¨ÒòÎªÊ÷½ÚµãÕ¹¿ªºó¿ÉÄÜĞèÒªºÜ´óµÄ¿Õ¼äÀ´ÏÔÊ¾£¬ËùÒÔĞèÒªÓÃÒ»¸ö¹ö¶¯Ãæ°åÀ´°ü¹ü£©
+    // å£¬ÎªÚµÕ¹ÒªÜ´Ä¿Õ¼Ê¾ÒªÒ»
     JScrollPane scrollPane=new JScrollPane(jtree);
-    // Ìí¼Ó¹ö¶¯Ãæ°åµ½ÄÇÄÚÈİÃæ°å
+    // Ó¹åµ½
     jpanel.add(scrollPane, BorderLayout.CENTER);
-    // ÉèÖÃ´°¿ÚÄÚÈİÃæ°å²¢ÏÔÊ¾
+    // Ã´å²¢Ê¾
    
   }
 
@@ -156,7 +156,7 @@ public class ByteUtils {
   }
  
   /**
-   * ¼ÓÃÜ½âÃÜËã·¨ Ö´ĞĞÒ»´Î¼ÓÃÜ£¬Á½´Î½âÃÜ
+   * Ü½ã·¨ Ö´Ò»Î¼Ü£Î½
    */
   public static String convertMD5(String inStr){
  
@@ -169,7 +169,7 @@ public class ByteUtils {
  
   }
 /*
- ÊäÈë×Ö·û´®Í¨¹ıGZIPÑ¹Ëõ·µ»ØStringÀàĞÍ
+ Ö·Í¨GZIPÑ¹String
  */
 public static String toHexString(String s){
   String str="";
@@ -182,7 +182,7 @@ public static String toHexString(String s){
 }
 
 public static int byte2Int(byte[] res){
-  int targets = (res[0] & 0xff) | ((res[1] << 8) & 0xff00) // | ±íÊ¾°²Î»»ò 
+  int targets = (res[0] & 0xff) | ((res[1] << 8) & 0xff00) // | Ê¾Î» 
   | ((res[2] << 24) >>> 8) | (res[3] << 24); 
   return targets;
 }
@@ -190,10 +190,10 @@ public static int byte2Int(byte[] res){
 public static byte[] int2byte(int res) {  
     byte[] targets = new byte[4];  
       
-    targets[0] = (byte) (res & 0xff);// ×îµÍÎ»   
-    targets[1] = (byte) ((res >> 8) & 0xff);// ´ÎµÍÎ»   
-    targets[2] = (byte) ((res >> 16) & 0xff);// ´Î¸ßÎ»   
-    targets[3] = (byte) (res >>> 24);// ×î¸ßÎ»,ÎŞ·ûºÅÓÒÒÆ¡£   
+    targets[0] = (byte) (res & 0xff);// Î»   
+    targets[1] = (byte) ((res >> 8) & 0xff);// ÎµÎ»   
+    targets[2] = (byte) ((res >> 16) & 0xff);// Î¸Î»   
+    targets[3] = (byte) (res >>> 24);// Î»,Ş·Æ¡   
     return targets;   
     }
     
@@ -205,7 +205,7 @@ public static byte[] int2byte(int res) {
         }
         String hv;
         for (int i = 0; i < src.length; i++) {
-            // ÒÔÊ®Áù½øÖÆ£¨»ùÊı 16£©ÎŞ·ûºÅÕûÊıĞÎÊ½·µ»ØÒ»¸öÕûÊı²ÎÊıµÄ×Ö·û´®±íÊ¾ĞÎÊ½£¬²¢×ª»»Îª´óĞ´
+            // Ê®Æ£ 16Ş·Ê½Ò»Ö·Ê¾Ê½×ªÎªĞ´
             hv = Integer.toHexString(src[i] & 0xFF).toUpperCase();
             if (hv.length() < 2) {
                 builder.append(0);
@@ -217,7 +217,7 @@ public static byte[] int2byte(int res) {
     }
 
     /**
-     * ½«Hex String×ª»»ÎªByteÊı×é
+     * Hex String×ªÎªByte
      *
      * @param hexString the hex string
      * @return the byte [ ]
@@ -304,14 +304,14 @@ public static void printHexString(byte [] b){
         bos.close();
     } catch (final IOException ioe) {
       ioe.printStackTrace();
-      //log.error("Ñ¹Ëõ³ö´í£º", ioe);
+      //log.error("Ñ¹", ioe);
     }
     }
-    return new String(Base64.encodeBase64(bytes),"ISO-8859-1");//ÈôÖ±½Ó·µ»ØÖ±½ÓÎ´¾­Base64¼ÓÃÜµÄÎÄ±¾×Ö½Ú½«µ¼ÖÂÂÒÂë
+    return new String(Base64.encodeBase64(bytes),"ISO-8859-1");//Ö±Ó·Ö±Î´Base64ÜµÄ±Ö½Ú½
   }
 
 /*
- ÊäÈë×Ö·û´®Í¨¹ıGZIPÑ¹Ëõ·µ»ØStringÀàĞÍ
+ Ö·Í¨GZIPÑ¹String
  */
   public String unGZip(String base64unZipInput) {
     byte[] bytes;
@@ -336,7 +336,7 @@ public static void printHexString(byte [] b){
     bos.close();
     } catch (Exception e){
     e.printStackTrace();
-    JOptionPane.showMessageDialog(null, "½âÑ¹³ö´í");
+    JOptionPane.showMessageDialog(null, "Ñ¹");
     } finally {
     try {
       if (gzip != null)
@@ -456,7 +456,7 @@ public static String getHexColumns(int columnCount){
 /**  
 
 
-* Êı×é×ª¶ÔÏó  
+* ×ª  
 
 
 * @param bytes  

@@ -205,7 +205,7 @@ public Map<String, Object> globalData;
      * @param propFilePath
      * @throws Exception
      */
-    public static void convertJsonToProperties(String jsonFilePath, String propFilePath) throws Exception {
+    public static void convertJsonToProperties(Path jsonFilePath, String propFilePath) throws Exception {
         // 1. Read the content of the JSON file
 
         JSONObject json = new JSONObject(JSONUtils.readJsonFromFile(jsonFilePath));
