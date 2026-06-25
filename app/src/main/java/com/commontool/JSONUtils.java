@@ -35,7 +35,7 @@ public class JSONUtils {
 
     /**
      * 从指定路径的文件读取 JSON 内容，并解析为 JSONObject
-     * @param filePath 文件路径
+     * @param path 文件路径
      * @return JSONObject 对象
      * @throws Exception 文件读取或 JSON 解析失败时抛出
      */

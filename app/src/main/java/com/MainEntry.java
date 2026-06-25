@@ -19,7 +19,6 @@ public class MainEntry {
     }
 
     public void startService(){
-        ConfigUtils configUtils=new ConfigUtils();
-        System.out.println(configUtils.globalData.get("pomFilepath"));
+
     }
 }
