@@ -108,22 +108,36 @@ public class ConfigUtils {
      * <p>
      * 依次提取 url、username、password、driver 四个字段，
      * 若某个字段不存在则返回空字符串（由 optString 保证安全）。
+     * <p>
+     * password 字段会自动通过 {@link CryptoUtils#resolve(String)} 解析，
+     * 支持 {@code ENC(...)} 加密格式和 {@code ${ENV:VAR}} 环境变量引用。
      *
      * @param dbConfig 包含数据库连接信息的 JSON 对象
-     * @return 包含 url、username、password、driver 键值对的 Map
+     * @return 包含 url、username、password（已解密）、driver 键值对的 Map
      */
     public static Map<String, Object> extractLoginData(JSONObject dbConfig) {
-        return extractConfigFields(dbConfig, JSON_KEY_URL, JSON_KEY_USERNAME, JSON_KEY_PASSWORD, JSON_KEY_DRIVER);
+        Map<String, Object> data = extractConfigFields(dbConfig, JSON_KEY_URL, JSON_KEY_USERNAME, JSON_KEY_PASSWORD, JSON_KEY_DRIVER);
+        // 自动解析敏感字段（支持 ENC() 加密 和 ${ENV:} 环境变量引用）
+        String rawPassword = (String) data.get(JSON_KEY_PASSWORD);
+        data.put(JSON_KEY_PASSWORD, CryptoUtils.resolve(rawPassword));
+        return data;
     }
 
     /**
      * 从 Properties 对象中提取数据库登录连接信息。
+     * <p>
+     * password 字段会自动通过 {@link CryptoUtils#resolve(String)} 解析，
+     * 支持 {@code ENC(...)} 加密格式和 {@code ${ENV:VAR}} 环境变量引用。
      *
      * @param props 包含数据库连接配置的 Properties 对象
-     * @return 包含 url、username、password、driver 键值对的 Map
+     * @return 包含 url、username、password（已解密）、driver 键值对的 Map
      */
     public static Map<String, Object> extractLoginDataFromProperties(Properties props) {
-        return extractConfigFieldsFromProperties(props, JSON_KEY_URL, JSON_KEY_USERNAME, JSON_KEY_PASSWORD, JSON_KEY_DRIVER);
+        Map<String, Object> data = extractConfigFieldsFromProperties(props, JSON_KEY_URL, JSON_KEY_USERNAME, JSON_KEY_PASSWORD, JSON_KEY_DRIVER);
+        // 自动解析敏感字段
+        String rawPassword = (String) data.get(JSON_KEY_PASSWORD);
+        data.put(JSON_KEY_PASSWORD, CryptoUtils.resolve(rawPassword));
+        return data;
     }
 
     /**

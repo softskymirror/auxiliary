@@ -58,7 +58,10 @@ public class SimpleUploadFileDemo {
         cosclient.shutdown();
     }
     
-    // 从输入流进行读取并上传到COS
+    /**
+     * 从输入流读取数据并上传到COS
+     * <p>注意：从输入流上传时必须设置contentLength，否则可能导致内存OOM</p>
+     */
     private static void simpleUploadFileFromStream() {
         // 1 初始化用户身份信息(secretId, secretKey)
         COSCredentials cred = new BasicCOSCredentials("AKIDXXXXXXXX", "1A2Z3YYYYYYYYYY");

@@ -70,7 +70,9 @@ public class DatabaseManager {
         String portStr = prop.getProperty(CONFIG_KEY_PORT);
         String database = prop.getProperty(CONFIG_KEY_DATABASE);
         String user = prop.getProperty(CONFIG_KEY_USER);
-        String password = prop.getProperty(CONFIG_KEY_PASSWORD);
+        String rawPassword = prop.getProperty(CONFIG_KEY_PASSWORD);
+        // 自动解析密码：支持 ENC() 加密格式 和 ${ENV:VAR} 环境变量引用
+        String password = CryptoUtils.resolve(rawPassword);
 
         if (host == null || portStr == null || database == null || user == null || password == null) {
             throw new IllegalStateException(
