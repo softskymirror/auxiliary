@@ -13,10 +13,11 @@ import java.util.Base64;
 /**
  * 配置加解密工具类，支持对配置文件中的敏感字段进行保护。
  * <p>
- * 支持两种安全模式：
+ * 支持三种安全模式：
  * <ul>
  *   <li><b>AES 加密</b>：配置值格式为 {@code ENC(Base64密文)}，运行时自动解密</li>
  *   <li><b>环境变量引用</b>：配置值格式为 {@code ${ENV:变量名}}，运行时从环境变量读取</li>
+ *   <li><b>Windows 凭据管理器</b>：配置值格式为 {@code ${WINCRED:凭据名}}，运行时从 Windows Credential Manager 读取</li>
  * </ul>
  * 普通明文值会原样返回，保持向后兼容。
  * <p>
@@ -34,6 +35,9 @@ public class CryptoUtils {
     private static final String ENV_PREFIX = "${ENV:";
     private static final String ENV_SUFFIX = "}";
 
+    /** Windows 凭据管理器引用前缀，如 ${WINCRED:TargetName} */
+    private static final String WINCRED_PREFIX = "${WINCRED:";
+
     /** 密钥来源的环境变量名 */
     private static final String SECRET_KEY_ENV = "APP_SECRET_KEY";
 
@@ -44,7 +48,7 @@ public class CryptoUtils {
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
     private static final String KEY_ALGORITHM = "AES";
     private static final String KEY_DERIVATION = "PBKDF2WithHmacSHA256";
-    private static final int KEY_LENGTH = 256;       // AES-256
+    private static final int KEY_LENGTH = 128;       // AES-128（兼容性更好，无需 JCE Unlimited Strength）
     private static final int ITERATION_COUNT = 65536;
     private static final int IV_LENGTH = 16;          // AES CBC IV 长度
 
@@ -56,18 +60,19 @@ public class CryptoUtils {
     // ========== 核心方法：解析配置值 ==========
 
     /**
-     * 智能解析配置值，自动识别加密值和环境变量引用。
+     * 智能解析配置值，自动识别加密值、环境变量引用和 Windows 凭据引用。
      * <p>
      * 处理优先级：
      * <ol>
      *   <li>若值为 {@code ENC(...)} 格式，进行 AES 解密后返回</li>
      *   <li>若值为 {@code ${ENV:VAR}} 格式，从环境变量读取后返回</li>
+     *   <li>若值为 {@code ${WINCRED:TargetName}} 格式，从 Windows 凭据管理器读取后返回</li>
      *   <li>否则原样返回（明文兼容模式）</li>
      * </ol>
      *
      * @param rawValue 配置文件中的原始值
      * @return 解析后的真实值
-     * @throws RuntimeException 解密失败或环境变量不存在时抛出
+     * @throws RuntimeException 解密失败、环境变量不存在或凭据读取失败时抛出
      */
     public static String resolve(String rawValue) {
         if (rawValue == null || rawValue.isEmpty()) {
@@ -85,6 +90,10 @@ public class CryptoUtils {
                 throw new RuntimeException("环境变量不存在: " + varName);
             }
             return envValue;
+        }
+        if (trimmed.startsWith(WINCRED_PREFIX) && trimmed.endsWith(ENV_SUFFIX)) {
+            String targetName = trimmed.substring(WINCRED_PREFIX.length(), trimmed.length() - ENV_SUFFIX.length());
+            return WindowsCredentialUtils.readPassword(targetName);
         }
         // 明文，原样返回
         return rawValue;

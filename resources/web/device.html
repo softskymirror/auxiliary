@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/lib/bootstrap-3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="static/lib/jquery-ui-1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="static/css/device.css">
+  </head>
+  <body>
+  <div class="content">
+    <div id="main" class="phone-area" >
+      <div id="content">
+        <nav class="navbar">
+            <p id="title" class="text-center">{{title}}</p>  
+        </nav>
+        <canvas id="phone-screen"></canvas>
+        <footer class="footer">
+          <div class="container-fluid">
+              <div class="row">
+              <!-- <div class="col-xs-3  text-center menu-button" id="btn-scale"><span class="fa "></div> -->
+                  <!-- <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip on left">Tooltip on left</button> -->
+              <div class="col-xs-3 text-center menu-button" id="btn-back"><span class="fa fa-chevron-left"></span></div>
+              <div class="col-xs-3 text-center menu-button" id="btn-home"><span class="fa fa-circle-o"></span></div>
+              <div class="col-xs-3 text-center menu-button" id="btn-menu"><span class="fa fa-align-justify"></span></div>
+              <div class="col-xs-3 text-center menu-button" id="btn-more" data-toggle="modal" data-target="#myModal"><span class="fa fa-wheelchair"></span></div>
+              <!-- Button trigger modal -->
+              </div>
+            <div class="row">
+            <div class="col-xs-3 text-center menu-button" id="display-no-sleep"><span class="fa fa-chevron-left"></span></div>
+            <div class="col-xs-3 text-center menu-button" id="close-data"><span class="fa fa-circle-o"></span></div>
+            </div>
+          </div>
+        </footer>
+      </div>
+      </div>
+    <div class="phone-controller">
+      <div class=“header-selection">
+    <div class="div-selection"  id="group" style="background-color:#FFFFFF;"  ><span class="fa fa-chevron-left"><p>掘金任务</p></span></div>
+    <div class="div-selection"  id="farewell"><span class="fa fa-circle-o"><p>手机状态</p></span></div>
+    <div class="div-selection"  id="operation"><span class="fa fa-circle-o"><p>基本操作</p></span></div>
+    <div class="div-selection"  id="settings"><span class="fa fa-circle-o"><p>参数设置</p></span></div>
+  </div >
+        <!-- group modal -->
+      <div class="controller-page" id="make-task" style="background-color:#9d9d9d;display: block"><p>应用分组表</p></div>
+        <!-- operation modal -->
+        <div class="controller-page" id="run-operation" style="background-color:#9d9d9d;display: none">
+      <p>基本操作</p>
+     <div class="sel-text-group">
+      <div class="sel-text" id="set-constant">设置常量</div>
+      <div class="sel-text" id="turnoff-mobiledata">关闭移动数据</div>
+       <div class="sel-text" id="shot-screen">截屏</div>
+         <div class="sel-text" id="make-sound">发响</div>
+     </div>
+        <p>批量操作</p>
+            <div class="sel-text-group">
+        <div class="sel-text" id="install-app">安装掘金软件</div>
+            <input type="radio"  style="width:10px;height:10px" name="killOrder" name="install-tool" value="1"/>
+            <label>同时安装掘金必备应用</label>
+            </div>
+         <p>高级操作</p>
+         <div class="sel-text" id="reset-system">重置手机</div>
+      </div>
+        <!-- info modal -->
+      <div class="controller-page" id="search-info" style="background-color: #9d9d9d;display: none">
+          <p>手机配置</p>
+      </div>
+        <!-- settings modal -->
+        <div class="controller-page" id="value-settings" style="background-color: #9d9d9d;display: none">
+            <p>参数设置</p>
+            <div class="sel-text" id="set-location" style="width:100%"><p>请选择掘金项目包本地地址:</p><div class="input-container" id="group-dir"></div></div>
+            <div class="sel-text" id="set-code" style="width:100%"><p>请输入项目分组编号：</p><div class="input-container" id="device-code"></div></div>
+            <div class="sel-text" id="set-port" style="width:100%"><p>请输入服务端口号：</p><div class="input-container" id="server-port"></div></div>
+            <div class="sel-text" id="set-cmd" style="width:100%"><p>输入Shell命令</p><div class="input-container" id="cli-cmd"></div>
+            <div class="sel-text" id="run-cmd">run</div>
+            </div>
+        </div>
+    </div>
+  </div>
+    </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <!-- 设置  -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <!-- <div class="modal-content"> -->
+          <ul class="list-group">
+            <li class="list-group-item">
+              <p>窗口大小设置</p>s
+              <div id="display-scale-slider"></div>
+            </li>
+            <li class="list-group-item">
+              <p>输出清晰度</p>
+              <div id="scale-slider"></div>
+            </li>
+            <li class="list-group-item text-center">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="rotateCheckBox"> 屏幕旋转
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="keyEventCheckBox"> 键盘映射
+                </label>
+                <p class="help-block">将你键盘按下的键位信息发送到手机</p>
+              </div>
+            </li>
+          </ul>
+        <!-- </div> -->
+      </div>
+    </div>
+<!--    <div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
+<!--      <div class="modal-dialog" role="document">-->
+<!--        &lt;!&ndash; <div class="modal-content"> &ndash;&gt;-->
+<!--        <ul class="list-group">-->
+<!--          <li class="list-group-item">-->
+<!--            <p>设置常量</p>-->
+<!--            <div id="display-no-sleep"></div>-->
+<!--          </li>-->
+<!--          <li class="list-group-item">-->
+<!--            <p>关闭移动数据</p>-->
+<!--            <div id="close-data"></div>-->
+<!--          </li>-->
+<!--          <li class="list-group-item text-center">-->
+<!--            <div class="checkbox">-->
+<!--              <label>-->
+<!--                <input type="checkbox" id="temp"> 屏幕旋转-->
+<!--              </label>-->
+<!--            </div>-->
+<!--            <div class="checkbox">-->
+<!--              <label>-->
+<!--                <input type="checkbox" id="temp1"> 键盘映射-->
+<!--              </label>-->
+<!--              <p class="help-block">将你键盘按下的键位信息发送到手机</p>-->
+<!--            </div>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--        &lt;!&ndash; </div> &ndash;&gt;-->
+<!--      </div>-->
+    </div>
+    <!-- 重置scale  -->
+    <div class="modal" id="resetScaleModal" tabindex="-1" role="dialog" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div>请等待CapService重启</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="static/lib/jquery-3.2.1.min.js"></script>
+  <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
+  <script src="static/lib/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+  <script src="static/lib/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+  <script src="static/lib/vue.js"></script>
+  <script src="static/js/keyeventConvert.js"></script>
+  <script src="static/js/device.js"></script>
+</html>
