@@ -43,20 +43,22 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by harry on 2017/5/4.
  */
 public class RemoteServer extends BaseServer {
+    private static final Logger logger = Logger.getLogger(RemoteServer.class);
     private int port = -1;
     List<Protocol> protocolList;
 
     public RemoteServer(int port) {
         listen(port);
-        protocolList = new LinkedList<Protocol>();
+        protocolList = new CopyOnWriteArrayList<>();
     }
 
     public void listen(int port) {
@@ -73,7 +75,7 @@ public class RemoteServer extends BaseServer {
                 childOption(ChannelOption.SO_KEEPALIVE, true).
                 childHandler(new ChildChannel(new RemoteServerWebsocketEventImp()));
         System.out.println("RemoteServer will start at port: " + port);
-        System.out.println("--------\r\n");
+        logger.info("RemoteServer starting on port: " + port);
         ChannelFuture future = bootstrap.bind(port).sync();
         future.channel().closeFuture().sync();
     }
@@ -81,6 +83,7 @@ public class RemoteServer extends BaseServer {
     private class RemoteServerWebsocketEventImp extends WebsocketEvent {
         @Override
         public void onConnect(ChannelHandlerContext ctx) {
+            logger.info("RemoteServer new connection: " + ctx.channel().remoteAddress());
         }
 
         @Override
@@ -100,42 +103,46 @@ public class RemoteServer extends BaseServer {
                     break;
                 }
             }
+            logger.info("RemoteServer lost connection: " + ctx.channel().remoteAddress());
         }
 
         @Override
         public void onTextMessage(ChannelHandlerContext ctx, String text) {
-            Command command = Command.ParseCommand(text);
+            Command command = Command.parseCommand(text);
+            if (command == null) {
+                logger.warn("RemoteServer received invalid command: " + text);
+                return;
+            }
             if (command.getSchem() != Command.Schem.WAITTING &&
                     command.getSchem() != Command.Schem.INPUT &&
                     command.getSchem() != Command.Schem.KEYEVENT &&
                     command.getSchem() != Command.Schem.TOUCH) {
-                System.out.println(command.getCommandString());
+                logger.info("RemoteServer command: " + command.getCommandString());
             }
 
-            if (command != null) {
-                switch (command.getSchem()) {
-                    case WAIT:
-                        waitRemoteClient(ctx, command);
-                        break;
-                    case OPEN:
-                        remoteClientOpen(ctx, command);
-                        break;
-                    case START:
-                    case WAITTING:
-                    case TOUCH:
-                    case KEYEVENT:
-                    case INPUT:
-                    case SHOT:
-                    case DEVICES:
-                    case MINICAP:
-                    case MINITOUCH:
-                    case PUSH:
-                    case MESSAGE:
-                        forwardCommand(ctx, command);
-                        break;
-                }
-            } else {
-                // Invalid Commands
+            switch (command.getSchem()) {
+                case WAIT:
+                    waitRemoteClient(ctx, command);
+                    break;
+                case OPEN:
+                    remoteClientOpen(ctx, command);
+                    break;
+                case START:
+                case WAITTING:
+                case TOUCH:
+                case KEYEVENT:
+                case INPUT:
+                case SHOT:
+                case DEVICES:
+                case MINICAP:
+                case MINITOUCH:
+                case PUSH:
+                case MESSAGE:
+                    forwardCommand(ctx, command);
+                    break;
+                default:
+                    logger.warn("Unhandled remote server command: " + command.getSchem());
+                    break;
             }
         }
 
@@ -182,7 +189,7 @@ public class RemoteServer extends BaseServer {
 
             Protocol protocol = findProtocolByKey(key);
             if (protocol == null) {
-                System.out.println("can not find key:" + key + " sn:" + sn);
+                logger.warn("Cannot find key:" + key + " sn:" + sn);
                 ctx.channel().close();
                 return;
             }

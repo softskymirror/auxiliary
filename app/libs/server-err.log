@@ -1,0 +1,16 @@
+log4j:ERROR Could not find value for key log4j.appender.R
+log4j:ERROR Could not instantiate appender named "R".
+[ConfigUtils] DeepSeek API Key 解析失败，已置空: 环境变量不存在: DEEPSEEK_API_KEY
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+Exception in thread "ADB-Device-Sync" java.lang.NumberFormatException: null
+	at java.base/java.lang.Integer.parseInt(Integer.java:614)
+	at java.base/java.lang.Integer.parseInt(Integer.java:770)
+	at com.adbtool.adb.AdbDevice.fillPropertyCahe(AdbDevice.java:239)
+	at com.adbtool.adb.AdbDevice.setIDevice(AdbDevice.java:211)
+	at com.adbtool.adb.AdbDevice.<init>(AdbDevice.java:143)
+	at com.adbtool.adb.AdbServer.refreshAdbDeviceList(AdbServer.java:370)
+	at com.adbtool.adb.AdbServer.access$100(AdbServer.java:44)
+	at com.adbtool.adb.AdbServer$1.run(AdbServer.java:235)
+	at java.base/java.lang.Thread.run(Thread.java:832)

@@ -1,246 +1,307 @@
+/**
+ * AndroidControl Index Page
+ * 设备列表首页核心逻辑
+ * 
+ * 功能：
+ * - WebSocket 连接后端获取设备列表
+ * - 设备卡片展示（截图 + 设备信息）
+ * - 点击设备打开控制页面
+ * - 支持多服务器管理
+ */
 
-// let ip = "127.0.0.1"
-// let port = 6655
+;(function() {
+    'use strict';
 
-let scale = 0.15
+    // ========== 常量 ==========
+    const DEFAULT_IP = window.location.hostname || 'localhost';
+    const DEFAULT_PORT = parseInt(window.location.port) || 6655;
 
-let device_list = new Vue({
-    el: '#phone-list',
-    data: {
-        devices: [],
-        name: "zhuhui"
-    },
-    methods: {
-        /**
-         * 删除相同服务器中的设备列表
-         */
-        clearServerDevices: function(server) {
-            for(let i = 0; i < this.devices.length;) {
-                if (this.devices[i].server == server) {
-                    this.devices.splice(i, 1)
-                    continue
+    // ========== 协议工具 ==========
+    const Protocol = {
+        parse(text) {
+            const idx = text.indexOf('://');
+            if (idx === -1) return null;
+            return { header: text.substring(0, idx), body: text.substring(idx + 3) };
+        },
+        build(header, body) {
+            return header + '://' + (body ? JSON.stringify(body) : '{}');
+        }
+    };
+
+    // ========== 网络管理器 ==========
+    class NetworkManager {
+        constructor(ip, port) {
+            this.ip = ip;
+            this.port = port;
+            this.ws = null;
+            this.handlers = {};
+            this.connected = false;
+        }
+
+        connect(handlers) {
+            this.handlers = handlers;
+            try {
+                this.ws = new WebSocket('ws://' + this.ip + ':' + this.port);
+            } catch (err) {
+                console.error('WebSocket 创建失败:', err);
+                return;
+            }
+
+            this.ws.onopen = () => {
+                this.connected = true;
+                if (this.handlers.onopen) this.handlers.onopen();
+            };
+
+            this.ws.onclose = () => {
+                this.connected = false;
+                if (this.handlers.onclose) this.handlers.onclose();
+            };
+
+            this.ws.onerror = () => {
+                console.error('WebSocket 连接错误');
+            };
+
+            this.ws.onmessage = (event) => {
+                const data = event.data;
+                if (typeof data === 'string') {
+                    this.handleText(data);
                 }
-                i++
+                // 首页不需要处理二进制数据
+            };
+        }
+
+        send(header, body) {
+            if (!this.connected || !this.ws) return;
+            this.ws.send(Protocol.build(header, body));
+        }
+
+        handleText(text) {
+            const proto = Protocol.parse(text);
+            if (!proto) return;
+            const handler = this.handlers[proto.header];
+            if (handler) {
+                handler.call(this.handlers, proto.body);
+            }
+        }
+
+        close() {
+            if (this.ws) {
+                this.ws.close();
+                this.ws = null;
             }
         }
     }
-})
 
-class NetWork {
-    constructor(ip, port) {
-        this.ip = ip
-        this.port = port
-    }
-
-    connect(config) {
-        let webSocket = new WebSocket("ws://" + this.ip + ":" + this.port)
-        webSocket.onopen = function() {
-            config.onopen()
+    // ========== 设备模型 ==========
+    class Device {
+        constructor(config, server) {
+            this.w = config.w || 0;
+            this.h = config.h || 0;
+            this.sn = config.sn || 'unknown';
+            this.server = server;
         }
-        webSocket.onclose = function() {
-            config.onclose()
+    }
+
+    // ========== 服务器模型 ==========
+    class Server {
+        constructor(ip, port) {
+            this.ip = ip;
+            this.port = port;
+            this.connected = false;
+            this.devices = [];
+            this.net = null;
         }
-        webSocket.onmessage = function(data) { 
-            config.onmessage(data)
+
+        connect() {
+            this.net = new NetworkManager(this.ip, this.port);
+            const self = this;
+
+            this.net.connect({
+                onopen() {
+                    self.connected = true;
+                    self.net.send('M_DEVICES');
+                    serverList.updateServerStatus(self.ip, self.port, true);
+                },
+                onclose() {
+                    self.connected = false;
+                    serverList.updateServerStatus(self.ip, self.port, false);
+                },
+                SM_DEVICES(body) {
+                    try {
+                        const devicesConf = JSON.parse(body);
+                        self.devices = devicesConf.map(conf => new Device(conf, self));
+
+                        // 更新全局设备列表
+                        deviceList.clearServerDevices(self);
+                        self.devices.forEach(d => deviceList.addDevice(d));
+                    } catch (err) {
+                        console.error('解析设备列表失败:', err);
+                    }
+                }
+            });
         }
-        this.webSocket = webSocket
-    }
 
-    request(name, argobj) {
-        let ss = name + "://" + (argobj ? JSON.stringify(argobj) : "{}");
-        this.webSocket.send(ss);
-    }
-}
-
-class Device {
-    constructor(configObject, server) {
-        this.w = configObject.w
-        this.h = configObject.h
-        this.sn = configObject.sn
-        this.server = server
-    }
-}
-
-class Server {
-    constructor(ip, port) {
-        this.ip = ip
-        this.port = port
-        this.connected = false // 连接状态
-        this.devices = []
-    }
-
-    connect() {
-        let net = new NetWork(this.ip, this.port)
-        let self = this
-        net.connect({
-            onopen() {
-                self.connected = true
-                // 请求获取设备列表
-                net.request("M_DEVICES", null)
-            },
-            onclose() {
-                self.connected = false
-            },
-            onmessage(msg) {
-                let data = msg.data
-                //判断请求返回的数据是文本或是字节流
-                if (typeof(data) == 'string') {
-                    this.ontext(data)
-                } else {
-                    this.onbinary(data)
-                }
-            },
-            ontext(text) {
-                let sp = text.indexOf('://')
-                if (sp == -1) {
-                    console.log("无效的协议")
-                    this.onclose()
-                }
-
-                let head = text.substr(0, sp)
-                let body = text.substring(sp + 3)
-
-                let func = this[head]
-                func.call(this, body)
-            },
-            onbinary(data) {
-            },
-            SM_DEVICES(body) {
-                let devicesConf = JSON.parse(body);
-                self.devices = []
-                for (let conf of devicesConf) {
-                    let device = new Device(conf, self)
-                    self.devices.push(device)
-                }
-                device_list.clearServerDevices(self)
-                self.devices.map(d => {
-                    device_list.devices.push(d)
-                })
+        disconnect() {
+            if (this.net) {
+                this.net.close();
+                this.net = null;
             }
-        })
-    }
-}
-
-
-let serverList = new Vue({
-    data: {
-        serverList: [
-            /*
-             {ip: 'localhost', port: 6655, connected: false}
-             */
-        ],
-    },
-    methods: {
-        addServer: function (ip, port) {
-            let server = new Server(ip, port)
-            this.serverList.push(server)
-            server.connect()
+            this.connected = false;
         }
     }
-})
 
-/**
- * js 对象转 url参数表
- */
-function object2urlParam(obj) {
-    let result = ""
-    for (let k in obj) {
-        result += k + "=" + obj[k] + "&"
-    }
-    result = result.slice(0, -1)
-    return result
-}
-
-var phoneClick = function(sn) {
-    let w = 0, h = 0
-    for (device of device_list.devices) {
-        if (device.sn == sn) {
-            w = device.w
-            h = device.h
-            break;
+    // ========== 设备列表 Vue 组件 ==========
+    const deviceList = new Vue({
+        el: '#phone-list',
+        data: {
+            devices: []
+        },
+        methods: {
+            clearServerDevices(server) {
+                this.devices = this.devices.filter(d => d.server !== server);
+            },
+            addDevice(device) {
+                // 避免重复添加
+                const exists = this.devices.some(d => d.sn === device.sn && d.server === device.server);
+                if (!exists) {
+                    this.devices.push(device);
+                }
+            },
+            phoneClick(sn) {
+                let w = 0, h = 0;
+                for (const device of this.devices) {
+                    if (device.sn === sn) {
+                        w = device.w;
+                        h = device.h;
+                        break;
+                    }
+                }
+                if (w === 0 || h === 0) {
+                    w = 1080;
+                    h = 1920;
+                }
+                const url = 'device.html?sn=' + encodeURIComponent(sn) + '&w=' + w + '&h=' + h;
+                window.open(url, '_blank');
+            }
         }
-    }
-    window.open("device.html?sn=" + sn + "&w=" + w + "&h=" + h);
-}
+    });
 
-function phoneClick(sn) {
-    
-}
+    // ========== 服务器列表 Vue 组件 ==========
+    const serverList = new Vue({
+        data: {
+            servers: []
+        },
+        methods: {
+            addServer(ip, port) {
+                // 检查是否已存在
+                const exists = this.servers.some(s => s.ip === ip && s.port === port);
+                if (exists) {
+                    console.warn('服务器已添加:', ip + ':' + port);
+                    return;
+                }
 
-window.onload = function() {
-    
-    /** html 连接方式 */
-    // $.ajax({
-    //     url: "http://127.0.0.1:6655/devices",
-    //     success: function(data) {
-    //         device_list.devices = data;
-    //     }
-    // });
+                const server = new Server(ip, port);
+                this.servers.push(server);
+                server.connect();
+            },
+            updateServerStatus(ip, port, connected) {
+                const server = this.servers.find(s => s.ip === ip && s.port === port);
+                if (server) {
+                    server.connected = connected;
+                }
+            },
+            removeServer(ip, port) {
+                const idx = this.servers.findIndex(s => s.ip === ip && s.port === port);
+                if (idx !== -1) {
+                    this.servers[idx].disconnect();
+                    this.servers.splice(idx, 1);
+                }
+            }
+        }
+    });
 
-    serverList.addServer('localhost', 6655)
-}
+    // ========== 初始化 ==========
+    function init() {
+        // 自动连接本地服务器
+        serverList.addServer(DEFAULT_IP, DEFAULT_PORT);
 
-/**
- * 添加服务器按钮点击
- */
-$('#btn-addserver').on('click', function() {
-    let val = $('#server-input').val()
-    let ip = val
-    let port = 6655
-    if (val.indexOf(':') != -1) {
-        [ip, port] = val.split(':')
-    }
-    // 添加数据到服务器列表
-    serverList.addServer(ip, port)
-})
+        // 添加服务器按钮
+        $('#btn-addserver').on('click', function() {
+            const val = $('#server-input').val().trim();
+            if (!val) return;
 
-/**
- * 群控机点击
- */
-$('#control-all-phone').on('click', function() {
-    
-     if (!isBrowser()) {
-        (function() {
-            const remote = require('electron').remote
-            const BrowserWindow = remote.BrowserWindow
-            const path = require('path')
-            const url = require('url')
-            
-            let w = 0, h = 0
+            let ip = val;
+            let port = DEFAULT_PORT;
 
-            // 创建新窗口
-            var win = new BrowserWindow({ 
-                width: 400, 
-                height: 800,
-                resizable: false,
-                title: "fuck"
-                // titleBarStyle: "hidden", // MAC隐藏菜单栏
-            })
-            
-            // 生成serverlist
-            let svrlst = []
-            for (svr of serverList.serverList) {
-                svrlst.push({
-                    ip: svr.ip,
-                    port:svr.port
-                })
+            if (val.indexOf(':') !== -1) {
+                const parts = val.split(':');
+                ip = parts[0];
+                port = parseInt(parts[1]) || DEFAULT_PORT;
             }
 
-            win.loadURL(url.format({
-                pathname: path.join(__dirname, 'control.html'),
-                protocol: 'file:',
-                slashes: true
-            }))
+            serverList.addServer(ip, port);
+            $('#server-input').val('');
+            $('#serverModal').modal('hide');
+        });
 
-            window.localStorage.setItem('svrlst', JSON.stringify(svrlst))
+        // 回车键添加服务器
+        $('#server-input').on('keypress', function(event) {
+            if (event.keyCode === 13) {
+                $('#btn-addserver').click();
+            }
+        });
 
-            // win.show()
-            win.once('ready-to-show', () => {
-                win.show()
-            })
-            // win.openDevTools();
-        })()
+        // ADB 重启按钮
+        $('#btn-restart-adb').on('click', function() {
+            const btn = $(this);
+            const icon = btn.find('.fa');
+            const originalHtml = btn.html();
+
+            // 禁用按钮，显示加载状态
+            btn.prop('disabled', true);
+            icon.removeClass('fa-refresh').addClass('fa-spinner fa-spin');
+            btn.find('.fa').next().remove(); // 移除旧文本节点
+            btn.append(' 重启中...');
+
+            // 获取当前连接的服务器地址
+            const server = serverList.servers.length > 0 ? serverList.servers[0] : null;
+            if (!server) {
+                alert('没有连接的服务器');
+                btn.prop('disabled', false);
+                btn.html(originalHtml);
+                return;
+            }
+
+            // 发送 HTTP 请求到 /restart-adb
+            $.ajax({
+                url: 'http://' + server.ip + ':' + server.port + '/restart-adb',
+                type: 'GET',
+                timeout: 15000,
+                success: function(data) {
+                    if (data.status === 'ok') {
+                        // 重启成功后刷新设备列表
+                        setTimeout(function() {
+                            server.net.send('M_DEVICES');
+                        }, 2000);
+                    }
+                    alert(data.message || (data.status === 'ok' ? 'ADB 重启成功' : 'ADB 重启失败'));
+                },
+                error: function(xhr, status, err) {
+                    alert('ADB 重启请求失败: ' + (err || status));
+                },
+                complete: function() {
+                    btn.prop('disabled', false);
+                    btn.html(originalHtml);
+                }
+            });
+        });
     }
-})
 
+    // ========== 启动 ==========
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 
+})();

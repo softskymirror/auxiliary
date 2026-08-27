@@ -28,6 +28,7 @@ package com.adbtool.androidcontrol;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.log4j.Logger;
 
 import java.security.InvalidParameterException;
 
@@ -35,7 +36,11 @@ import java.security.InvalidParameterException;
  * Created by harry on 2017/4/26.
  */
 public class Command {
+    private static final Logger logger = Logger.getLogger(Command.class);
 
+    /**
+     * 命令方案枚举 (保留旧名称以兼容)
+     */
     public enum Schem {
         WAIT("wait"),
         OPEN("open"),
@@ -64,12 +69,15 @@ public class Command {
 
     private Schem schem;
     private Object content;
+    /** 命令原始字符串，用于日志和调试 */
+    private final String rawCommand;
 
     public Command(String command) throws InvalidParameterException {
+        this.rawCommand = command;
         // 截取schem
         int splitIndex = -1;
         if ((splitIndex = command.indexOf("://")) == -1) {
-            throw new InvalidParameterException(command + " 不是一个合法的Command");
+            throw new InvalidParameterException(command + " is not a valid Command");
         }
 
         String schemStr = command.substring(0, splitIndex);
@@ -114,7 +122,7 @@ public class Command {
                 schem = Schem.MESSAGE;
                 break;
             default:
-                throw new InvalidParameterException(command + " 未知的schem");
+                throw new InvalidParameterException("Unknown scheme: " + schemStr);
         }
 
         String contentStr = command.substring(splitIndex + 3);
@@ -164,26 +172,56 @@ public class Command {
 
     public String getString(String key, String defVal) {
         if (content != null && content instanceof  JSONObject) {
-            String s = ((JSONObject) content).getString(key);
-            return s == null ? defVal : s;
+            try {
+                String s = ((JSONObject) content).getString(key);
+                return s == null ? defVal : s;
+            } catch (JSONException e) {
+                logger.warn("JSON key lookup failed: " + key, e);
+                return defVal;
+            }
         }
-        return "";
+        return defVal;
     }
 
     public Object get(String key) {
         if (content != null && content instanceof JSONObject) {
-            return ((JSONObject) content).get(key);
+            try {
+                return ((JSONObject) content).get(key);
+            } catch (JSONException e) {
+                logger.warn("JSON key get failed: " + key, e);
+                return null;
+            }
         }
         return null;
     }
 
-    public static Command ParseCommand(String command) {
+    /**
+     * 解析命令字符串，返回Command对象，解析失败返回null
+     * @param command 命令字符串
+     * @return Command对象或null
+     */
+    public static Command parseCommand(String command) {
         try {
-            Command cmd = new Command(command);
-            return cmd;
+            return new Command(command);
         } catch (InvalidParameterException ex) {
+            logger.warn("Failed to parse command: " + command + " - " + ex.getMessage());
             return null;
         }
+    }
+
+    /**
+     * @deprecated Use {@link #parseCommand(String)} instead
+     */
+    @Deprecated
+    public static Command ParseCommand(String command) {
+        return parseCommand(command);
+    }
+
+    /**
+     * 获取原始命令字符串
+     */
+    public String getRawCommand() {
+        return rawCommand;
     }
 
 }

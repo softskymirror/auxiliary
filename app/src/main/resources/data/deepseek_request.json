@@ -1,0 +1,74 @@
+{
+  "description": "DeepSeek API 请求参数配置文件，用于定义默认的聊天请求参数",
+  "default": {
+    "model": "deepseek-v4-pro",
+    "temperature": 0.7,
+    "topP": 0.9,
+    "maxTokens": 4096,
+    "frequencyPenalty": 0.0,
+    "presencePenalty": 0.0,
+    "thinking": {
+      "type": "enabled"
+    },
+    "reasoningEffort": "high"
+  },
+  "presets": {
+    "coding": {
+      "description": "编程助手模式 - 适合代码生成和技术问答",
+      "model": "deepseek-v4-pro",
+      "temperature": 0.3,
+      "topP": 0.85,
+      "maxTokens": 8192,
+      "systemPrompt": "你是一个专业的编程助手，擅长各种编程语言和技术。请提供准确、高效的代码示例和技术解答。",
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoningEffort": "high"
+    },
+    "translation": {
+      "description": "翻译模式 - 适合多语言翻译",
+      "model": "deepseek-v4-flash",
+      "temperature": 0.5,
+      "topP": 0.9,
+      "maxTokens": 4096,
+      "systemPrompt": "你是一个专业的翻译官，请将用户输入的内容准确翻译成目标语言，保持原文的语气和风格。",
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "creative": {
+      "description": "创意写作模式 - 适合文案创作和头脑风暴",
+      "model": "deepseek-v4-pro",
+      "temperature": 0.9,
+      "topP": 0.95,
+      "maxTokens": 4096,
+      "systemPrompt": "你是一个富有创意的写作助手，擅长文案创作、故事编写和头脑风暴。请用生动有趣的方式帮助用户创作。",
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "analysis": {
+      "description": "深度分析模式 - 适合复杂问题推理和数学证明",
+      "model": "deepseek-v4-pro",
+      "temperature": 0.2,
+      "topP": 0.8,
+      "maxTokens": 16384,
+      "systemPrompt": "你是一个严谨的分析专家，擅长逻辑推理、数学证明和深度问题分析。请详细展示推理过程。",
+      "thinking": {
+        "type": "enabled"
+      },
+      "reasoningEffort": "high"
+    },
+    "daily": {
+      "description": "日常对话模式 - 适合生活工作场景的快速问答",
+      "model": "deepseek-v4-flash",
+      "temperature": 0.7,
+      "topP": 0.9,
+      "maxTokens": 2048,
+      "systemPrompt": "你是一个友好的智能助手，请用简洁明了的中文回答用户的生活和工作问题。",
+      "thinking": {
+        "type": "disabled"
+      }
+    }
+  }
+}

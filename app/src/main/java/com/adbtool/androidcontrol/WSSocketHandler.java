@@ -39,11 +39,13 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
 
 /**
  * Created by harry on 2017/4/18.
  */
 public class WSSocketHandler extends SimpleChannelInboundHandler<Object> {
+    private static final Logger logger = Logger.getLogger(WSSocketHandler.class);
 
     WebSocketServerHandshaker handshaker;
     WebsocketEvent event;
@@ -154,7 +156,14 @@ public class WSSocketHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
-        cause.printStackTrace();
+        logger.warn("WebSocket exception from " + ctx.channel().remoteAddress() + ": " + cause.getMessage(), cause);
         ctx.close();
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        binaryCache = new byte[0];
+        handshaker = null;
+        super.handlerRemoved(ctx);
     }
 }

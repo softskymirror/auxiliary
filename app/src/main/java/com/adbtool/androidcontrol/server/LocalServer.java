@@ -57,8 +57,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by harry on 2017/4/18.
@@ -71,7 +71,7 @@ public class LocalServer extends BaseServer {
 
     public LocalServer(int port) {
         listen(port);
-        protocolList = new LinkedList<Protocol>();
+        protocolList = new CopyOnWriteArrayList<>();
     }
 
     public void listen(int port) {
@@ -88,7 +88,7 @@ public class LocalServer extends BaseServer {
                 childOption(ChannelOption.SO_KEEPALIVE, true).
                 childHandler(new ChildChannel(new LocalServerWebsocketEventImp()));
         System.out.println("LocalServer will start at port: " + port);
-        System.out.println("--------\r\n");
+        logger.info("LocalServer starting on port: " + port);
         ChannelFuture future = bootstrap.bind(port).sync();
         future.channel().closeFuture().sync();
     }
@@ -117,7 +117,7 @@ public class LocalServer extends BaseServer {
                     break;
                 }
             }
-            logger.info("Websocket lost connection!" + ctx.channel().remoteAddress());
+            logger.info("WebSocket lost connection: " + ctx.channel().remoteAddress());
         }
 
         @Override
@@ -166,15 +166,16 @@ public class LocalServer extends BaseServer {
                     file.delete();
                 }
                 System.out.println(infoJSON);
+                logger.debug("Binary message: " + infoJSON);
                 try {
                     FileOutputStream os = new FileOutputStream(file, true);
                     byte[] bs = Arrays.copyOfRange(data, 2 + headlen, data.length);
                     os.write(bs);
                     os.close();
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    logger.error("File not found: " + fileMessage.name, e);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IO error writing file: " + fileMessage.name, e);
                 }
                 if (fileMessage.offset + fileMessage.packagesize == fileMessage.filesize) {
                     ctx.channel().writeAndFlush(new TextWebSocketFrame("message://upload file success"));

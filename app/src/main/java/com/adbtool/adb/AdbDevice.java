@@ -67,8 +67,8 @@ public class AdbDevice {
     /** PropertyCahe KEY for screenSize 获取的是 widthxheight的字符串 */
     public static final String SCREEN_SIZE = "SCREEN_SIZE";
 
-    /** PropertyCahe KEY for electric quantity 获取的是 widthxheight的字符串 */
-    public static final String ELECTRIC_QUANLITY = "SCREEN_SIZE";
+    /** PropertyCahe KEY for electric quantity 获取的是电量信息 */
+    public static final String ELECTRIC_QUANLITY = "ELECTRIC_QUANLITY";
 
     /** PropertyCahe Standard Value for isSIMExists*/
     public static final String IS_SIM_EXISTS="IS_SIM_EXISTS";
@@ -89,8 +89,14 @@ public class AdbDevice {
     /** Reference From UsbDevice */
     private final UsbDevice usbDevice;
     
-    /**  */
+    /** 属性缓存 */
     Map<String, String> propertyCahe = new HashMap<>();
+
+    /** 缓存时间戳，用于TTL过期检测 */
+    Map<String, Long> propertyTimestamps = new HashMap<>();
+
+    /** 默认缓存过期时间: 5分钟 */
+    private static final long CACHE_TTL_MS = 5 * 60 * 1000;
     
     /** Device Type */
     public enum Type {
@@ -230,13 +236,12 @@ public class AdbDevice {
      */
     private void fillPropertyCahe()  {
                String sdk = iDevice.getProperty(Constant.PROP_SDK);
-               int sdkv = Integer.parseInt(sdk);
                // serialNumber
                propertyCahe.put(SERIAL_NUMBER, iDevice.getSerialNumber());
                // abi & sdk
                String abi = iDevice.getProperty(Constant.PROP_ABI);
                propertyCahe.put(Constant.PROP_ABI, abi);
-               propertyCahe.put(Constant.PROP_SDK, sdk);
+               propertyCahe.put(Constant.PROP_SDK, sdk != null ? sdk : "");
                propertyCahe.put(DEVICE_CODE, code);
            }
 
@@ -244,33 +249,44 @@ public class AdbDevice {
 
     //添加或更新设备尺寸参数缓存
       public void refreshScreenSize(){
-          String sdk = iDevice.getProperty(Constant.PROP_SDK);
-          // android 4.3 以下没有 displays
-         int sdkv = Integer.parseInt(sdk);
-          String shellCmd = sdkv > 17 ? "dumpsys window displays | sed -n '3p'" : "dumpsys window";
-          String str = AdbServer.executeShellCommand(iDevice, shellCmd);
-        if (str != null && !str.isEmpty()) {
-        Pattern pattern = Pattern.compile("init=(\\d+x\\d+)");
-        Matcher m = pattern.matcher(str);
-        if (m.find()) {
-            if (!m.group(1).equals("16x16")) propertyCahe.put(SCREEN_SIZE, m.group(1));
-            else propertyCahe.put(SCREEN_SIZE, STANDARD_SCREEN_SIZE);
-            System.out.println(SERIAL_NUMBER + ":" + "SCREEN_SIZE：" + propertyCahe.get(SCREEN_SIZE));
-        }
+          try {
+              String sdk = iDevice.getProperty(Constant.PROP_SDK);
+              // android 4.3 以下没有 displays
+             int sdkv = (sdk != null) ? Integer.parseInt(sdk) : 0;
+              String shellCmd = sdkv > 17 ? "dumpsys window displays | sed -n '3p'" : "dumpsys window";
+              String str = AdbServer.executeShellCommand(iDevice, shellCmd);
+            if (str != null && !str.isEmpty()) {
+                Pattern pattern = Pattern.compile("init=(\\d+x\\d+)");
+                Matcher m = pattern.matcher(str);
+                if (m.find()) {
+                    if (!m.group(1).equals("16x16")) {
+                        putPropertyCache(SCREEN_SIZE, m.group(1));
+                    } else {
+                        putPropertyCache(SCREEN_SIZE, STANDARD_SCREEN_SIZE);
+                    }
+                    logger.info("设备(" + getSerialNumber() + ") SCREEN_SIZE=" + propertyCahe.get(SCREEN_SIZE));
+                }
+            }
+          } catch (Exception e) {
+              logger.warn("刷新屏幕尺寸失败: " + e.getMessage());
+          }
     }
-}
 
     //添加设备电量参数缓存
     public void refreshElectricQuanlity(){
-        String cmd="dumpsys battery|sed -n '11p'";
-        String str=AdbServer.executeShellCommand(iDevice,cmd);
-        if(str!=null&&!str.isEmpty()){
-            Pattern pattern1=Pattern.compile("level: (\\d+)");
-            Matcher m1 = pattern1.matcher(str);
-            if (m1.find()) {
-                propertyCahe.put(ELECTRIC_QUANLITY, m1.group(0));
-                System.out.println(ELECTRIC_QUANLITY + ":" + propertyCahe.get(ELECTRIC_QUANLITY));
+        try {
+            String cmd="dumpsys battery|sed -n '11p'";
+            String str=AdbServer.executeShellCommand(iDevice,cmd);
+            if(str!=null&&!str.isEmpty()){
+                Pattern pattern1=Pattern.compile("level: (\\d+)");
+                Matcher m1 = pattern1.matcher(str);
+                if (m1.find()) {
+                    putPropertyCache(ELECTRIC_QUANLITY, m1.group(0));
+                    logger.info("设备(" + getSerialNumber() + ") " + ELECTRIC_QUANLITY + "=" + propertyCahe.get(ELECTRIC_QUANLITY));
+                }
             }
+        } catch (Exception e) {
+            logger.warn("刷新电量信息失败: " + e.getMessage());
         }
     }
 
@@ -279,12 +295,14 @@ public class AdbDevice {
 
     //添加设备是否有SIM卡及运营商
     public void refreshSIMInfo() {
-        String cmd = "getprop gsm.sim.operator.numeric";
-        String str = AdbServer.executeShellCommand(iDevice, cmd);
-        boolean isexists=false;
-        if (str != null && !str.isEmpty()) isexists=true; else isexists=false;
-        propertyCahe.put(IS_SIM_EXISTS, Boolean.toString(isexists));
-
+        try {
+            String cmd = "getprop gsm.sim.operator.numeric";
+            String str = AdbServer.executeShellCommand(iDevice, cmd);
+            boolean isexists = (str != null && !str.trim().isEmpty());
+            putPropertyCache(IS_SIM_EXISTS, Boolean.toString(isexists));
+        } catch (Exception e) {
+            logger.warn("刷新SIM信息失败: " + e.getMessage());
+        }
     }
 
     //获取指定已安装APP信息
@@ -308,11 +326,29 @@ public class AdbDevice {
 
 
     /**
-     * 在缓存中查找属性值
-     * @param key
+     * 在缓存中查找属性值，支持TTL过期检测
+     * @param key 属性键
+     * @return 缓存值，如果不存在或已过期则返回null
      */
     public String findPropertyCahe(String key) {
+        Long timestamp = propertyTimestamps.get(key);
+        if (timestamp != null && (System.currentTimeMillis() - timestamp) > CACHE_TTL_MS) {
+            // 缓存已过期，移除
+            propertyCahe.remove(key);
+            propertyTimestamps.remove(key);
+            return null;
+        }
         return propertyCahe.get(key);
+    }
+
+    /**
+     * 更新缓存值并记录时间戳
+     * @param key 属性键
+     * @param value 属性值
+     */
+    public void putPropertyCache(String key, String value) {
+        propertyCahe.put(key, value);
+        propertyTimestamps.put(key, System.currentTimeMillis());
     }
 
     public String getAppGroupDir(String dir,String code){
@@ -345,19 +381,20 @@ public class AdbDevice {
     }
 
     /**
-     * 批量安装APPc
+     * 批量安装APP
      */
     public void installMultiAPP(String dir,String code,boolean isAdd)  {
         String code_cmd="chcp 65001";
         String cmd="for %i in "+getAppGroupDir(dir,code)+" do "+code_cmd+"|adb -s "+iDevice.getSerialNumber()+" install %i";
         String add_cmd="for %i in "+getAppToolDir(dir)+" do "+code_cmd+"|adb -s "+iDevice.getSerialNumber()+" install %i";
         try {
+            logger.info("开始批量安装APP, 设备: " + iDevice.getSerialNumber());
             Cmd.executive(cmd);
             if(isAdd) Cmd.executive(add_cmd);
+            logger.info("批量安装APP完成");
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("批量安装APP失败", e);
         }
-        System.out.println("cmd:"+cmd);
     }
 
 

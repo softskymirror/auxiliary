@@ -7,14 +7,11 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import com.commontool.XMLParser;
 
-import static com.commontool.XMLParser.loadFromFile;
-import static com.commontool.XMLParser.saveToFile;
+import static com.commontool.XMLUtils.loadFromFile;
+import static com.commontool.XMLUtils.saveToFile;
 
 public class XMLForSqlConvertor {
     /**

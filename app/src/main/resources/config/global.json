@@ -1,0 +1,19 @@
+{
+  "jsonFile": "config/databases.json",
+  "propFilePath": "dbprop/db.properties",
+  "pomFilepath": "config/pom.xml",
+  "serverPort": 8080,
+  "testPort": 6655,
+  "resource.root": "resources",
+  "project.root": "project",
+  "data.root": "data",
+  "deepseek": {
+    "apiKey": "${ENV:DEEPSEEK_API_KEY}",
+    "model": "deepseek-v4-pro",
+    "baseUrl": "https://api.deepseek.com/v1/",
+    "thinkingEnabled": true,
+    "reasoningEffort": "high",
+    "systemPrompt": "你是一个智能助手，请用中文回答用户的问题。",
+    "requestParamsFile": "data/deepseek_request.json"
+  }
+}

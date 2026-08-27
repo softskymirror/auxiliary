@@ -29,6 +29,8 @@ package com.adbtool.androidcontrol;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.adbtool.adb.AdbDevice;
 
+import java.util.Objects;
+
 /**
  * 获取每一台设备指定APP的安装信息
  */
@@ -66,6 +68,25 @@ public class APPInfo {
         @JSONField(name = "install")
         public boolean isInstall() {
             return is_install;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            APPInfo appInfo = (APPInfo) o;
+            return Objects.equals(p_name, appInfo.p_name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(p_name);
+        }
+
+        @Override
+        public String toString() {
+            return "APPInfo{name=" + name + ", version=" + version
+                    + ", p_name=" + p_name + ", installed=" + is_install + "}";
         }
     }
 

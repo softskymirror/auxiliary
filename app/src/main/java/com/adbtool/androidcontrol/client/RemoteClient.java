@@ -39,6 +39,7 @@ import com.adbtool.minicap.MinicapListener;
 import com.adbtool.minitouch.Minitouch;
 import com.adbtool.minitouch.MinitouchListener;
 import com.adbtool.util.Constant;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,17 +48,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Created by harry on 2017/5/3.
+ * RemoteClient - connects to a remote server via WebSocket, proxies commands locally.
  */
 public class RemoteClient extends BaseClient implements MinicapListener, MinitouchListener {
 
-    static final int DATA_TIMEOUT = 100; //ms
-    private boolean isWaitting = false;
-    private BlockingQueue<LocalClient.ImageData> dataQueue = new LinkedBlockingQueue<LocalClient.ImageData>();
+    private static final Logger logger = Logger.getLogger(RemoteClient.class);
 
     private String ip;
     private int port;
@@ -76,7 +73,7 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
         if (serialNumber == null || serialNumber.isEmpty()) {
             AdbDevice device = AdbServer.server().getFirstDevice();
             if (device == null)
-                throw new RuntimeException("未找到设备！");
+                throw new RuntimeException("No device found!");
             this.serialNumber = device.getIDevice().getSerialNumber();
         }
 
@@ -85,6 +82,14 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
         ws.connect();
     }
 
+    @Override
+    protected void sendImage(byte[] data) {
+        if (ws != null) {
+            ws.sendBinary(data);
+        }
+    }
+
+    // --- Minicap callbacks ---
     @Override
     public void onStartup(Minicap minicap, boolean success) {
         if (ws != null) {
@@ -104,22 +109,10 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
 
     @Override
     public void onJPG(Minicap minicap, byte[] data) {
-        if (isWaitting) {
-            if (dataQueue.size() > 0) {
-                dataQueue.add(new LocalClient.ImageData(data));
-                // 挑选没有超时的图片
-                LocalClient.ImageData d = getUsefulImage();
-                sendImage(d.data);
-            } else {
-                sendImage(data);
-            }
-            isWaitting = false;
-        } else {
-            clearObsoleteImage();
-            dataQueue.add(new LocalClient.ImageData(data));
-        }
+        onNewJPG(data);
     }
 
+    // --- Minitouch callbacks ---
     @Override
     public void onStartup(Minitouch minitouch, boolean success) {
         if (ws != null) {
@@ -134,50 +127,8 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
         }
     }
 
-    private void sendImage(byte[] data) {
-        if (ws != null) {
-            ws.sendBinary(data);
-        }
-    }
-
-    private void clearObsoleteImage() {
-        LocalClient.ImageData d = dataQueue.peek();
-        long curTS = System.currentTimeMillis();
-        while (d != null) {
-            if (curTS - d.timesp < DATA_TIMEOUT) {
-                dataQueue.poll();
-                d = dataQueue.peek();
-            } else {
-                break;
-            }
-        }
-    }
-
-    private LocalClient.ImageData getUsefulImage() {
-        long curTS = System.currentTimeMillis();
-        // 挑选没有超时的图片
-        LocalClient.ImageData d = null;
-        while (true) {
-            d = dataQueue.poll();
-            // 如果没有超时，或者超时了但是最后一张图片，也发送给客户端
-            if (d == null || curTS - d.timesp < DATA_TIMEOUT || dataQueue.size() == 0) {
-                break;
-            }
-        }
-        return d;
-    }
-
     public void setWaitting(boolean waitting) {
-        isWaitting = waitting;
-        trySendImage();
-    }
-
-    private void trySendImage() {
-        LocalClient.ImageData d = getUsefulImage();
-        if (d != null) {
-            isWaitting = false;
-            sendImage(d.data);
-        }
+        setWaiting(waitting);
     }
 
     void executeCommand(Command command) {
@@ -187,6 +138,7 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
                 break;
             case TOUCH:
                 touchCommand(command);
+                break; // fixed: was missing break
             case WAITTING:
                 waittingCommand(command);
                 break;
@@ -198,6 +150,9 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
                 break;
             case PUSH:
                 pushCommand(command);
+                break;
+            default:
+                logger.warn("Unhandled command schem: " + command.getSchem());
                 break;
         }
     }
@@ -218,12 +173,15 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
     }
 
     private void keyeventCommand(Command command) {
-        int k = Integer.parseInt(command.getContent());
-        if (minitouch != null) minitouch.sendKeyEvent(k);
+        try {
+            int k = Integer.parseInt(command.getContent());
+            if (minitouch != null) minitouch.sendKeyEvent(k);
+        } catch (NumberFormatException e) {
+            logger.warn("Invalid keyevent: " + command.getContent());
+        }
     }
 
-
-    private void touchCommand( Command command) {
+    private void touchCommand(Command command) {
         String str = (String) command.getContent();
         if (minitouch != null) minitouch.sendEvent(str);
     }
@@ -239,23 +197,27 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
 
         AdbDevice device = AdbServer.server().getDevice(serialNumber);
         try {
-            device.getIDevice().pushFile(Constant.getTmpFile(name).getAbsolutePath(), path + "/" + name);
+            if (device != null) {
+                device.getIDevice().pushFile(Constant.getTmpFile(name).getAbsolutePath(), path + "/" + name);
+            }
         } catch (Exception e) {
+            logger.error("Failed to push file: " + name, e);
         }
-        ws.sendText("message://pushfile success");
+        if (ws != null) {
+            ws.sendText("message://pushfile success");
+        }
     }
 
     private void startMinicap(Command command) {
         if (minicap != null) {
             minicap.kill();
         }
-        // 获取请求的配置
         JSONObject obj = (JSONObject) command.get("config");
         Float scale = obj.getFloat("scale");
         Float rotate = obj.getFloat("rotate");
-        if (scale == null) {scale = 0.3f;}
-        if (scale < 0.01) {scale = 0.01f;}
-        if (scale > 1.0) {scale = 1.0f;}
+        if (scale == null) { scale = 0.3f; }
+        if (scale < 0.01) { scale = 0.01f; }
+        if (scale > 1.0) { scale = 1.0f; }
         if (rotate == null) { rotate = 0.0f; }
         Minicap minicap = new Minicap(serialNumber);
         minicap.addEventListener(this);
@@ -265,7 +227,7 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
 
     private void startMinitouch(Command command) {
         if (minitouch != null) {
-            minicap.kill();
+            minitouch.kill(); // fixed: was incorrectly killing minicap
         }
 
         Minitouch minitouch = new Minitouch(serialNumber);
@@ -277,7 +239,7 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
     class MyWebsocketEvent extends WebSocketAdapter {
         @Override
         public void onConnected(WebSocket websocket, Map<String, List<String>> headers) {
-            System.out.println("Connect to server " + ip + ":" + port);
+            logger.info("Connected to server " + ip + ":" + port);
             JSONObject obj = new JSONObject();
             obj.put("sn", serialNumber);
             obj.put("key", key);
@@ -286,7 +248,7 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
 
         @Override
         public void onTextMessage(WebSocket websocket, String text) {
-            Command command = Command.ParseCommand(text);
+            Command command = Command.parseCommand(text);
             if (command != null) {
                 switch (command.getSchem()) {
                     case START:
@@ -297,6 +259,9 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
                     case PUSH:
                         executeCommand(command);
                         break;
+                    default:
+                        logger.warn("Unhandled remote command: " + command.getSchem());
+                        break;
                 }
             }
         }
@@ -306,8 +271,8 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
             int headlen = (data[1] & 0xFF) << 8 | (data[0] & 0xFF);
             String infoJSON = new String(data, 2, headlen);
             BinaryMessage message = BinaryMessage.parse(infoJSON);
-            System.out.println(infoJSON);
-            if (message.getType().equals("file")) {
+            logger.debug("Binary message received: " + infoJSON);
+            if (message != null && "file".equals(message.getType())) {
                 FileMessage fileMessage = (FileMessage) message;
                 File file = Constant.getTmpFile(fileMessage.name);
                 if (fileMessage.offset == 0 && file.exists()) {
@@ -319,9 +284,9 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
                     os.write(bs);
                     os.close();
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    logger.error("File not found: " + fileMessage.name, e);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("IO error writing file: " + fileMessage.name, e);
                 }
                 if (fileMessage.offset + fileMessage.packagesize == fileMessage.filesize) {
                     ws.sendText("message://upload file success");
@@ -331,7 +296,7 @@ public class RemoteClient extends BaseClient implements MinicapListener, Minitou
 
         @Override
         public void onDisconnected(WebSocket websocket, WebSocketFrame serverCloseFrame, WebSocketFrame clientCloseFrame, boolean closedByServer) {
-            System.out.println("Server disconnected");
+            logger.warn("Server disconnected: " + ip + ":" + port);
             System.exit(0);
         }
     }

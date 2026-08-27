@@ -27,33 +27,61 @@
 package com.adbtool.androidcontrol.message;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by harry on 2017/5/10.
+ * BinaryMessage - registry-based factory for parsing binary message headers.
+ * Subclasses register their type via {@link #registerType(String, Class)}.
  */
 public class BinaryMessage {
 
+    private static final Logger logger = Logger.getLogger(BinaryMessage.class);
+
     private String type;
-    private static Map<String, Class> map = new HashMap<>();
+    private static final Map<String, Class<? extends BinaryMessage>> map = new HashMap<>();
 
     static {
         map.put("file", FileMessage.class);
     }
 
-    public static BinaryMessage parse(String json) {
-        JSONObject jsonObject = (JSONObject) JSONObject.parse(json);
-        String type = jsonObject.getString("type");
-        Class c = map.get(type);
-        BinaryMessage instance = null;
-        try {
-            instance = (BinaryMessage) JSONObject.toJavaObject(jsonObject, c);
-        } catch (Exception e) {
-            e.printStackTrace();
+    /**
+     * Register a new BinaryMessage subtype.
+     * @param type the type identifier (must match the "type" field in JSON)
+     * @param clazz the subclass to instantiate for this type
+     */
+    public static void registerType(String type, Class<? extends BinaryMessage> clazz) {
+        if (type == null || clazz == null) {
+            throw new IllegalArgumentException("type and clazz must not be null");
         }
-        return instance;
+        map.put(type, clazz);
+    }
+
+    /**
+     * Parse a JSON header into the appropriate BinaryMessage subclass.
+     * @param json the JSON string from the binary message header
+     * @return parsed BinaryMessage, or null if parsing fails
+     */
+    public static BinaryMessage parse(String json) {
+        if (json == null || json.isEmpty()) {
+            logger.warn("BinaryMessage.parse received null or empty JSON");
+            return null;
+        }
+        try {
+            JSONObject jsonObject = (JSONObject) JSONObject.parse(json);
+            String type = jsonObject.getString("type");
+            Class<? extends BinaryMessage> c = map.get(type);
+            if (c == null) {
+                logger.warn("Unknown binary message type: " + type);
+                return null;
+            }
+            return (BinaryMessage) JSONObject.toJavaObject(jsonObject, c);
+        } catch (Exception e) {
+            logger.error("Failed to parse binary message: " + json, e);
+            return null;
+        }
     }
 
     public void setType(String type) {
@@ -62,5 +90,10 @@ public class BinaryMessage {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "BinaryMessage{type='" + type + "'}";
     }
 }

@@ -30,11 +30,21 @@ import com.adbtool.androidcontrol.client.LocalClient;
 import com.adbtool.minicap.Minicap;
 import com.adbtool.minitouch.Minitouch;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.log4j.Logger;
 
 /**
- * Created by harry on 2017/4/18.
+ * 设备控制会话管理，维护浏览器和客户端之间的双向WebSocket连接
  */
 public class Protocol {
+    private static final Logger logger = Logger.getLogger(Protocol.class);
+
+    /** 会话状态枚举 */
+    public enum State {
+        INITIALIZING, ACTIVE, CLOSING, CLOSED
+    }
+
+    /** 默认会话超时时间: 30分钟 */
+    public static final long DEFAULT_TIMEOUT_MS = 30 * 60 * 1000;
 
     public ChannelHandlerContext broswerSocket;
     public ChannelHandlerContext clientSocket;
@@ -43,6 +53,13 @@ public class Protocol {
     public Minicap minicap;
     public Minitouch minitouch;
     public LocalClient localClient;
+
+    /** 会话状态 */
+    private volatile State state = State.INITIALIZING;
+    /** 最后活跃时间戳 */
+    private volatile long lastActiveTime = System.currentTimeMillis();
+    /** 会话创建时间 */
+    private final long createTime = System.currentTimeMillis();
 
     public void broswerDisconnect() {
         if (clientSocket != null) {
@@ -54,6 +71,36 @@ public class Protocol {
         if (broswerSocket != null) {
             broswerSocket.channel().close();
         }
+    }
+
+    /** 更新最后活跃时间 */
+    public void touch() {
+        this.lastActiveTime = System.currentTimeMillis();
+    }
+
+    /** 检查会话是否已超时 */
+    public boolean isTimedOut() {
+        return isTimedOut(DEFAULT_TIMEOUT_MS);
+    }
+
+    /** 检查会话是否已超时 */
+    public boolean isTimedOut(long timeoutMs) {
+        return (System.currentTimeMillis() - lastActiveTime) > timeoutMs;
+    }
+
+    /** 获取会话状态 */
+    public State getState() {
+        return state;
+    }
+
+    /** 设置会话状态 */
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    /** 获取会话存活时长(ms) */
+    public long getAliveDurationMs() {
+        return System.currentTimeMillis() - createTime;
     }
 
     public void setBroswerSocket(ChannelHandlerContext broswerSocket) {
@@ -114,16 +161,28 @@ public class Protocol {
     }
 
     public void close() {
+        setState(State.CLOSING);
 
         if (minicap != null) {
-            minicap.kill();
+            try {
+                minicap.kill();
+            } catch (Exception e) {
+                logger.warn("Failed to kill minicap for session " + key, e);
+            }
             minicap = null;
         }
 
         if (minitouch != null) {
-            minitouch.kill();
+            try {
+                minitouch.kill();
+            } catch (Exception e) {
+                logger.warn("Failed to kill minitouch for session " + key, e);
+            }
             minitouch = null;
         }
 
+        setState(State.CLOSED);
+        logger.info("Protocol session closed: sn=" + sn + ", key=" + key
+                + ", alive=" + (getAliveDurationMs() / 1000) + "s");
     }
 }

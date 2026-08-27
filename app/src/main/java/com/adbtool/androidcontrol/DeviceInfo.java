@@ -30,6 +30,8 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.base.Strings;
 import com.adbtool.adb.AdbDevice;
 
+import java.util.Objects;
+
 /**
  * Created by harry on 2017/4/21.
  *
@@ -90,5 +92,24 @@ public class DeviceInfo {
     @JSONField(name = "model")
     public String getModel() {
         return model;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DeviceInfo that = (DeviceInfo) o;
+        return Objects.equals(sn, that.sn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sn);
+    }
+
+    @Override
+    public String toString() {
+        return "DeviceInfo{sn=" + sn + ", w=" + width + ", h=" + height
+                + ", brand=" + brand + ", model=" + model + "}";
     }
 }

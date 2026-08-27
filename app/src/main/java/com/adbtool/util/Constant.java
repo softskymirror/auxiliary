@@ -26,117 +26,93 @@
 
 package com.adbtool.util;
 
+import com.system.ConfigUtils;
+
 import java.io.*;
-import java.util.Properties;
 
 /**
  * Created by harry on 2017/4/17.
+ * <p>
+ * 薄代理层：所有路径配置统一委托给 {@link ConfigUtils.ConfigLoader}，
+ * 配置文件由 global.json 集中管理（原 adb-devices.properties 已废弃）。
+ * <p>
+ * 保留原有 API 签名，10 个调用方无需改动。
  */
 public class Constant {
 
     public static final String PROP_ABI = "ro.product.cpu.abi";
     public static final String PROP_SDK = "ro.build.version.sdk";
-    public static final String PROPERTIES_FILE = "yeetor.properties";
-    
-    private static Properties properties = null;
-    
+
     /**
-     * 这里初始化配置文件......yeetor.properties
-     * 
-     * 优先级：同级目录 > 包内部默认文件
+     * 内部默认配置加载器（懒加载，避免类加载时失败）。
+     * 使用双重检查锁保证线程安全。
      */
-    static {
-        properties = new Properties();
-        String file_path=JarTool.getJarDir() + File.separator + PROPERTIES_FILE;
-        if (!loadPropertiesWithFileName(file_path)) {
-            InputStream inputStream = ClassLoader.getSystemResourceAsStream(PROPERTIES_FILE);
-            if (!loadPropertiesWithStream(inputStream)) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+    private static volatile ConfigUtils.ConfigLoader defaultConfig;
+
+    private static ConfigUtils.ConfigLoader getConfig() {
+        if (defaultConfig == null) {
+            synchronized (Constant.class) {
+                if (defaultConfig == null) {
+                    defaultConfig = new ConfigUtils.ConfigLoader();
                 }
             }
         }
+        return defaultConfig;
     }
 
     /**
-     * 加载内类文件
-     * @param fileName
-     * @return
-     */
-    static boolean loadPropertiesWithFileName(String fileName) {
-        File file = new File(fileName);
-        if (file.isHidden() || !file.exists()) {
-            return false;
-        }
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(file);
-            loadPropertiesWithStream(inputStream);
-            return true;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
-    }
-    
-    static boolean loadPropertiesWithStream(InputStream inputStream) {
-        try {
-            properties.load(inputStream);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 读取配置
-     * @return
+     * 读取资源目录（minicap/minitouch/web 等静态资源）。
+     *
+     * @return resource.root 对应的 File
      */
     public static File getResourceDir() {
-        File resources = new File(properties.getProperty("resource.root"));
-        return resources;
-    }
-
-    public static File getProjectDir(){
-        File resources = new File(properties.getProperty("project.root"));
-        return resources;
-    }
-    /**
-     * 读取data缓存地址
-     * @return
-     */
-    public static File getDataDir(){
-        File resources = new File(properties.getProperty("data.root"));
-        return resources;
+        return getConfig().getResourceDir();
     }
 
     /**
-     * 读取data缓存指定文件夹
-     * @return
+     * 读取项目目录。
+     *
+     * @return project.root 对应的 File
      */
-    public static File getDataCache(String name){
-        File dir = getDataDir();
-        return new File(dir, name);
+    public static File getProjectDir() {
+        return getConfig().getProjectDir();
     }
+
     /**
-     * 读取项目缓存指定文件夹
-     * @return
+     * 读取数据缓存根目录。
+     *
+     * @return data.root 对应的 File
+     */
+    public static File getDataDir() {
+        return getConfig().getDataDir();
+    }
+
+    /**
+     * 读取数据缓存指定文件。
+     *
+     * @param name 缓存文件名
+     * @return {data.root}/{name} 对应的 File
+     */
+    public static File getDataCache(String name) {
+        return getConfig().getDataCache(name);
+    }
+
+    /**
+     * 读取资源目录指定文件。
+     *
+     * @param name 资源文件名
+     * @return {resource.root}/{name} 对应的 File
      */
     public static File getResourceFile(String name) {
-        File dir = getResourceDir();
-        return new File(dir, name);
+        return getConfig().getResourceFile(name);
     }
 
+    /**
+     * 获取 minicap 可执行文件路径。
+     *
+     * @param abi 设备 CPU 架构
+     * @return minicap 二进制文件 File，资源目录不存在时返回 null
+     */
     public static File getMinicap(String abi) {
         File resources = getResourceDir();
         if (resources.exists()) {
@@ -146,6 +122,13 @@ public class Constant {
         return null;
     }
 
+    /**
+     * 获取 minicap 共享库（.so）路径。
+     *
+     * @param abi 设备 CPU 架构
+     * @param sdk 设备 Android SDK 版本
+     * @return minicap.so 文件 File，资源目录不存在时返回 null
+     */
     public static File getMinicapSo(String abi, String sdk) {
         File resources = getResourceDir();
         if (resources.exists()) {
@@ -155,6 +138,12 @@ public class Constant {
         return null;
     }
 
+    /**
+     * 获取 minitouch 可执行文件路径。
+     *
+     * @param abi 设备 CPU 架构
+     * @return minitouch 二进制文件 File，资源目录不存在时返回 null
+     */
     public static File getMinitouchBin(String abi) {
         File resources = getResourceDir();
         if (resources.exists()) {
@@ -164,14 +153,14 @@ public class Constant {
         return null;
     }
 
+    /**
+     * 获取临时文件（使用系统临时目录）。
+     *
+     * @param fileName 临时文件名
+     * @return {java.io.tmpdir}/AndroidControl/{fileName}
+     */
     public static File getTmpFile(String fileName) {
-        String tmpdir = System.getProperty("java.io.tmpdir");
-        File tmp = new File(tmpdir);
-        tmp = new File(tmp, "AndroidControl");
-        if (!tmp.exists()) {
-            tmp.mkdirs();
-        }
-        return new File(tmp, fileName);
+        return getConfig().getTmpFile(fileName);
     }
 
 }

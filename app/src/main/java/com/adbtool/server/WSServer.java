@@ -175,7 +175,7 @@ public class WSServer implements IWebsocketEvent, MinicapListener, MinitouchList
         }else if("install".equals(type)){
             buildAPPGroup(obj);
         }else if("ring".equals(type)){
-//            bindedDevice.makesound(obj);
+            bindedDevice.makesound(obj);
         }else if("reset".equals(type)){
             bindedDevice.reset();
         }else if("callCLi".equals(type)){

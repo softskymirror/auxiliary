@@ -1,0 +1,10 @@
+[QC] ERROR [main] com.adbtool.adb.AdbServer.listenUSB(207) | 获取USB服务失败
+javax.usb.UsbException: The UsbServices implementation class org.usb4java.javax.Services was not found : org.usb4java.javax.Services
+	at javax.usb.UsbHostManager.createUsbServices(Unknown Source)
+	at javax.usb.UsbHostManager.getUsbServices(Unknown Source)
+	at com.adbtool.adb.AdbServer.listenUSB(AdbServer.java:205)
+	at com.MainEntry.main(MainEntry.java:36)
+[QC] INFO [main] com.adbtool.adb.AdbServer.listenADB(243) | 已开启ADB设备同步线程...
+[QC] INFO [main] com.MainEntry.main(38) | ADB 设备监控已启动
+[QC] INFO [main] com.adbtool.server.AndroidControlServer.start(97) | AndroidControlServer started on port 8888
+[QC] INFO [nioEventLoopGroup-3-1] com.adbtool.server.HttpServer.onRequest(64) | http:/

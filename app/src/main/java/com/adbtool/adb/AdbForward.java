@@ -26,7 +26,15 @@
 
 package com.adbtool.adb;
 
+import org.apache.log4j.Logger;
+
+/**
+ * ADB端口转发映射数据类
+ * 封装 adb forward --list 输出的解析结果
+ */
 public class AdbForward {
+    private static final Logger logger = Logger.getLogger(AdbForward.class);
+
     private String serialNumber;
     private int port;
     private String localabstract;
@@ -39,28 +47,48 @@ public class AdbForward {
         this.localabstract = localabstract;
     }
 
+    /**
+     * 从 adb forward --list 输出行解析
+     * 格式: "serialNumber tcp:port localabstract:name"
+     * @param str adb forward输出行
+     */
     public AdbForward(String str) {
-        String[] s = str.split(" ");
+        if (str == null || str.trim().isEmpty()) {
+            isForward = false;
+            return;
+        }
+        String[] s = str.trim().split("\\s+");
         if (s.length != 3) {
+            logger.warn("无法解析adb forward行，字段数不匹配: " + str);
             isForward = false;
             return;
         }
 
         serialNumber = s[0];
+
+        // 解析端口: "tcp:555"
         String[] portstr = s[1].split(":");
         if (portstr.length == 2) {
-            port = Integer.parseInt(portstr[1]);
+            try {
+                port = Integer.parseInt(portstr[1].trim());
+            } catch (NumberFormatException e) {
+                logger.warn("无法解析端口号: " + s[1]);
+                isForward = false;
+                return;
+            }
         } else {
+            logger.warn("无法解析端口字段: " + s[1]);
             isForward = false;
             return;
         }
 
+        // 解析本地抽象地址: "localabstract:name"
         String[] localabstractStr = s[2].split(":");
-        if (localabstractStr.length == 2) {
-            localabstract = localabstractStr[1];
+        if (localabstractStr.length >= 2) {
+            localabstract = localabstractStr[1].trim();
         } else {
+            logger.warn("无法解析localabstract字段: " + s[2]);
             isForward = false;
-            return;
         }
     }
 
@@ -78,5 +106,11 @@ public class AdbForward {
 
     public boolean isForward() {
         return isForward;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("AdbForward{sn=%s, port=%d, abstract=%s, valid=%b}",
+                serialNumber, port, localabstract, isForward);
     }
 }

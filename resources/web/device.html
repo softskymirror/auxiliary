@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroidControl - 设备控制</title>
     <link rel="stylesheet" href="static/lib/bootstrap-3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/lib/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="static/lib/jquery-ui-1.12.1/jquery-ui.min.css">
@@ -9,148 +11,203 @@
   </head>
   <body>
   <div class="content">
-    <div id="main" class="phone-area" >
+    <div id="main" class="phone-area">
       <div id="content">
+        <!-- 顶部导航栏 + 连接状态 -->
         <nav class="navbar">
-            <p id="title" class="text-center">{{title}}</p>  
+            <div class="status-indicator">
+                <span id="connection-status" class="status-dot"></span>
+                <span id="connection-text" class="status-text">连接中...</span>
+            </div>
+            <p id="title" class="text-center">{{title}}</p>
         </nav>
+
+        <!-- 屏幕显示区域 -->
         <canvas id="phone-screen"></canvas>
+
+        <!-- 底部控制栏 -->
         <footer class="footer">
           <div class="container-fluid">
+              <!-- 第一行：导航键 -->
               <div class="row">
-              <!-- <div class="col-xs-3  text-center menu-button" id="btn-scale"><span class="fa "></div> -->
-                  <!-- <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="left" title="Tooltip on left">Tooltip on left</button> -->
-              <div class="col-xs-3 text-center menu-button" id="btn-back"><span class="fa fa-chevron-left"></span></div>
-              <div class="col-xs-3 text-center menu-button" id="btn-home"><span class="fa fa-circle-o"></span></div>
-              <div class="col-xs-3 text-center menu-button" id="btn-menu"><span class="fa fa-align-justify"></span></div>
-              <div class="col-xs-3 text-center menu-button" id="btn-more" data-toggle="modal" data-target="#myModal"><span class="fa fa-wheelchair"></span></div>
-              <!-- Button trigger modal -->
+                  <div class="col-xs-3 text-center menu-button" id="btn-back" title="返回">
+                      <span class="fa fa-chevron-left"></span>
+                  </div>
+                  <div class="col-xs-3 text-center menu-button" id="btn-home" title="主页">
+                      <span class="fa fa-circle-o"></span>
+                  </div>
+                  <div class="col-xs-3 text-center menu-button" id="btn-menu" title="菜单">
+                      <span class="fa fa-align-justify"></span>
+                  </div>
+                  <div class="col-xs-3 text-center menu-button" id="btn-more" title="设置" data-toggle="modal" data-target="#myModal">
+                      <span class="fa fa-cog"></span>
+                  </div>
               </div>
-            <div class="row">
-            <div class="col-xs-3 text-center menu-button" id="display-no-sleep"><span class="fa fa-chevron-left"></span></div>
-            <div class="col-xs-3 text-center menu-button" id="close-data"><span class="fa fa-circle-o"></span></div>
-            </div>
+              <!-- 第二行：快捷功能 -->
+              <div class="row">
+                  <div class="col-xs-4 text-center menu-button" id="shot-screen" title="截屏">
+                      <span class="fa fa-camera"></span>
+                  </div>
+                  <div class="col-xs-4 text-center menu-button" id="display-no-sleep" title="屏幕常亮">
+                      <span class="fa fa-sun-o"></span>
+                  </div>
+                  <div class="col-xs-4 text-center menu-button" id="close-data" title="关闭移动数据">
+                      <span class="fa fa-wifi"></span>
+                  </div>
+              </div>
           </div>
         </footer>
       </div>
-      </div>
+    </div>
+
+    <!-- 右侧控制面板 -->
     <div class="phone-controller">
-      <div class=“header-selection">
-    <div class="div-selection"  id="group" style="background-color:#FFFFFF;"  ><span class="fa fa-chevron-left"><p>掘金任务</p></span></div>
-    <div class="div-selection"  id="farewell"><span class="fa fa-circle-o"><p>手机状态</p></span></div>
-    <div class="div-selection"  id="operation"><span class="fa fa-circle-o"><p>基本操作</p></span></div>
-    <div class="div-selection"  id="settings"><span class="fa fa-circle-o"><p>参数设置</p></span></div>
-  </div >
-        <!-- group modal -->
-      <div class="controller-page" id="make-task" style="background-color:#9d9d9d;display: block"><p>应用分组表</p></div>
-        <!-- operation modal -->
-        <div class="controller-page" id="run-operation" style="background-color:#9d9d9d;display: none">
-      <p>基本操作</p>
-     <div class="sel-text-group">
-      <div class="sel-text" id="set-constant">设置常量</div>
-      <div class="sel-text" id="turnoff-mobiledata">关闭移动数据</div>
-       <div class="sel-text" id="shot-screen">截屏</div>
-         <div class="sel-text" id="make-sound">发响</div>
-     </div>
-        <p>批量操作</p>
-            <div class="sel-text-group">
-        <div class="sel-text" id="install-app">安装掘金软件</div>
-            <input type="radio"  style="width:10px;height:10px" name="killOrder" name="install-tool" value="1"/>
-            <label>同时安装掘金必备应用</label>
-            </div>
-         <p>高级操作</p>
-         <div class="sel-text" id="reset-system">重置手机</div>
+      <!-- Tab 导航 -->
+      <div class="header-selection">
+          <div class="div-selection" id="group" style="background-color:#FFFFFF;">
+              <span class="fa fa-th-large"></span>
+              <p>任务管理</p>
+          </div>
+          <div class="div-selection" id="farewell">
+              <span class="fa fa-info-circle"></span>
+              <p>设备状态</p>
+          </div>
+          <div class="div-selection" id="operation">
+              <span class="fa fa-wrench"></span>
+              <p>基本操作</p>
+          </div>
+          <div class="div-selection" id="settings">
+              <span class="fa fa-sliders"></span>
+              <p>参数设置</p>
+          </div>
       </div>
-        <!-- info modal -->
-      <div class="controller-page" id="search-info" style="background-color: #9d9d9d;display: none">
-          <p>手机配置</p>
+
+      <!-- 任务管理页面 -->
+      <div class="controller-page" id="make-task" style="background-color:#9d9d9d; display: block;">
+          <h4>应用分组管理</h4>
+          <p class="text-muted">在此管理设备上的应用安装任务</p>
       </div>
-        <!-- settings modal -->
-        <div class="controller-page" id="value-settings" style="background-color: #9d9d9d;display: none">
-            <p>参数设置</p>
-            <div class="sel-text" id="set-location" style="width:100%"><p>请选择掘金项目包本地地址:</p><div class="input-container" id="group-dir"></div></div>
-            <div class="sel-text" id="set-code" style="width:100%"><p>请输入项目分组编号：</p><div class="input-container" id="device-code"></div></div>
-            <div class="sel-text" id="set-port" style="width:100%"><p>请输入服务端口号：</p><div class="input-container" id="server-port"></div></div>
-            <div class="sel-text" id="set-cmd" style="width:100%"><p>输入Shell命令</p><div class="input-container" id="cli-cmd"></div>
-            <div class="sel-text" id="run-cmd">run</div>
-            </div>
-        </div>
+
+      <!-- 设备状态页面 -->
+      <div class="controller-page" id="search-info" style="background-color:#9d9d9d; display: none;">
+          <h4>设备信息</h4>
+          <div class="info-panel">
+              <p><strong>序列号:</strong> <span id="info-sn">-</span></p>
+              <p><strong>屏幕尺寸:</strong> <span id="info-screen">-</span></p>
+              <p><strong>电量:</strong> <span id="info-battery">-</span></p>
+              <p><strong>连接状态:</strong> <span id="info-connection">-</span></p>
+          </div>
+      </div>
+
+      <!-- 基本操作页面 -->
+      <div class="controller-page" id="run-operation" style="background-color:#9d9d9d; display: none;">
+          <h4>基本操作</h4>
+          <div class="sel-text-group">
+              <div class="sel-text" id="set-constant">
+                  <span class="fa fa-clock-o"></span> 设置屏幕常亮
+              </div>
+              <div class="sel-text" id="turnoff-mobiledata">
+                  <span class="fa fa-ban"></span> 关闭移动数据
+              </div>
+              <div class="sel-text" id="make-sound">
+                  <span class="fa fa-volume-up"></span> 设备响铃
+              </div>
+          </div>
+
+          <h4>批量操作</h4>
+          <div class="sel-text-group">
+              <div class="sel-text" id="install-app">
+                  <span class="fa fa-download"></span> 批量安装应用
+              </div>
+              <div class="checkbox">
+                  <label>
+                      <input type="checkbox" name="install-tool" value="1"> 同时安装必备工具
+                  </label>
+              </div>
+          </div>
+
+          <h4>高级操作</h4>
+          <div class="sel-text" id="reset-system">
+              <span class="fa fa-refresh"></span> 重启至 Recovery
+          </div>
+      </div>
+
+      <!-- 参数设置页面 -->
+      <div class="controller-page" id="value-settings" style="background-color:#9d9d9d; display: none;">
+          <h4>参数设置</h4>
+
+          <div class="form-group">
+              <label>应用包本地路径:</label>
+              <div class="input-container" id="group-dir"></div>
+          </div>
+
+          <div class="form-group">
+              <label>设备分组编号:</label>
+              <div class="input-container" id="device-code"></div>
+          </div>
+
+          <div class="form-group">
+              <label>CLI 服务端口:</label>
+              <div class="input-container" id="server-port"></div>
+          </div>
+
+          <div class="form-group">
+              <label>Shell 命令:</label>
+              <div class="input-container" id="cli-cmd"></div>
+          </div>
+
+          <button class="btn btn-success" id="run-cmd">
+              <span class="fa fa-play"></span> 执行命令
+          </button>
+      </div>
     </div>
   </div>
-    </div>
-      </div>
-    </div>
-    <!-- Modal -->
-    <!-- 设置  -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+
+  <!-- 设置弹窗 -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
-        <!-- <div class="modal-content"> -->
-          <ul class="list-group">
-            <li class="list-group-item">
-              <p>窗口大小设置</p>s
-              <div id="display-scale-slider"></div>
-            </li>
-            <li class="list-group-item">
-              <p>输出清晰度</p>
-              <div id="scale-slider"></div>
-            </li>
-            <li class="list-group-item text-center">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="rotateCheckBox"> 屏幕旋转
-                </label>
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">显示设置</h4>
               </div>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="keyEventCheckBox"> 键盘映射
-                </label>
-                <p class="help-block">将你键盘按下的键位信息发送到手机</p>
+              <div class="modal-body">
+                  <div class="form-group">
+                      <label>窗口大小</label>
+                      <div id="display-scale-slider"></div>
+                  </div>
+                  <div class="form-group">
+                      <label>输出清晰度</label>
+                      <div id="scale-slider"></div>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" id="rotateCheckBox"> 屏幕旋转（横屏模式）
+                      </label>
+                  </div>
+                  <div class="checkbox">
+                      <label>
+                          <input type="checkbox" id="keyEventCheckBox"> 键盘映射
+                      </label>
+                      <p class="help-block">将键盘按键映射到 Android 按键事件</p>
+                  </div>
               </div>
-            </li>
-          </ul>
-        <!-- </div> -->
-      </div>
-    </div>
-<!--    <div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
-<!--      <div class="modal-dialog" role="document">-->
-<!--        &lt;!&ndash; <div class="modal-content"> &ndash;&gt;-->
-<!--        <ul class="list-group">-->
-<!--          <li class="list-group-item">-->
-<!--            <p>设置常量</p>-->
-<!--            <div id="display-no-sleep"></div>-->
-<!--          </li>-->
-<!--          <li class="list-group-item">-->
-<!--            <p>关闭移动数据</p>-->
-<!--            <div id="close-data"></div>-->
-<!--          </li>-->
-<!--          <li class="list-group-item text-center">-->
-<!--            <div class="checkbox">-->
-<!--              <label>-->
-<!--                <input type="checkbox" id="temp"> 屏幕旋转-->
-<!--              </label>-->
-<!--            </div>-->
-<!--            <div class="checkbox">-->
-<!--              <label>-->
-<!--                <input type="checkbox" id="temp1"> 键盘映射-->
-<!--              </label>-->
-<!--              <p class="help-block">将你键盘按下的键位信息发送到手机</p>-->
-<!--            </div>-->
-<!--          </li>-->
-<!--        </ul>-->
-<!--        &lt;!&ndash; </div> &ndash;&gt;-->
-<!--      </div>-->
-    </div>
-    <!-- 重置scale  -->
-    <div class="modal" id="resetScaleModal" tabindex="-1" role="dialog" data-backdrop="static">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <div>请等待CapService重启</div>
           </div>
-        </div>
       </div>
-    </div>
-  </body>
+  </div>
+
+  <!-- 等待 CapService 重启弹窗 -->
+  <div class="modal" id="resetScaleModal" tabindex="-1" role="dialog" data-backdrop="static">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-body text-center">
+                  <div class="spinner"></div>
+                  <p>正在重启 CapService，请稍候...</p>
+              </div>
+          </div>
+      </div>
+  </div>
+
   <script src="static/lib/jquery-3.2.1.min.js"></script>
   <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
   <script src="static/lib/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -158,4 +215,5 @@
   <script src="static/lib/vue.js"></script>
   <script src="static/js/keyeventConvert.js"></script>
   <script src="static/js/device.js"></script>
+  </body>
 </html>

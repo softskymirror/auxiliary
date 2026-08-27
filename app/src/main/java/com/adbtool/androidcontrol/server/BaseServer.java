@@ -30,25 +30,31 @@ import com.alibaba.fastjson.JSON;
 import com.adbtool.adb.AdbDevice;
 import com.adbtool.adb.AdbServer;
 import com.adbtool.androidcontrol.DeviceInfo;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * BaseServer - shared utility base class for LocalServer and RemoteServer.
+ */
 public class BaseServer {
 
+    private static final Logger logger = Logger.getLogger(BaseServer.class);
+
     /**
-     * 获取设备信息的JSON数据
-     * @return json
+     * Get device info as JSON string.
+     * @return JSON string of all connected devices
      */
     public static String getDevicesJSON() {
-        ArrayList<DeviceInfo> list = new ArrayList<DeviceInfo>();
-        for (AdbDevice device : AdbServer.server().getDevices()) {
-            list.add(new DeviceInfo(device)); // TODO 耗时长，需优化
+        List<DeviceInfo> list = new ArrayList<>();
+        try {
+            for (AdbDevice device : AdbServer.server().getDevices()) {
+                list.add(new DeviceInfo(device));
+            }
+        } catch (Exception e) {
+            logger.error("Failed to get device list", e);
         }
         return JSON.toJSONString(list);
     }
-
-
-
-
-
 }

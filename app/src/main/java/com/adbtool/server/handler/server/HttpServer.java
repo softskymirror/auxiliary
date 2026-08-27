@@ -26,6 +26,8 @@
 
 package com.adbtool.server.handler.server;
 
+import com.adbtool.adb.AdbDevice;
+import com.adbtool.adb.AdbServer;
 import com.adbtool.minicap.Minicap;
 import com.adbtool.util.AdbUtils;
 import com.adbtool.util.Constant;
@@ -37,12 +39,12 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.stream.ChunkedFile;
 import org.apache.log4j.Logger;
 
-import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
@@ -109,8 +111,12 @@ public class HttpServer {
 
             response.headers().add(CONTENT_LENGTH, localFile.length());
             
-            MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
-            response.headers().add(CONTENT_TYPE, mimetypesFileTypeMap.getContentType(localFile.getPath()));
+            // 使用 Java NIO 内置方法探测 MIME 类型（兼容 Java 9+，无需 javax.activation）
+            String contentType = Files.probeContentType(localFile.toPath());
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            response.headers().add(CONTENT_TYPE, contentType);
 
 
             writeResponse(ctx, request, response, chunkedFile);
@@ -136,6 +142,29 @@ public class HttpServer {
         writeHttpResponseWithString(ctx, request, response, json);
     }
 
+    @HttpRouter(uri="/restart-adb")
+    public void restartAdb(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
+        try {
+            AdbServer.server().restartAdb();
+            String json = "{\"status\":\"ok\",\"message\":\"ADB restarted successfully\"}";
+            response.headers().set(CONTENT_TYPE, "application/json");
+            writeHttpResponseWithString(ctx, request, response, json);
+        } catch (Exception e) {
+            String json = "{\"status\":\"error\",\"message\":\"" + e.getMessage().replace("\"", "'") + "\"}";
+            response.headers().set(CONTENT_TYPE, "application/json");
+            writeHttpResponseWithString(ctx, request, response, json);
+        }
+    }
+
+    @HttpRouter(uri="/adb-status")
+    public void adbStatus(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
+        boolean running = AdbServer.server().isRunning();
+        int deviceCount = AdbServer.server().getDevices().size();
+        String json = "{\"running\":" + running + ",\"deviceCount\":" + deviceCount + "}";
+        response.headers().set(CONTENT_TYPE, "application/json");
+        writeHttpResponseWithString(ctx, request, response, json);
+    }
+
     @HttpRouter(uri="/shot")
     public void shot(ChannelHandlerContext ctx, HttpRequest request, HttpResponse response) {
         String uri = request.uri();
@@ -146,15 +175,26 @@ public class HttpServer {
         }
         
         String serialNumber = args[2];
-        long startTime=System.currentTimeMillis();
-        Minicap cap = new Minicap(serialNumber);
-        byte[] data = cap.takeScreenShot();
-        long endTime=System.currentTimeMillis();
-        logger.info("ScreenShot used：" + (endTime - startTime) + "ms");
-        response.headers().set(CONTENT_TYPE, "image/jpeg");
-        HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(data));
-        response.headers().set(CONTENT_LENGTH, content.content().readableBytes());
-        writeResponse(ctx, request, response, content);
+        long startTime = System.currentTimeMillis();
+        try {
+            AdbDevice device = AdbServer.server().getDevice(serialNumber);
+            if (device == null || device.getIDevice() == null || !device.getIDevice().isOnline()) {
+                logger.warn("截图失败，设备不在线: " + serialNumber);
+                writeErrorHttpResponse(ctx, request, response, HttpResponseStatus.SERVICE_UNAVAILABLE);
+                return;
+            }
+            Minicap cap = new Minicap(serialNumber);
+            byte[] data = cap.takeScreenShot();
+            long endTime = System.currentTimeMillis();
+            logger.info("ScreenShot used: " + (endTime - startTime) + "ms");
+            response.headers().set(CONTENT_TYPE, "image/jpeg");
+            HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(data));
+            response.headers().set(CONTENT_LENGTH, content.content().readableBytes());
+            writeResponse(ctx, request, response, content);
+        } catch (Exception e) {
+            logger.warn("截图异常 (" + serialNumber + "): " + e.getMessage());
+            writeErrorHttpResponse(ctx, request, response, HttpResponseStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -194,4 +234,3 @@ public class HttpServer {
     }
     
 }
-

@@ -2,76 +2,98 @@
 <html xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="UTF-8">
-    <title>RemoteControl-Desktop</title>
+    <title>AndroidControl - 设备群控系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="static/lib/bootstrap-3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/lib/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="static/css/index.css">
   </head>
   <body class="noselect">
+    <!-- 顶部导航栏 -->
     <nav class="navbar">
-      <h1 class="text-center">AndroidControl</h1>
-    </nav>
-    <div class="content">
-      <ul class="phone-list" id="phone-list">
-          <li v-for="p in devices.slice(0, 12)">
-            <div class="phone">
-              <div class="phone-header phone-info">
-                <p>{{p.sn}}@{{p.server.ip}}:{{p.server.port}}</p>
-              </div>
-              <div class="phone-body">
-                <img v-bind:onclick="'phoneClick(\'' + p.sn + '\')'" style="max-width: 100%;" class="phone-shot" v-bind:src="'http://127.0.0.1:6655/shot/' + p.sn" />
-              </div>
-              <div class="phone-footer phone-info">
-                <div>{{p.sn}}<a style="float: right; margin-right:8px;">🖕</a></div>
-              </div>
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <h1 class="navbar-brand">AndroidControl</h1>
             </div>
-          </li>
-        <!-- 群控机  -->
-
-<!--          <div class="phone">-->
-<!--            <div class="phone-header phone-info">-->
-<!--              <p>群控机@1920x1080</p>-->
-<!--            </div>-->
-<!--            <div class="phone-body" id="control-all-phone">-->
-<!--              <div v-for="p in devices" class="small-phone">-->
-<!--                <img style="max-width: 100%;" class="phone-shot" v-bind:src="'http://127.0.0.1:6655/shot/' + p.sn">-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="phone-footer phone-info">-->
-<!--              <div>别问那么多了，点开试试</div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </li>-->
-        <!-- 群控机 end  -->
-      </ul>
-      <div class="bottom text-center"><span>Copyright © Harry 2017</span></div>
-    </div>
-    <!-- modal  -->
-    <div class="modal fade" id="serverModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <div class="panel panel-default">
-              <div class="panel-heading">添加服务器</div>
-              <div class="panel-body">
-                <div class="input-group">
-                  <span class="input-group-addon" id="basic-addon3">服务器地址</span>
-                  <input type="text" class="form-control" id="server-input" placeholder="localhost:6655">
-                  <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" id="btn-addserver">添加</button>
-                  </span>
-                </div>
-              </div>
+            <div class="navbar-right">
+                <button class="btn btn-warning navbar-btn" id="btn-restart-adb" title="重启ADB连接（不影响Web服务）" style="margin-right: 8px;">
+                    <span class="fa fa-refresh"></span> 重启ADB
+                </button>
+                <button class="btn btn-default navbar-btn" data-toggle="modal" data-target="#serverModal">
+                    <span class="fa fa-plus"></span> 添加服务器
+                </button>
             </div>
-          </div>
         </div>
-      </div>
+    </nav>
+
+    <!-- 设备列表 -->
+    <div class="content">
+        <ul class="phone-list" id="phone-list">
+            <li v-for="p in devices.slice(0, 12)" track-by="sn">
+                <div class="phone">
+                    <div class="phone-header phone-info">
+                        <p>{{p.sn}}@{{p.server.ip}}:{{p.server.port}}</p>
+                    </div>
+                    <div class="phone-body" @click="phoneClick(p.sn)">
+                        <img style="max-width: 100%;" class="phone-shot" v-bind:src="'/shot/' + p.sn" />
+                    </div>
+                    <div class="phone-footer phone-info">
+                        <div>
+                            <span>{{p.sn}}</span>
+                            <a style="float: right; margin-right:8px; cursor: pointer;" @click="phoneClick(p.sn)" title="打开控制">
+                                <span class="fa fa-external-link"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <!-- 空状态提示（在 Vue 控制范围内） -->
+            <li v-if="devices.length === 0" class="empty-state-item">
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <span class="fa fa-mobile"></span>
+                    </div>
+                    <h3>暂无设备连接</h3>
+                    <p class="text-muted">请通过 USB 连接 Android 设备并开启 USB 调试</p>
+                </div>
+            </li>
+        </ul>
+
+        <div class="bottom text-center">
+            <span>Copyright © Harry 2017 | AndroidControl v1.0</span>
+        </div>
     </div>
+
+    <!-- 添加服务器弹窗 -->
+    <div class="modal fade" id="serverModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">添加服务器</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon3">
+                            <span class="fa fa-server"></span> 服务器地址
+                        </span>
+                        <input type="text" class="form-control" id="server-input" placeholder="localhost:6655" aria-describedby="basic-addon3">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="btn-addserver">添加</button>
+                        </span>
+                    </div>
+                    <p class="help-block" style="margin-top: 10px;">
+                        格式: IP:端口，例如 localhost:6655 或 192.168.1.100:6655
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/lib/jquery-3.2.1.min.js"></script>
+    <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
+    <script src="static/lib/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="static/lib/vue.js"></script>
+    <script src="static/js/index.js"></script>
   </body>
-  <script src="static/lib/jquery-3.2.1.min.js"></script>
-  <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
-  <script src="static/lib/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-  <script src="static/lib/vue.js"></script>
-  <script src="static/js/index.js"></script>
 </html>

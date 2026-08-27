@@ -28,6 +28,11 @@ package com.adbtool.androidcontrol;
 
 import com.adbtool.adb.AdbDevice;
 
+import java.util.Objects;
+
+/**
+ * 应用分组信息
+ */
 public class GroupInfo {
     private String name,version,p_name;
     private int id;
@@ -42,5 +47,29 @@ public class GroupInfo {
     public GroupInfo(AdbDevice device) {
 
 
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getVersion() { return version; }
+    public String getPackageName() { return p_name; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GroupInfo that = (GroupInfo) o;
+        return id == that.id && Objects.equals(p_name, that.p_name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, p_name);
+    }
+
+    @Override
+    public String toString() {
+        return "GroupInfo{id=" + id + ", name=" + name
+                + ", version=" + version + ", p_name=" + p_name + "}";
     }
 }

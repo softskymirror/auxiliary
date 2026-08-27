@@ -41,17 +41,14 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import org.apache.log4j.Logger;
 
 /**
- * Created by harry on 2017/4/19.
+ * LocalClient - executes commands locally via Netty WebSocket channel.
  */
 public class LocalClient extends BaseClient implements MinicapListener, MinitouchListener {
-    static final int DATA_TIMEOUT = 100; //ms
-    private boolean isWaitting = false;
-    private BlockingQueue<ImageData> dataQueue = new LinkedBlockingQueue<ImageData>();
+
+    private static final Logger logger = Logger.getLogger(LocalClient.class);
 
     private Protocol protocol;
 
@@ -59,6 +56,14 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
         this.protocol = protocol;
     }
 
+    @Override
+    protected void sendImage(byte[] data) {
+        if (protocol != null && protocol.getBroswerSocket() != null) {
+            logger.debug("Sending image, thread:" + Thread.currentThread().getId());
+            protocol.getBroswerSocket().channel().writeAndFlush(
+                    new BinaryWebSocketFrame(Unpooled.copiedBuffer(data)));
+        }
+    }
 
     public void executeCommand(ChannelHandlerContext ctx, Command command) {
         switch (command.getSchem()) {
@@ -67,6 +72,7 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
                 break;
             case TOUCH:
                 touchCommand(ctx, command);
+                break; // fixed: was missing break
             case WAITTING:
                 waittingCommand(ctx, command);
                 break;
@@ -79,10 +85,13 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
             case PUSH:
                 pushCommand(command);
                 break;
+            default:
+                logger.warn("Unhandled command schem: " + command.getSchem());
+                break;
         }
     }
 
-    // minicap启动完毕后
+    // minicap callbacks
     @Override
     public void onStartup(Minicap minicap, boolean success) {
         if (protocol != null && protocol.getBroswerSocket() != null && success) {
@@ -97,29 +106,15 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
         }
     }
 
-    // banner信息读取完毕
     @Override
     public void onBanner(Minicap minicap, Banner banner) {}
 
-    // 读取到图片信息
     @Override
     public void onJPG(Minicap minicap, byte[] data) {
-        if (isWaitting) {
-            if (dataQueue.size() > 0) {
-                dataQueue.add(new ImageData(data));
-                // 挑选没有超时的图片
-                ImageData d = getUsefulImage();
-                sendImage(d.data);
-            } else {
-                sendImage(data);
-            }
-            isWaitting = false;
-        } else {
-            clearObsoleteImage();
-            dataQueue.add(new ImageData(data));
-        }
+        onNewJPG(data);
     }
 
+    // minitouch callbacks
     @Override
     public void onStartup(Minitouch minitouch, boolean success) {
         if (protocol != null && protocol.getBroswerSocket() != null && success) {
@@ -135,60 +130,10 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
     }
 
     public void setWaitting(boolean waitting) {
-        isWaitting = waitting;
-        trySendImage();
+        setWaiting(waitting);
     }
 
-    private void trySendImage() {
-        ImageData d = getUsefulImage();
-        if (d != null) {
-            isWaitting = false;
-            sendImage(d.data);
-        }
-    }
-
-    private void clearObsoleteImage() {
-        ImageData d = dataQueue.peek();
-        long curTS = System.currentTimeMillis();
-        while (d != null) {
-            if (curTS - d.timesp < DATA_TIMEOUT) {
-                dataQueue.poll();
-                d = dataQueue.peek();
-            } else {
-                break;
-            }
-        }
-    }
-
-    private ImageData getUsefulImage() {
-        long curTS = System.currentTimeMillis();
-        // 挑选没有超时的图片
-        ImageData d = null;
-        while (true) {
-            d = dataQueue.poll();
-            // 如果没有超时，或者超时了但是最后一张图片，也发送给客户端
-            if (d == null || curTS - d.timesp < DATA_TIMEOUT || dataQueue.size() == 0) {
-                break;
-            }
-        }
-        return d;
-    }
-
-    private void sendImage(byte[] data) {
-        if (protocol != null) {
-            System.out.println("thread:" + Thread.currentThread().getId());
-            protocol.getBroswerSocket().channel().writeAndFlush(new BinaryWebSocketFrame(Unpooled.copiedBuffer(data)));
-        }
-    }
-
-    public static class ImageData {
-        ImageData(byte[] d) {
-            timesp = System.currentTimeMillis();
-            data = d;
-        }
-        long timesp;
-        byte[] data;
-    }
+    // --- command handlers ---
 
     private void startCommand(ChannelHandlerContext ctx, Command command) {
         String str = command.getString("type", null);
@@ -206,19 +151,28 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
     }
 
     private void keyeventCommand(Command command) {
-        int k = Integer.parseInt(command.getContent());
-        protocol.getMinitouch().sendKeyEvent(k);
+        try {
+            int k = Integer.parseInt(command.getContent());
+            if (protocol.getMinitouch() != null) {
+                protocol.getMinitouch().sendKeyEvent(k);
+            }
+        } catch (NumberFormatException e) {
+            logger.warn("Invalid keyevent: " + command.getContent());
+        }
     }
-
 
     private void touchCommand(ChannelHandlerContext ctx, Command command) {
         String str = (String) command.getContent();
-        protocol.getMinitouch().sendEvent(str);
+        if (protocol.getMinitouch() != null) {
+            protocol.getMinitouch().sendEvent(str);
+        }
     }
 
     private void inputCommand(Command command) {
         String str = (String) command.getContent();
-        protocol.getMinitouch().inputText(str);
+        if (protocol.getMinitouch() != null) {
+            protocol.getMinitouch().inputText(str);
+        }
     }
 
     private void pushCommand(Command command) {
@@ -227,10 +181,13 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
 
         AdbDevice device = AdbServer.server().getDevice(protocol.getSn());
         try {
-            device.getIDevice().pushFile(Constant.getTmpFile(name).getAbsolutePath(), path + "/" + name);
+            if (device != null) {
+                device.getIDevice().pushFile(Constant.getTmpFile(name).getAbsolutePath(), path + "/" + name);
+            }
         } catch (Exception e) {
+            logger.error("Failed to push file: " + name, e);
         }
-        if (protocol != null) {
+        if (protocol != null && protocol.getBroswerSocket() != null) {
             protocol.getBroswerSocket().channel().writeAndFlush(new TextWebSocketFrame("message://pushfile success"));
         }
     }
@@ -239,14 +196,13 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
         if (protocol.getMinicap() != null) {
             protocol.getMinicap().kill();
         }
-        
-        // 获取请求的配置
+
         JSONObject obj = (JSONObject) command.get("config");
         Float scale = obj.getFloat("scale");
         Float rotate = obj.getFloat("rotate");
-        if (scale == null) {scale = 0.3f;}
-        if (scale < 0.01) {scale = 0.01f;}
-        if (scale > 1.0) {scale = 1.0f;}
+        if (scale == null) { scale = 0.3f; }
+        if (scale < 0.01) { scale = 0.01f; }
+        if (scale > 1.0) { scale = 1.0f; }
         if (rotate == null) { rotate = 0.0f; }
         Minicap minicap = new Minicap(protocol.getSn());
         minicap.addEventListener(this);
@@ -264,7 +220,5 @@ public class LocalClient extends BaseClient implements MinicapListener, Minitouc
         minitouch.start();
         protocol.setMinitouch(minitouch);
     }
-
-
 
 }

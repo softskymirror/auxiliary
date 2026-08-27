@@ -3,3 +3,6 @@
 
 # Ignore Gradle build output directory
 build
+
+# Ignore cloned SDK reference (core logic extracted to com.aitool.deepseek)
+../../maven/deepseek4j

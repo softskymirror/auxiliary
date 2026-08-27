@@ -1,658 +1,735 @@
-
-let ip = "127.0.0.1"
-let port = 6655
-let lastBtn='group'
-let groupDir=null
-
-/** nav-height:24px */
-const nav_height = 24;
-/** footer-height: 42px */
-const footer_height = 42;
-
-let deviceSize = {
-    w: 1080,
-    h: 1920
-}
-
-var group_dir = document.getElementById('group-dir');
-// 创建输入框
-var group_dir_input = document.createElement('input');
-// 设置输入框的属性
-var device_code = document.getElementById('device-code');
-// 创建输入框
-var device_code_input = document.createElement('input');
-// 设置输入框的属性
-var cmd_cli=document.getElementById('cli-cmd');
-var cmd_cli_input=document.createElement('input');
-var server_port=document.getElementById("server-port");
-var server_port_input=document.createElement('input');
-group_dir.appendChild(group_dir_input);
-device_code.appendChild(device_code_input);
-cmd_cli.appendChild(cmd_cli_input);
-server_port.appendChild(server_port_input);
 /**
- * 描述deivce信息的类
- */
-class DeviceInfo {
-    constructor() {
-        // 设备的物理大小
-        this.physicsSize = {
-            w: 0,
-            h: 0
-        }
-        this.serialNumber = ""
-    }
-}
-
-/**
- * 对该窗口的操作类
- */
-class DeviceWindow {
-    constructor(win, deviceInfo, defaultDisplaySize={w:0, h:0}) {
-        this.win = win // 操作的窗口
-        this.deviceInfo = deviceInfo
-        this.scale = 0.4 // minicap缩放比例
-        this.rotate = false // 屏幕是否旋转，默认=false=竖屏
-        this.keyMap = false // 是否键盘映射
-        this.displaySize = defaultDisplaySize
-    }
-
-    resize(setCenter = true) {
-
-        if (this.rotate) {
-            [this.displaySize.w, this.displaySize.h] = [this.displaySize.h, this.displaySize.w]
-        }
-
-        // vue
-        title.displaySize = this.displaySize
-
-        let w = this.displaySize.w
-        let h = this.displaySize.h + nav_height + footer_height
-        this.win.css('width', w + "px")
-        this.win.css('height', h + "px")
-    }
-}
-
-/**
- * 网络操作
- */
-class NetWork {
-    constructor(ip, port) {
-        this.ip = ip
-        this.port = port
-    }
-
-    connect(config) {
-        let webSocket = new WebSocket("ws://" + ip + ":" + port)
-        webSocket.onopen = function() {
-            config.onopen()
-        }
-        webSocket.onclose = function() {
-            config.onclose()
-        }
-        webSocket.onmessage = function(data) { 
-            config.onmessage(data)
-        }
-        this.webSocket = webSocket
-    }
-
-    request(name, argobj) {
-        let ss = name + "://" + (argobj ? JSON.stringify(argobj) : "{}");
-        this.webSocket.send(ss);
-    }
-
-    send(str) {
-        this.webSocket.send(str)
-    }
-}
-
-/**
- * Device 的 Vue 组件
+ * AndroidControl Device Controller
+ * 设备控制页面核心逻辑
+ * 
+ * 功能：
+ * - WebSocket 实时通信（TextProtocol + BinaryProtocol）
+ * - 屏幕镜像显示（Minicap JPEG 流）
+ * - 触摸/按键注入（Minitouch 协议）
+ * - 设备管理控制（安装/重启/截屏/CLI 等）
+ * - 连接状态管理（自动重连/错误提示）
  */
 
-let deviceInfo = new DeviceInfo()
-let deviceWindow = null
-let net = null
+;(function() {
+    'use strict';
 
-let title = new Vue({
-    el: '#title',
-    data: {
-        displaySize: {w: 1080, h: 1920},
-        outputScale: 0.3
-    },
-    computed: {
-        title: function() {
-            return this.displaySize.w + "x" + this.displaySize.h + "  |  " + parseInt(deviceInfo.physicsSize.w*this.outputScale)+ "x" + parseInt(deviceInfo.physicsSize.h*this.outputScale);
+    // ========== 常量定义 ==========
+    const NAV_HEIGHT = 24;
+    const FOOTER_HEIGHT = 42;
+    const DEFAULT_IP = window.location.hostname || '127.0.0.1';
+    const DEFAULT_PORT = parseInt(window.location.port) || 6655;
+    const RECONNECT_DELAY = 3000;
+
+    // ========== 应用状态 ==========
+    const state = {
+        deviceInfo: null,
+        deviceWindow: null,
+        net: null,
+        canvas: null,
+        ctx: null,
+        isDown: false,
+        lastObjectURL: null,
+        capReady: false,
+        eventReady: false,
+        reconnectTimer: null
+    };
+
+    // ========== 协议解析器 ==========
+    class Protocol {
+        static parse(text) {
+            const idx = text.indexOf('://');
+            if (idx === -1) return null;
+            return {
+                header: text.substring(0, idx),
+                body: text.substring(idx + 3)
+            };
+        }
+
+        static build(header, body) {
+            return header + '://' + (body || '{}');
         }
     }
-})
 
+    // ========== 网络管理器 ==========
+    class NetworkManager {
+        constructor(ip, port) {
+            this.ip = ip;
+            this.port = port;
+            this.ws = null;
+            this.handlers = {};
+            this.connected = false;
+        }
 
-window.onload = function() {
+        connect(handlers) {
+            this.handlers = handlers;
+            try {
+                this.ws = new WebSocket('ws://' + this.ip + ':' + this.port);
+            } catch (err) {
+                console.error('WebSocket 创建失败:', err);
+                this.showError('连接失败');
+                return;
+            }
 
-    // 通过url参数初始化
-    let urlParams = initWithUrlParams();
+            this.ws.onopen = () => {
+                this.connected = true;
+                this.updateStatus('connected');
+                if (this.handlers.onopen) this.handlers.onopen();
+            };
 
-    deviceInfo.serialNumber = urlParams.sn
-    
-    deviceInfo.physicsSize.w = urlParams.w
-    deviceInfo.physicsSize.h = urlParams.h
-    
-    // 滑动条初始化
-    var displayScaleSlider = $("#display-scale-slider").slider({
-        max: 100,
-        min: 10,
-        step: 5,
-        value: 20,
-        change: onDisplayScaleChange
-    })
+            this.ws.onclose = () => {
+                this.connected = false;
+                this.updateStatus('disconnected');
+                if (this.handlers.onclose) this.handlers.onclose();
+            };
 
-    var scaleSlider = $('#scale-slider').slider({
-        max: 100,
-        min: 5,
-        step: 5,
-        value: 30,
-        change: onScaleChange
-    })
+            this.ws.onerror = (err) => {
+                console.error('WebSocket 错误:', err);
+                this.updateStatus('error');
+            };
 
-    $('#rotateCheckBox').on('click', function() {
-        deviceWindow.rotate = $('#rotateCheckBox').prop('checked')
-        net.request("M_START", {type: "cap", config: {rotate: deviceWindow.rotate ? 90 : 0, scale: deviceWindow.scale}})
-        // 隐藏设置窗口
-        $('#myModal').modal('hide')
-        // 显示等待capservice窗口
-        $('#resetScaleModal').modal('show')
+            this.ws.onmessage = (event) => {
+                const data = event.data;
+                if (typeof data === 'string') {
+                    this.handleText(data);
+                } else {
+                    this.handleBinary(data);
+                }
+            };
+        }
 
-        onDisplayScaleChange()
-    })
+        send(header, body) {
+            if (!this.connected || !this.ws) {
+                console.warn('WebSocket 未连接');
+                return;
+            }
+            const msg = body !== undefined ? Protocol.build(header, JSON.stringify(body)) : header;
+            this.ws.send(msg);
+        }
 
-    $('#keyEventCheckBox').on('click', function() {
-        deviceWindow.keyMap = $('#keyEventCheckBox').prop('checked')
-    })
+        sendRaw(str) {
+            if (!this.connected || !this.ws) {
+                console.warn('WebSocket 未连接');
+                return;
+            }
+            this.ws.send(str);
+        }
 
-
-    function onDisplayScaleChange() {
-        let scale = displayScaleSlider.slider("value") / 100.0;
-        deviceWindow.displaySize.w = parseInt(deviceInfo.physicsSize.w * scale)
-        deviceWindow.displaySize.h = parseInt(deviceInfo.physicsSize.h * scale)
-        deviceWindow.resize(false)
-
-        canvas.width = deviceWindow.displaySize.w;
-        canvas.height = deviceWindow.displaySize.h;
-        g.drawImage(canvas.img, 0, 0, canvas.width, canvas.height);
-    }
-
-    function onScaleChange() {
-        let scale = scaleSlider.slider("value") / 100.0
-
-        deviceWindow.scale = scale
-        // vue
-        title.outputScale = scale
-        net.request("M_START", {type: "cap", config: {rotate: deviceWindow.rotate ? 90 : 0, scale: deviceWindow.scale}})
-        // 隐藏设置窗口
-        $('#myModal').modal('hide')
-        // 显示等待capservice窗口
-        $('#resetScaleModal').modal('show')
-    }
-
-    // 初始化窗口
-    let scale = displayScaleSlider.slider("value") / 100.0;
-    deviceWindow = new DeviceWindow($('#content'), deviceInfo, {
-        w: deviceInfo.physicsSize.w * scale, 
-        h: deviceInfo.physicsSize.h * scale
-    })
-
-    deviceWindow.resize()
-
-    // vue
-    title.outputScale = scale
-
-    // 连接服务器
-    net = new NetWork(ip, port)
-    net.connect({
-        onopen() {
-            net.request("M_WAIT", {sn: deviceInfo.serialNumber})
-        },
-        onclose() {
-            deviceWindow.win.close()
-        },
-        onmessage(msg) {
-            let data = msg.data
-            if (typeof(data) == 'string') {
-                this.ontext(data)
+        handleText(text) {
+            const proto = Protocol.parse(text);
+            if (!proto) {
+                console.warn('无效协议格式:', text);
+                return;
+            }
+            const handler = this.handlers[proto.header];
+            if (handler) {
+                handler.call(this.handlers, proto.body);
             } else {
-                this.onbinary(data)
+                console.warn('未处理的协议:', proto.header);
             }
-        },
-        ontext(text) {
-            let sp = text.indexOf('://')
-            if (sp == -1) {
-                console.log("无效的协议")
-                this.onclose()
+        }
+
+        handleBinary(data) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const headerType = new Int16Array(reader.result)[0];
+                if (headerType === 0x0011 && this.handlers.SM_JPG) {
+                    this.handlers.SM_JPG(data.slice(6));
+                }
+            };
+            reader.readAsArrayBuffer(data.slice(0, 2));
+        }
+
+        updateStatus(status) {
+            const indicator = document.getElementById('connection-status');
+            const text = document.getElementById('connection-text');
+            if (!indicator || !text) return;
+
+            const statusMap = {
+                'connected': { color: '#4CAF50', text: '已连接' },
+                'disconnected': { color: '#f44336', text: '已断开' },
+                'connecting': { color: '#ff9800', text: '连接中...' },
+                'error': { color: '#f44336', text: '连接错误' }
+            };
+
+            const info = statusMap[status] || statusMap['disconnected'];
+            indicator.style.backgroundColor = info.color;
+            text.textContent = info.text;
+        }
+
+        showError(msg) {
+            console.error(msg);
+            const text = document.getElementById('connection-text');
+            if (text) text.textContent = msg;
+        }
+
+        close() {
+            if (this.ws) {
+                this.ws.close();
+                this.ws = null;
+            }
+            if (state.reconnectTimer) {
+                clearTimeout(state.reconnectTimer);
+                state.reconnectTimer = null;
+            }
+        }
+    }
+
+    // ========== 设备信息 ==========
+    class DeviceInfo {
+        constructor(sn, w, h) {
+            this.serialNumber = sn;
+            this.physicsSize = { w: parseInt(w) || 1080, h: parseInt(h) || 1920 };
+        }
+    }
+
+    // ========== 设备窗口管理 ==========
+    class DeviceWindow {
+        constructor(deviceInfo) {
+            this.deviceInfo = deviceInfo;
+            this.scale = 0.3;
+            this.rotate = false;
+            this.keyMap = false;
+            this.displaySize = {
+                w: deviceInfo.physicsSize.w * this.scale,
+                h: deviceInfo.physicsSize.h * this.scale
+            };
+        }
+
+        resize() {
+            const w = this.displaySize.w;
+            const h = this.displaySize.h + NAV_HEIGHT + FOOTER_HEIGHT;
+            const content = document.getElementById('content');
+            if (content) {
+                content.style.width = w + 'px';
+                content.style.height = h + 'px';
             }
 
-            let head = text.substr(0, sp)
-            let body = text.substring(sp + 3)
+            if (state.canvas) {
+                state.canvas.width = this.displaySize.w;
+                state.canvas.height = this.displaySize.h;
+            }
+        }
 
-            let func = this[head]
-            func.call(this, body)
+        setDisplayScale(scale) {
+            this.displaySize.w = parseInt(this.deviceInfo.physicsSize.w * scale);
+            this.displaySize.h = parseInt(this.deviceInfo.physicsSize.h * scale);
+            this.resize();
+        }
+    }
+
+    // ========== 触摸事件处理 ==========
+    const TouchHandler = {
+        sendTouchEvent(cmd) {
+            if (state.net) state.net.sendRaw('M_TOUCH://' + cmd);
         },
-        onbinary(data) {
-            let self = this
-            let fr = new FileReader()
-            fr.readAsArrayBuffer(data.slice(0, 2))
-            fr.onload = function() {
-                let headType = new Int16Array(fr.result)[0]
-                switch (headType) {
-                    case 0x0011:
-                        self.SM_JPG(data.slice(6))
-                    break;
+
+        sendKeyEvent(code) {
+            if (state.net) state.net.sendRaw('M_KEYEVENT://' + code);
+        },
+
+        transformCoords(argx, argy, isRotate) {
+            const scaleX = state.deviceInfo.physicsSize.w / state.canvas.width;
+            const scaleY = state.deviceInfo.physicsSize.h / state.canvas.height;
+            let x = argx, y = argy;
+
+            if (isRotate) {
+                x = (state.canvas.height - argy) * (state.canvas.width / state.canvas.height);
+                y = argx * (state.canvas.height / state.canvas.width);
+            }
+
+            return {
+                x: Math.round(x * scaleX),
+                y: Math.round(y * scaleY)
+            };
+        },
+
+        sendDown(argx, argy) {
+            const coords = this.transformCoords(argx, argy, state.deviceWindow.rotate);
+            this.sendTouchEvent('d 0 ' + coords.x + ' ' + coords.y + ' 50\nc\n');
+        },
+
+        sendMove(argx, argy) {
+            const coords = this.transformCoords(argx, argy, state.deviceWindow.rotate);
+            this.sendTouchEvent('m 0 ' + coords.x + ' ' + coords.y + ' 50\nc\n');
+        },
+
+        sendUp() {
+            this.sendTouchEvent('u 0\nc\n');
+        },
+
+        getRelativePos(event) {
+            const rect = state.canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        },
+
+        init() {
+            const canvas = state.canvas;
+
+            canvas.onmousedown = (event) => {
+                state.isDown = true;
+                const pos = this.getRelativePos(event);
+                this.sendDown(pos.x, pos.y);
+            };
+
+            canvas.onmousemove = (event) => {
+                if (!state.isDown) return;
+                const pos = this.getRelativePos(event);
+                this.sendMove(pos.x, pos.y);
+            };
+
+            canvas.onmouseup = () => {
+                if (!state.isDown) return;
+                state.isDown = false;
+                this.sendUp();
+            };
+
+            canvas.onmouseout = () => {
+                if (!state.isDown) return;
+                state.isDown = false;
+                this.sendUp();
+            };
+
+            // 阻止触摸滚动
+            canvas.addEventListener('touchstart', (e) => e.preventDefault(), false);
+            canvas.addEventListener('touchmove', (e) => e.preventDefault(), false);
+        }
+    };
+
+    // ========== 图像渲染 ==========
+    const ImageRenderer = {
+        renderJPG(jpgData) {
+            // 释放上一个 Object URL 防止内存泄漏
+            if (state.lastObjectURL) {
+                URL.revokeObjectURL(state.lastObjectURL);
+            }
+
+            const blob = new Blob([jpgData], { type: 'image/jpeg' });
+            const url = URL.createObjectURL(blob);
+            state.lastObjectURL = url;
+
+            const img = new Image();
+            img.onload = () => {
+                if (state.canvas && state.ctx) {
+                    state.ctx.drawImage(img, 0, 0, state.canvas.width, state.canvas.height);
+                    state.canvas.img = img;
+                }
+                img.onload = null;
+            };
+            img.src = url;
+
+            // 请求下一帧
+            if (state.net) state.net.send('M_WAITTING', null);
+        },
+
+        takeScreenshot() {
+            if (!state.canvas) return;
+            state.canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'screenshot_' + state.deviceInfo.serialNumber + '_' + Date.now() + '.jpg';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+            }, 'image/jpeg', 0.95);
+        }
+    };
+
+    // ========== 设备管理功能 ==========
+    const DeviceManager = {
+        setConstant() {
+            if (state.net) state.net.send('M_START', { type: 'constant' });
+            alert('已设置常量状态（屏幕常亮）');
+        },
+
+        turnOffMobileData() {
+            if (state.net) state.net.send('M_START', { type: 'turnoff' });
+            alert('已关闭移动数据');
+        },
+
+        makeSound() {
+            if (state.net) state.net.send('M_START', { type: 'ring' });
+        },
+
+        resetSystem() {
+            if (confirm('确认重启设备至 Recovery 模式？')) {
+                if (state.net) state.net.send('M_START', { type: 'reset' });
+            }
+        },
+
+        installApps() {
+            const dirInput = document.getElementById('group-dir-input');
+            const codeInput = document.getElementById('device-code-input');
+            const addToolCheckbox = document.querySelector('input[name="install-tool"]');
+
+            const dir = dirInput ? dirInput.value : '';
+            const code = codeInput ? codeInput.value : '';
+
+            if (!dir || !code) {
+                alert('请在参数设置中填写项目地址和设备编号');
+                return;
+            }
+
+            const addTool = addToolCheckbox ? addToolCheckbox.checked : false;
+            if (state.net) {
+                state.net.send('M_START', {
+                    type: 'install',
+                    config: { dir: dir, code: code, addTool: addTool }
+                });
+            }
+            alert('正在安装，请勿操作设备...');
+        },
+
+        executeCLI() {
+            const cmdInput = document.getElementById('cli-cmd-input');
+            const portInput = document.getElementById('server-port-input');
+
+            const cmd = cmdInput ? cmdInput.value : '';
+            const port = portInput ? portInput.value : '';
+
+            if (!cmd) {
+                alert('请输入命令');
+                return;
+            }
+
+            if (state.net) {
+                state.net.send('M_START', {
+                    type: 'callCLi',
+                    config: { cmd: cmd, port: port }
+                });
+            }
+        },
+
+        startCapService() {
+            if (!state.net || !state.deviceWindow) return;
+            state.net.send('M_START', {
+                type: 'cap',
+                config: {
+                    rotate: state.deviceWindow.rotate ? 90 : 0,
+                    scale: state.deviceWindow.scale
+                }
+            });
+        },
+
+        startEventService() {
+            if (state.net) state.net.send('M_START', { type: 'event' });
+        }
+    };
+
+    // ========== UI 控制器 ==========
+    const UIController = {
+        // 创建输入框
+        createInputs() {
+            const containers = [
+                { id: 'group-dir', inputId: 'group-dir-input', placeholder: '例如: D:\\apps\\' },
+                { id: 'device-code', inputId: 'device-code-input', placeholder: '设备编号' },
+                { id: 'server-port', inputId: 'server-port-input', placeholder: '端口号' },
+                { id: 'cli-cmd', inputId: 'cli-cmd-input', placeholder: 'Shell 命令' }
+            ];
+
+            containers.forEach(cfg => {
+                const container = document.getElementById(cfg.id);
+                if (!container) return;
+                const input = document.createElement('input');
+                input.id = cfg.inputId;
+                input.type = 'text';
+                input.placeholder = cfg.placeholder;
+                input.style.width = '100%';
+                input.style.padding = '5px';
+                container.appendChild(input);
+            });
+
+            // 输入验证
+            const dirInput = document.getElementById('group-dir-input');
+            if (dirInput) {
+                dirInput.addEventListener('blur', (e) => {
+                    if (e.target.value && !this.isValidPath(e.target.value)) {
+                        alert('路径格式无效，应为: X:\\path\\');
+                        e.target.value = '';
+                    }
+                });
+            }
+        },
+
+        isValidPath(path) {
+            return /^[A-Za-z]:\\(.+\\)*$/.test(path);
+        },
+
+        // 初始化 Tab 切换
+        initTabs() {
+            const tabs = [
+                { id: 'group', page: 'make-task' },
+                { id: 'farewell', page: 'search-info' },
+                { id: 'operation', page: 'run-operation' },
+                { id: 'settings', page: 'value-settings' }
+            ];
+
+            tabs.forEach(tab => {
+                const btn = document.getElementById(tab.id);
+                if (!btn) return;
+
+                btn.addEventListener('click', () => {
+                    // 隐藏所有页面
+                    tabs.forEach(t => {
+                        const page = document.getElementById(t.page);
+                        const btn = document.getElementById(t.id);
+                        if (page) page.style.display = 'none';
+                        if (btn) btn.style.backgroundColor = '#9d9d9d';
+                    });
+
+                    // 显示当前页面
+                    const currentPage = document.getElementById(tab.page);
+                    if (currentPage) currentPage.style.display = 'block';
+                    btn.style.backgroundColor = '#FFFFFF';
+                });
+            });
+        },
+
+        // 初始化滑块
+        initSliders() {
+            // 显示缩放
+            $('#display-scale-slider').slider({
+                max: 100, min: 10, step: 5, value: 20,
+                change: () => {
+                    const scale = $('#display-scale-slider').slider('value') / 100;
+                    state.deviceWindow.setDisplayScale(scale);
+                    if (window.__titleVM) {
+                        window.__titleVM.displaySize = { ...state.deviceWindow.displaySize };
+                    }
+                    if (state.canvas && state.canvas.img) {
+                        state.ctx.drawImage(state.canvas.img, 0, 0, state.canvas.width, state.canvas.height);
+                    }
+                }
+            });
+
+            // 输出清晰度
+            $('#scale-slider').slider({
+                max: 100, min: 5, step: 5, value: 30,
+                change: () => {
+                    state.deviceWindow.scale = $('#scale-slider').slider('value') / 100;
+                    if (window.__titleVM) {
+                        window.__titleVM.outputScale = state.deviceWindow.scale;
+                    }
+                    DeviceManager.startCapService();
+                    $('#myModal').modal('hide');
+                    $('#resetScaleModal').modal('show');
+                }
+            });
+        },
+
+        // 初始化按钮事件
+        initButtons() {
+            // 导航键
+            $('#btn-back').on('click', () => TouchHandler.sendKeyEvent(4));
+            $('#btn-home').on('click', () => TouchHandler.sendKeyEvent(3));
+            $('#btn-menu').on('click', () => TouchHandler.sendKeyEvent(82));
+
+            // 更多设置
+            $('#btn-more').on('click', () => {
+                // Bootstrap modal 自动处理
+            });
+
+            // 设备管理
+            $('#set-constant').on('click', () => DeviceManager.setConstant());
+            $('#turnoff-mobiledata').on('click', () => DeviceManager.turnOffMobileData());
+            $('#shot-screen').on('click', () => ImageRenderer.takeScreenshot());
+            $('#make-sound').on('click', () => DeviceManager.makeSound());
+            $('#install-app').on('click', () => DeviceManager.installApps());
+            $('#run-cmd').on('click', () => DeviceManager.executeCLI());
+            $('#reset-system').on('click', () => DeviceManager.resetSystem());
+
+            // 底部快捷按钮
+            $('#display-no-sleep').on('click', () => DeviceManager.setConstant());
+            $('#close-data').on('click', () => DeviceManager.turnOffMobileData());
+
+            // 屏幕旋转
+            $('#rotateCheckBox').on('click', () => {
+                state.deviceWindow.rotate = $('#rotateCheckBox').prop('checked');
+                DeviceManager.startCapService();
+                $('#myModal').modal('hide');
+                $('#resetScaleModal').modal('show');
+            });
+
+            // 键盘映射
+            $('#keyEventCheckBox').on('click', () => {
+                state.deviceWindow.keyMap = $('#keyEventCheckBox').prop('checked');
+            });
+        },
+
+        // 初始化键盘事件
+        initKeyboard() {
+            $(document).keypress((event) => {
+                if (state.deviceWindow && state.deviceWindow.keyMap) {
+                    const keyCode = event.keyCode;
+                    const androidKey = convertAndroidKeyCode(keyCode);
+                    TouchHandler.sendKeyEvent(androidKey);
+                }
+            });
+        },
+
+        // 初始化窗口大小调整
+        initResize() {
+            window.addEventListener('resize', () => {
+                if (state.canvas && state.canvas.img) {
+                    state.ctx.drawImage(state.canvas.img, 0, 0, state.canvas.width, state.canvas.height);
+                }
+            });
+        }
+    };
+
+    // ========== URL 参数解析 ==========
+    function parseUrlParams() {
+        const params = {};
+        const search = window.location.search.substring(1);
+        if (!search) return params;
+
+        search.split('&').forEach(pair => {
+            const [key, value] = pair.split('=');
+            params[key] = decodeURIComponent(value);
+        });
+        return params;
+    }
+
+    // ========== Vue 标题组件 ==========
+    let titleVM = null;
+    window.__titleVM = null;
+
+    function initVueTitle() {
+        titleVM = new Vue({
+            el: '#title',
+            data: {
+                displaySize: state.deviceWindow ? { ...state.deviceWindow.displaySize } : { w: 1080, h: 1920 },
+                outputScale: state.deviceWindow ? state.deviceWindow.scale : 0.3
+            },
+            computed: {
+                title: function() {
+                    return this.displaySize.w + 'x' + this.displaySize.h +
+                        '  |  ' + parseInt(state.deviceInfo.physicsSize.w * this.outputScale) +
+                        'x' + parseInt(state.deviceInfo.physicsSize.h * this.outputScale);
                 }
             }
-        },
-        SM_OPENED(body) {
-            net.request("M_START", {type: "cap", config: {rotate: deviceWindow.rotate ? 90 : 0, scale: deviceWindow.scale}})
-            net.request("M_START", {type: "event"})
-        },
-        SM_SERVICE_STATE(body) {
-            console.log("SM_SERVICE_STATE" + body)
-            let obj = JSON.parse(body)
-            console.warn(obj.type + ":" + obj.stat)
-            if (obj.type == 'cap' && obj.stat == 'open') {
-                // 隐藏等待capservice的窗口
-                $('#resetScaleModal').modal('hide')
-                this.M_WAITTING()
-            }
-        },
-        SM_JPG(jpgdata) {
-            var blob = new Blob([jpgdata], {type: 'image/jpeg'});
-            var URL = window.URL || window.webkitURL;
-            var img = new Image();
-            img.onload = function () {
-                canvas.width = parseInt(deviceWindow.displaySize.w);
-                canvas.height = parseInt(deviceWindow.displaySize.h);
-                console.log(canvas.width, canvas.height)
-                g.drawImage(img, 0, 0, canvas.width, canvas.height);
-                img.onLoad = null;
-                img = null;
-                u = null;
-                blob = null;
-            };
-            var u = URL.createObjectURL(blob);
-            img.src = u;
-            canvas.img = img
-            
-            if (deviceWindow.resized) {
-                deviceWindow.resize()
-            }
-
-            this.M_WAITTING()
-        },
-        M_WAITTING() {
-            net.request("M_WAITTING", null)
-        }
-    })
-}
-
-/**
- * 返回url参数组成的js对象
- */
-function initWithUrlParams() {
-    let ret = {}
-    let ss = window.location.search.substr(1).split('&')
-    for (s of ss) {
-        let sp = s.split('=')
-        ret[sp[0]] = sp[1]
+        });
+        window.__titleVM = titleVM;
     }
-    return ret
-}
 
-let isDown = false
+    // ========== 初始化 ==========
+    function init() {
+        // 解析 URL 参数
+        const urlParams = parseUrlParams();
+        const sn = urlParams.sn || 'unknown';
+        const w = urlParams.w || 1080;
+        const h = urlParams.h || 1920;
 
-var canvas = document.getElementById("phone-screen");
-var g = canvas.getContext('2d');
+        // 初始化状态
+        state.deviceInfo = new DeviceInfo(sn, w, h);
+        state.canvas = document.getElementById('phone-screen');
+        state.ctx = state.canvas.getContext('2d');
 
+        // 创建输入框
+        UIController.createInputs();
 
-String.prototype.startWith=function(str){
-    var reg=new RegExp("^"+str);
-    return reg.test(this);
-};
+        // 初始化设备窗口
+        state.deviceWindow = new DeviceWindow(state.deviceInfo);
+        state.deviceWindow.resize();
 
-String.prototype.endWith=function(str){
-    var reg=new RegExp(str+"$");
-    return reg.test(this);
-};
-/**
- * 输入数值的检查
- */
-group_dir_input.addEventListener('blur', function(event) {
-    console.log("输入框的值为：" + event.target.value);
-    if(!isValidPath(event.target.value)) {window.alert("非法地址");group_dir_input.value="";}
-});
+        // 初始化 Vue 标题
+        initVueTitle();
 
-device_code_input.addEventListener('blur', function(event) {
-    console.log("输入框的值为：" + event.target.value);
-});
+        // 初始化 UI
+        UIController.initTabs();
+        UIController.initSliders();
+        UIController.initButtons();
+        UIController.initKeyboard();
+        UIController.initResize();
 
-$("#btn-menu").on('click', function(){
-    sendKeyEvent(82)
-})
+        // 初始化触摸处理
+        TouchHandler.init();
 
-$("#btn-home").on('click', function(){
-    sendKeyEvent(3)
-})
+        // 连接服务器
+        connectToServer();
+    }
 
-$("#btn-back").on('click', function(){
-    sendKeyEvent(4)
-})
-$('#set-constant').on('click',function(){
-    net.request("M_START", {type: "constant", config: {}})
-    window,alert("已设置常量状态");
-})
+    // ========== 连接服务器 ==========
+    function connectToServer() {
+        state.net = new NetworkManager(DEFAULT_IP, DEFAULT_PORT);
+        state.net.connect({
+            onopen() {
+                console.log('已连接到服务器');
+                state.net.send('M_WAIT', { sn: state.deviceInfo.serialNumber });
+            },
 
-$('#turnoff-mobiledata').on('click',function(){
-    net.request("M_START", {type: "turnoff", config: {}})
-    window,alert("已关闭数据流量");
-})
+            onclose() {
+                console.log('连接已断开');
+                // 3秒后尝试重连
+                if (state.reconnectTimer) clearTimeout(state.reconnectTimer);
+                state.reconnectTimer = setTimeout(() => {
+                    console.log('尝试重新连接...');
+                    connectToServer();
+                }, RECONNECT_DELAY);
+            },
 
-$('#make-sound').on('click',function(){
-        net.request("M_START", {type: "ring", config: {}})
-})
+            SM_OPENED() {
+                console.log('设备绑定成功');
+                DeviceManager.startCapService();
+                DeviceManager.startEventService();
+            },
 
-$('input:radio').click(function(){
-    var $radio = $(this);
-    if ($radio.data('waschecked') == true){
-        $radio.prop('checked', false); $radio.data('waschecked', false);
-        isDefualtAdd = 0;
+            SM_SERVICE_STATE(body) {
+                try {
+                    const obj = JSON.parse(body);
+                    console.log('服务状态:', obj.type, obj.stat);
+
+                    if (obj.type === 'cap') {
+                        state.capReady = (obj.stat === 'open');
+                        if (state.capReady) {
+                            $('#resetScaleModal').modal('hide');
+                            if (state.net) state.net.send('M_WAITTING', null);
+                        }
+                    } else if (obj.type === 'event') {
+                        state.eventReady = (obj.stat === 'open');
+                    }
+                } catch (err) {
+                    console.error('解析服务状态失败:', err);
+                }
+            },
+
+            SM_JPG(jpgData) {
+                ImageRenderer.renderJPG(jpgData);
+            },
+
+            // 设备列表更新通知（设备管理页无需处理）
+            SM_DEVICES(body) {},
+
+            // 操作结果回调
+            SM_RESULT(body) {
+                try {
+                    const obj = JSON.parse(body);
+                    if (obj.message) {
+                        console.log('操作结果:', obj.message);
+                    }
+                } catch (e) {
+                    console.log('操作结果:', body);
+                }
+            }
+        });
+    }
+
+    // ========== 页面卸载清理 ==========
+    window.addEventListener('beforeunload', () => {
+        if (state.net) state.net.close();
+        if (state.lastObjectURL) URL.revokeObjectURL(state.lastObjectURL);
+        if (state.reconnectTimer) clearTimeout(state.reconnectTimer);
+    });
+
+    // ========== 启动 ==========
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        $radio.prop('checked', true); $radio.data('waschecked', true);
-        isDefualtAdd = 1;
+        init();
     }
-});
 
-
-/**
- * app安装
- */
-$('#install-app').on('click',function(){
-    let dir=group_dir_input.value;
-    let code=device_code_input.value;
-    if(isNotEmptyStr(dir)&&isNotEmptyStr(code)){
-        window.alert("正准备安装，请在等待过程中不要执行其它操作.");
-        var tesObj = document.getElementsByName("install-tool");
-        //获取选中的值
-        var isAdd;
-        for(var i=0; i < tesObj.length; i++){
-            if (tesObj[i].checked==true){
-                isAdd=tesObj[i].value;
-                alert(tesObj[i].value+'  是选中的value值');
-                break;
-            }
-        }
-        if(isAdd=="1")
-        net.request("M_START", {type: "install", config: {"dir":dir,"code":code,"addTool":true}});
-        else
-        net.request("M_START", {type: "install", config: {"dir":dir,"code":code,"addTool":false}});
-    } else window.alert("请在参数设置中填写项目安装地址与设备编号");
-})
-/**
- * cli命令运行
- */
-$('#run-cmd').on('click',function (){
-    let cmd=cmd_cli_input.value;
-    let port=server_port_input.value;
-  if(isNotEmptyStr(cmd)){
-      net.request("M_START", {type: "callCLi", config: {"port":port,"cmd":cmd}});
-  }else window.alert("请输入命令与端口值");
-})
-
-
-$('#reset-system').on('click',function(){
-    var isContinue=window.confirm("请确认是否重启至recovery模式？");
-    if (isContinue==true) {
-     net.request("M_START", {type: "reset", config: {}})
-    }
-})
-
-
-
-
-$(document).keypress(function(event) {
-    if (deviceWindow && deviceWindow.keyMap) {
-        let code = event.keyCode
-        let keyEvent = convertAndroidKeyCode(code)
-        sendKeyEvent(keyEvent)
-    }
-})
-
-setLastDivTag(lastBtn)
-$('#group').on('click', function() {
-    console.log("Do Group")
-    document.getElementById('make-task').style.display = 'block';
-    document.getElementById('run-operation').style.display = 'none';
-    document.getElementById('search-info').style.display = 'none';
-    document.getElementById('value-settings').style.display = 'none';
-    console.log("lastBtn"+getLastDivTag())
-    if(isNotEmptyStr(getLastDivTag())) {a = document.getElementById(getLastDivTag());a.style.backgroundColor = '#9d9d9d'}
-    // if(isNotEmptyAndEqualsStr(getLastDivTag(),'group')) { a = document.getElementById(getLastDivTag()); a.style.backgroundColor = '#FFFFFF' ;}
-    b = document.getElementById('group');
-    b.style.backgroundColor = '#FFFFFF';
-    setLastDivTag("group");
-
-
-})
-
-
-
-
-
-$('#operation').on('click', function() {
-    console.log("Make Operation")
-    document.getElementById('make-task').style.display = 'none';
-    document.getElementById('run-operation').style.display = 'block';
-    document.getElementById('search-info').style.display = 'none';
-    document.getElementById('value-settings').style.display = 'none';
-    console.log("lastBtn"+getLastDivTag())
-    if(isNotEmptyStr(getLastDivTag())) {a = document.getElementById(getLastDivTag());a.style.backgroundColor = '#9d9d9d'}
-    // if(isNotEmptyAndEqualsStr(getLastDivTag(),"operation")) { a = document.getElementById(getLastDivTag()); a.style.backgroundColor = '#FFFFFF' };
-    b = document.getElementById('operation');
-    b.style.backgroundColor = '#FFFFFF';
-    setLastDivTag("operation");
-})
-
-$('#farewell').on('click', function() {
-    console.log("Do Group")
-    document.getElementById('make-task').style.display = 'none';
-    document.getElementById('run-operation').style.display = 'none';
-    document.getElementById('search-info').style.display = 'block';
-    document.getElementById('value-settings').style.display = 'none';
-    console.log("lastBtn"+getLastDivTag())
-    if(isNotEmptyStr(getLastDivTag())) {a = document.getElementById(getLastDivTag());a.style.backgroundColor = '#9d9d9d'}
-    // if(isNotEmptyAndEqualsStr(getLastDivTag(),'group')) { a = document.getElementById(getLastDivTag()); a.style.backgroundColor = '#FFFFFF' ;}
-    b = document.getElementById('farewell');
-    b.style.backgroundColor = '#FFFFFF';
-    setLastDivTag("farewell");
-})
-
-$('#settings').on('click', function() {
-    document.getElementById('make-task').style.display = 'none';
-    document.getElementById('run-operation').style.display = 'none';
-    document.getElementById('search-info').style.display = 'none';
-    document.getElementById('value-settings').style.display = 'block';
-    console.log("lastBtn"+getLastDivTag())
-    if(isNotEmptyStr(getLastDivTag())) {a = document.getElementById(getLastDivTag());a.style.backgroundColor = '#9d9d9d'}
-    // if(isNotEmptyAndEqualsStr(getLastDivTag(),'group')) { a = document.getElementById(getLastDivTag()); a.style.backgroundColor = '#FFFFFF' ;}
-    b = document.getElementById('settings');
-    b.style.backgroundColor = '#FFFFFF';
-    setLastDivTag("settings");
-})
-
-function setLastDivTag(s){
-    this.lastBtn=s;
-}
-
-function getLastDivTag(){
-    return this.lastBtn;
-}
-
-function setDeviceCode(s){
-    this.code=s;
-}
-
-function getDeviceCode(){
-    return this.code;
-}
-
-function setGroupDir(s){
-    this.groupDir=s;
-}
-
-function getGroupDir(){
-    return groupDir;
-}
-
-/**
- * 判断输入地址是否合法
- * @param dir
- * @returns {boolean}
- */
-function isValidPath(dir){
-    var path = new RegExp("^[A-z]:\\\\(.+?\\\\)*$");
-    if(path.test(dir)) return true; else return false;
-}
-
-/**
- * 判断字符串是否为空
- * @param s
- * @returns {boolean}
- */
-function isNotEmptyStr(s) {
-    if (s == null || s === '') {
-        return false
-    }
-    return true
-}
-
-/**
- * 字符串对等性判断
- * @param s
- * @param s1
- * @returns {boolean}
- */
-function isNotEmptyAndEqualsStr(s,s1) {
-    if (typeof s == 'string' && s.length > 0 &&s===s1) {
-        return true
-    }
-    return false
-}
-
-
-
-// 获取鼠标在html中的绝对位置
-function mouseCoords(event){
-    if(event.pageX || event.pageY){
-        return {x:event.pageX, y:event.pageY};
-    }
-    return{
-        x:event.clientX + document.body.scrollLeft - document.body.clientLeft,
-        y:event.clientY + document.body.scrollTop - document.body.clientTop
-    };
-}
-// 获取鼠标在控件的相对位置
-function getXAndY(control, event){
-    //鼠标点击的绝对位置
-    let Ev = event || window.event;
-    var mousePos = mouseCoords(event);
-    var x = mousePos.x;
-    var y = mousePos.y;
-    //alert("鼠标点击的绝对位置坐标："+x+","+y);
-
-    //获取div在body中的绝对位置
-    var x1 = control.offsetLeft;
-    var y1 = control.offsetTop;
-
-    //鼠标点击位置相对于div的坐标
-    var x2 = x - x1;
-    var y2 = y - y1;
-    return {x:x2,y:y2};
-}
-
-function sendTouchEvent(minitouchStr) {
-    net.send("M_TOUCH://" + minitouchStr);
-}
-
-function sendKeyEvent(keyevent) {
-    net.send("M_KEYEVENT://" + keyevent)
-}
-
-function sendDown(argx, argy, isRo) {
-    var scalex = deviceInfo.physicsSize.w / canvas.width;
-    var scaley = deviceInfo.physicsSize.h / canvas.height;
-    var x = argx, y = argy;
-    if (isRo) {
-        x = (canvas.height - argy) * (canvas.width / canvas.height);
-        y = argx * (canvas.height / canvas.width);
-    }
-    x = Math.round(x * scalex);
-    y = Math.round(y * scaley);
-    var command = "d 0 " + x + " " + y + " 50\n";
-    command += "c\n";
-    sendTouchEvent(command);
-}
-
-function sendMove(argx, argy, isRo) {
-    var scalex = deviceInfo.physicsSize.w / canvas.width;
-    var scaley = deviceInfo.physicsSize.h / canvas.height;
-    var x = argx, y = argy;
-    if (isRo) {
-        x = (canvas.height - argy) * (canvas.width / canvas.height);
-        y = argx * (canvas.height / canvas.width);
-    }
-    x = Math.round(x * scalex);
-    y = Math.round(y * scaley);
-
-    var command = "m 0 " + x + " " + y + " 50\n";
-    command += "c\n";
-    sendTouchEvent(command);
-}
-
-function sendUp() {
-    var command = "u 0\n";
-    command += "c\n";
-    sendTouchEvent(command);
-}
-
-canvas.onmousedown = function (event) {
-    isDown = true;
-    var pos = getXAndY(canvas, event);
-    sendDown(pos.x, pos.y, deviceWindow.rotate);
-};
-
-canvas.onmousemove = function (event) {
-    if (!isDown) {
-        return;
-    }
-    var pos = getXAndY(canvas, event);
-
-    sendMove(pos.x, pos.y, deviceWindow.rotate);
-};
-
-canvas.onmouseover = function (event) {
-    console.log("onmouseover");
-};
-
-canvas.onmouseout = function (event) {
-    if (!isDown) {
-        return;
-    }
-    isDown = false;
-    sendUp();
-};
-
-canvas.onmouseup = function (event) {
-    if (!isDown) {
-        return;
-    }
-    isDown = false;
-    sendUp();
-};
+})();

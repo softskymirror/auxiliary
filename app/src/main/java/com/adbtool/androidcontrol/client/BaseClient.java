@@ -26,8 +26,116 @@
 
 package com.adbtool.androidcontrol.client;
 
+import org.apache.log4j.Logger;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
- * Created by harry on 2017/5/10.
+ * BaseClient - common image buffering logic shared by LocalClient and RemoteClient.
+ * Subclasses must implement {@link #sendImage(byte[])} to define the actual transport.
  */
-public class BaseClient {
+public abstract class BaseClient {
+
+    private static final Logger logger = Logger.getLogger(BaseClient.class);
+
+    /** Image data timeout in milliseconds */
+    public static final int DATA_TIMEOUT = 100;
+
+    private volatile boolean isWaiting = false;
+    private final BlockingQueue<ImageData> dataQueue = new LinkedBlockingQueue<>();
+
+    /**
+     * Image data wrapper with timestamp.
+     */
+    public static class ImageData {
+        public final long timestamp;
+        public final byte[] data;
+
+        public ImageData(byte[] data) {
+            this.timestamp = System.currentTimeMillis();
+            this.data = data;
+        }
+    }
+
+    /**
+     * Subclasses implement this to send image bytes through their specific transport.
+     */
+    protected abstract void sendImage(byte[] data);
+
+    /**
+     * Called when a new JPG frame is available from Minicap.
+     * If waiting for a frame, sends immediately (picking non-expired from queue if available).
+     * Otherwise, clears expired frames and enqueues.
+     */
+    public void onNewJPG(byte[] data) {
+        if (isWaiting) {
+            if (!dataQueue.isEmpty()) {
+                dataQueue.add(new ImageData(data));
+                ImageData d = getUsefulImage();
+                if (d != null) {
+                    sendImage(d.data);
+                }
+            } else {
+                sendImage(data);
+            }
+            isWaiting = false;
+        } else {
+            clearObsoleteImage();
+            dataQueue.add(new ImageData(data));
+        }
+    }
+
+    /**
+     * Set waiting state and attempt to send a buffered image.
+     */
+    public void setWaiting(boolean waiting) {
+        this.isWaiting = waiting;
+        trySendImage();
+    }
+
+    public boolean isWaiting() {
+        return isWaiting;
+    }
+
+    private void trySendImage() {
+        ImageData d = getUsefulImage();
+        if (d != null) {
+            isWaiting = false;
+            sendImage(d.data);
+        }
+    }
+
+    private void clearObsoleteImage() {
+        ImageData d = dataQueue.peek();
+        long curTS = System.currentTimeMillis();
+        while (d != null) {
+            if (curTS - d.timestamp < DATA_TIMEOUT) {
+                dataQueue.poll();
+                d = dataQueue.peek();
+            } else {
+                break;
+            }
+        }
+    }
+
+    private ImageData getUsefulImage() {
+        long curTS = System.currentTimeMillis();
+        ImageData d = null;
+        while (true) {
+            d = dataQueue.poll();
+            if (d == null || curTS - d.timestamp < DATA_TIMEOUT || dataQueue.isEmpty()) {
+                break;
+            }
+        }
+        return d;
+    }
+
+    /**
+     * Clear all buffered image data. Call on cleanup.
+     */
+    public void clearImageBuffer() {
+        dataQueue.clear();
+        isWaiting = false;
+    }
 }
